@@ -68,7 +68,7 @@ InputSize = (BoxRadius*2+1)*(BoxRadius*2+1)
 
 
 --[[
-Inputs + 1  TODO: no clue whats up with plus ones yet
+Inputs : What they can see look above TODO: Why plus ones?
 Outputs: These are the actions that the organims can take
 That's why the only actions possible are contrller buttons
 --]]
@@ -76,13 +76,30 @@ Inputs = InputSize+1
 Outputs = #ButtonNames
 
 
+--[[
+Population: The Number of Orgranims
+Deltas: TODO: 
+--]]
 Population = 300
 DeltaDisjoint = 2.0
 DeltaWeights = 0.4
 DeltaThreshold = 1.0
 
-StaleSpecies = 15
 
+
+--[[
+StaleSpecies: TODO:
+MutateConnectionsChance: TODO:
+PerturbChance: TODO:
+CrossoverChance: TODO: Chance of it mating
+LinkMutationChance: TODO: 
+NodeMutationChance = TODO:
+BiasMutationChance = TODO: 
+StepSize = TODO: For Gradient Decent
+DisableMutationChance = TODO: Disable Mutation
+EnableMutationChance = TODO: Reenable Mutation
+--]]
+StaleSpecies = 15
 MutateConnectionsChance = 0.25
 PerturbChance = 0.90
 CrossoverChance = 0.75
@@ -93,12 +110,27 @@ StepSize = 0.1
 DisableMutationChance = 0.4
 EnableMutationChance = 0.2
 
+--[[
+TimeoutConstant: How long it take till the enemies to despawn.
+--]]
 TimeoutConstant = 20
 
+
+--[[
+MaxNodes: TODO: 
+--]]
 MaxNodes = 1000000
 
+
+--[[
+GetPostions: Return the postion of Mario Using in game Hex Bits
+--]]
 function getPositions()
+
+	--If statements for which mario game 
 	if gameinfo.getromname() == "Super Mario World (USA)" then
+		
+		--Mario X and Y bits are Both 2 Byte Words
 		marioX = memory.read_s16_le(0x94)
 		marioY = memory.read_s16_le(0x96)
 		
@@ -108,6 +140,9 @@ function getPositions()
 		screenX = marioX-layer1x
 		screenY = marioY-layer1y
 	elseif gameinfo.getromname() == "Super Mario Bros." then
+
+		--In the classic game the X bit is done using a paging bit first
+		--This allows you to have bigger numbers than 256
 		marioX = memory.readbyte(0x6D) * 0x100 + memory.readbyte(0x86)
 		marioY = memory.readbyte(0x03B8)+16
 	
@@ -116,21 +151,32 @@ function getPositions()
 	end
 end
 
+
+--[[
+getTile: Return each of the tiles used for the inputs
+--]]
 function getTile(dx, dy)
 	if gameinfo.getromname() == "Super Mario World (USA)" then
+
+		--Find the exact tile and get the offset
 		x = math.floor((marioX+dx+8)/16)
 		y = math.floor((marioY+dy)/16)
 		
+		--Read the byte of that dx,dy
 		return memory.readbyte(0x1C800 + math.floor(x/0x10)*0x1B0 + y*0x10 + x%0x10)
 	elseif gameinfo.getromname() == "Super Mario Bros." then
+
+		--Dx plus what page they are on
 		local x = marioX + dx + 8
 		local y = marioY + dy - 16
 		local page = math.floor(x/256)%2
+
 
 		local subx = math.floor((x%256)/16)
 		local suby = math.floor((y - 32)/16)
 		local addr = 0x500 + page*13*16+suby*16+subx
 		
+
 		if suby >= 13 or suby < 0 then
 			return 0
 		end
@@ -143,6 +189,9 @@ function getTile(dx, dy)
 	end
 end
 
+--[[
+GetSprites: Return the monster if they are on a tile
+--]]
 function getSprites()
 	if gameinfo.getromname() == "Super Mario World (USA)" then
 		local sprites = {}
