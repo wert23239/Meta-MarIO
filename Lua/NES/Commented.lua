@@ -51,18 +51,30 @@ Setting Constants
 --]]
 
 --[[
-How big the Box Radius is the eye that the Organism can see. 
+BoxRadius: is the eye that the Organism can see. 
+It's where the inputs will be taken in at.
 (Left side of the visual)
 --]]
 BoxRadius = 6
 
---[[
 
+--[[
+InputSize: is the amount of inputs the Organism takes in.
+There is two times the amount of the box because there is two inputs
+White inputs are blocks (static objects)
+Black inputs are enemies (dynamic objects)
 --]]
 InputSize = (BoxRadius*2+1)*(BoxRadius*2+1)
 
+
+--[[
+Inputs + 1  TODO: no clue whats up with plus ones yet
+Outputs: These are the actions that the organims can take
+That's why the only actions possible are contrller buttons
+--]]
 Inputs = InputSize+1
 Outputs = #ButtonNames
+
 
 Population = 300
 DeltaDisjoint = 2.0
