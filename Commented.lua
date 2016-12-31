@@ -382,6 +382,9 @@ function basicGenome()
 	return genome
 end
 
+--[[
+newGene: Gene Constructor
+--]]
 function newGene()
 	local gene = {}
 	gene.into = 0
@@ -956,17 +959,26 @@ function initializeRun()
 	evaluateCurrent()
 end
 
+
+--[[
+evaluateCurrent: Figuire out which controller buttons to press
+--]]
 function evaluateCurrent()
 	local species = pool.species[pool.currentSpecies]
 	local genome = species.genomes[pool.currentGenome]
 
+
 	inputs = getInputs()
+
 	controller = evaluateNetwork(genome.network, inputs)
 	
+
+	--Stop P1 Left and P1 Right from being pressed at the same time
 	if controller["P1 Left"] and controller["P1 Right"] then
 		controller["P1 Left"] = false
 		controller["P1 Right"] = false
 	end
+	--Stop Pl Up and P1 Down from being pressed at the same time
 	if controller["P1 Up"] and controller["P1 Down"] then
 		controller["P1 Up"] = false
 		controller["P1 Down"] = false
@@ -979,9 +991,12 @@ if pool == nil then
 	initializePool()
 end
 
-
+--[[
+nextGenome: Get next available genome if none start a new generation
+--]]
 function nextGenome()
 	pool.currentGenome = pool.currentGenome + 1
+
 	if pool.currentGenome > #pool.species[pool.currentSpecies].genomes then
 		pool.currentGenome = 1
 		pool.currentSpecies = pool.currentSpecies+1
@@ -992,6 +1007,10 @@ function nextGenome()
 	end
 end
 
+--[[
+fitnessAlreadyMesaured: Check to see if the fitness of 
+specfic species and genome have been mesaured.
+--]]
 function fitnessAlreadyMeasured()
 	local species = pool.species[pool.currentSpecies]
 	local genome = species.genomes[pool.currentGenome]
@@ -1126,10 +1145,14 @@ function displayGenome(genome)
 	end
 end
 
+--[[
+writeFile: See loadFile for specifics
+--]]
 function writeFile(filename)
         local file = io.open(filename, "w")
 	file:write(pool.generation .. "\n")
-	file:write(pool.maxFitness .. "\n")
+	file:write(pool.maxFitness .. 
+		"\n")
 	file:write(#pool.species .. "\n")
         for n,species in pairs(pool.species) do
 		file:write(species.topFitness .. "\n")
@@ -1166,12 +1189,48 @@ function savePool()
 	writeFile(filename)
 end
 
+
+--[[
+loadFile: takes in a pool file and reads the contents
+--]]
 function loadFile(filename)
-        local file = io.open(filename, "r")
+
+    local file = io.open(filename, "r")
+    --Create a new gene pool
 	pool = newPool()
+
+	--Read the generation
 	pool.generation = file:read("*number")
+
+	--Gather MaxFitness
 	pool.maxFitness = file:read("*number")
+
 	forms.settext(maxFitnessLabel, "Max Fitness: " .. math.floor(pool.maxFitness))
+
+		--Read the file
+		--[[
+		1 Line: Generation
+		2 Line: Max Fitness
+		3 Line: Number of Species
+		4 Line: Top Fitness for Species
+		5 Line: How Stale the species is
+		6 Line: Number of Genomes
+		7 Line: Top Fitness for set of genomes
+		8 Line: TODO: Max Neuron
+		9-23 Line: Set up diffent rates
+		24 Line: Number of Genes
+		For each gene 25- Number of Genes
+		2*.1 Line: Into Gene
+		2*.2 Line: Out Gene
+		2*.3 Line: Weight Gene
+		2*.4 Line: Innovation Gene
+		2*.5 Line: Enabled Boolean
+		Into Gene: What inputs need to be on the screen to run this
+		Out Gene: What controller output to execute
+		Weight Gene: How much the gene mattters
+		Inovation: TODO:
+		Enabled Gene: Determine whether to use the gene
+		--]]
         local numSpecies = file:read("*number")
         for s=1,numSpecies do
 		local species = newSpecies()
@@ -1213,6 +1272,9 @@ function loadFile(filename)
 	pool.currentFrame = pool.currentFrame + 1
 end
  
+ --[[
+loadPool: Button clicked to load a population 
+--]]
 function loadPool()
 	local filename = forms.gettext(saveLoadFile)
 	loadFile(filename)
@@ -1291,60 +1353,89 @@ while true do
 		gui.drawBox(0, 0, 300, 26, backgroundColor, backgroundColor)
 	end
 
+
 	local species = pool.species[pool.currentSpecies]
 	local genome = species.genomes[pool.currentGenome]
 	
 
+	--showNetwork Boolean this then draws the bottom section
 	if forms.ischecked(showNetwork) then
 		displayGenome(genome)
 	end
 	
+
+	--Every 5 frames evaluate the current orgranism
 	if pool.currentFrame%5 == 0 then
 		evaluateCurrent()
 	end
 
+	--Sets the output to whatever the netowrk chooses
 	joypad.set(controller)
 
+	--Get Postion of Mario reading the Hex Bits
 	getPositions()
+
+	--If mario reached more right than before reset his time to the constant
 	if marioX > rightmost then
 		rightmost = marioX
 		timeout = TimeoutConstant
 	end
 	
+
+	--Subtract one time unit each loop
 	timeout = timeout - 1
 	
 	
+	--Each extra four frames give mario and extra bonus living amount
 	local timeoutBonus = pool.currentFrame / 4
+
+	--If the orgranism has not evolved within the allotted time end the run
 	if timeout + timeoutBonus <= 0 then
+		--fitness equal how right subtracted from how long it takes
 		local fitness = rightmost - pool.currentFrame / 2
+
+		--Extra bonus for completeting the level
 		if gameinfo.getromname() == "Super Mario World (USA)" and rightmost > 4816 then
 			fitness = fitness + 1000
 		end
 		if gameinfo.getromname() == "Super Mario Bros." and rightmost > 3186 then
 			fitness = fitness + 1000
 		end
+
+		--Mark it is done
 		if fitness == 0 then
 			fitness = -1
 		end
+
+		--Set the current genomes fitness to the local fitness
 		genome.fitness = fitness
 		
+		--If newfitness record then 
 		if fitness > pool.maxFitness then
+			--Set the MaxFitness for the gene pool
 			pool.maxFitness = fitness
+			--Set the top text to the new fitness
 			forms.settext(maxFitnessLabel, "Max Fitness: " .. math.floor(pool.maxFitness))
+			--Create a backup
 			writeFile("backup." .. pool.generation .. "." .. forms.gettext(saveLoadFile))
 		end
 		
 		console.writeline("Gen " .. pool.generation .. " species " .. pool.currentSpecies .. " genome " .. pool.currentGenome .. " fitness: " .. fitness)
 		pool.currentSpecies = 1
 		pool.currentGenome = 1
+
+
 		while fitnessAlreadyMeasured() do
 			nextGenome()
 		end
+		--Resetup Run
 		initializeRun()
 	end
 
 	local measured = 0
 	local total = 0
+
+	--Count how many Organisms have fun
 	for _,species in pairs(pool.species) do
 		for _,genome in pairs(species.genomes) do
 			total = total + 1
@@ -1353,13 +1444,19 @@ while true do
 			end
 		end
 	end
+
+	--Displays in the banner the Generation, species, and genome
+	--Displays Fitness
+	--Displays Max Fitness
 	if not forms.ischecked(hideBanner) then
 		gui.drawText(0, 0, "Gen " .. pool.generation .. " species " .. pool.currentSpecies .. " genome " .. pool.currentGenome .. " (" .. math.floor(measured/total*100) .. "%)", 0xFF000000, 11)
 		gui.drawText(0, 12, "Fitness: " .. math.floor(rightmost - (pool.currentFrame) / 2 - (timeout + timeoutBonus)*2/3), 0xFF000000, 11)
 		gui.drawText(100, 12, "Max Fitness: " .. math.floor(pool.maxFitness), 0xFF000000, 11)
 	end
-		
+	
+	--Manual Update of Frame 	
 	pool.currentFrame = pool.currentFrame + 1
 
+	--Actual Update of Frame
 	emu.frameadvance();
 end
