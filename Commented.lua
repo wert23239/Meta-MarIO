@@ -153,7 +153,8 @@ end
 
 
 --[[
-getTile: Return each of the tiles used for the inputs
+getTile: Return each of the tiles used for the input
+Return:  Whether the tile is 
 --]]
 function getTile(dx, dy)
 	if gameinfo.getromname() == "Super Mario World (USA)" then
@@ -196,6 +197,7 @@ function getSprites()
 	if gameinfo.getromname() == "Super Mario World (USA)" then
 		local sprites = {}
 		for slot=0,11 do
+
 			local status = memory.readbyte(0x14C8+slot)
 			if status ~= 0 then
 				spritex = memory.readbyte(0xE4+slot) + memory.readbyte(0x14E0+slot)*256
@@ -208,10 +210,14 @@ function getSprites()
 	elseif gameinfo.getromname() == "Super Mario Bros." then
 		local sprites = {}
 		for slot=0,4 do
+			--Reads the four slots and see if there are monsters 000F-0012
 			local enemy = memory.readbyte(0xF+slot)
-			if enemy ~= 0 then
-				local ex = memory.readbyte(0x6E + slot)*0x100 + memory.readbyte(0x87+slot)
+			if enemy ~= 0 
+				--What page number an enemy is on and what's it's x and y
+				local ex = memory.readbyte(0x6E + slot)*0x+100 + memory.readbyte(0x87+slot)
 				local ey = memory.readbyte(0xCF + slot)+24
+				--Go to the end of the list no append
+				--Add the tuple X and Y of each monster
 				sprites[#sprites+1] = {["x"]=ex,["y"]=ey}
 			end
 		end
@@ -220,6 +226,11 @@ function getSprites()
 	end
 end
 
+
+
+--[[
+GetExtendedSprites: Only used for SNES
+--]]
 function getExtendedSprites()
 	if gameinfo.getromname() == "Super Mario World (USA)" then
 		local extended = {}
@@ -238,23 +249,34 @@ function getExtendedSprites()
 	end
 end
 
+
+--[[
+GetInputs: Uses the previous functions to generates all inputs
+--]]
 function getInputs()
+
+
 	getPositions()
 	
 	sprites = getSprites()
 	extended = getExtendedSprites()
 	
 	local inputs = {}
-	
+	--For loop dy from negative 16 times the BoxRadius to postive 16 times the BoxRadius incrementing by 16
+	--It will loop BoxRadius*Two
 	for dy=-BoxRadius*16,BoxRadius*16,16 do
+		--Do the same thing for y's
 		for dx=-BoxRadius*16,BoxRadius*16,16 do
+			--Initializes all inputs to 0
 			inputs[#inputs+1] = 0
 			
+
 			tile = getTile(dx, dy)
+			--If the current location is a block set input to 1
 			if tile == 1 and marioY+dy < 0x1B0 then
 				inputs[#inputs] = 1
 			end
-			
+			--If the current tile is then where a monster is set it to -1
 			for i = 1,#sprites do
 				distx = math.abs(sprites[i]["x"] - (marioX+dx))
 				disty = math.abs(sprites[i]["y"] - (marioY+dy))
@@ -262,7 +284,7 @@ function getInputs()
 					inputs[#inputs] = -1
 				end
 			end
-
+			--Only for SNES
 			for i = 1,#extended do
 				distx = math.abs(extended[i]["x"] - (marioX+dx))
 				disty = math.abs(extended[i]["y"] - (marioY+dy))
@@ -279,6 +301,9 @@ function getInputs()
 	return inputs
 end
 
+--[[
+Sigmoid: Machine Learning Error Function
+--]]
 function sigmoid(x)
 	return 2/(1+math.exp(-4.9*x))-1
 end
@@ -1193,6 +1218,9 @@ function loadPool()
 	loadFile(filename)
 end
 
+--[[
+playTop: Plays the orgranism with the top fitness
+--]]
 function playTop()
 	local maxfitness = 0
 	local maxs, maxg
@@ -1215,29 +1243,50 @@ function playTop()
 	return
 end
 
+--[[
+OnExit: Exit function when you close the program
+--]]
 function onExit()
 	forms.destroy(form)
 end
 
+
+
 writeFile("temp.pool")
 
+--makes the OnExit function work onExit
 event.onexit(onExit)
 
+
+--Create Fitness Form
 form = forms.newform(200, 260, "Fitness")
+--MaxFitness is the current Max
 maxFitnessLabel = forms.label(form, "Max Fitness: " .. math.floor(pool.maxFitness), 5, 8)
+--Checkbox are bools used in the infinite while loop
+--A checkbox to see whether or not the eye and controls is shown
 showNetwork = forms.checkbox(form, "Show Map", 5, 30)
+--A checkbox to see the Mutation rates
 showMutationRates = forms.checkbox(form, "Show M-Rates", 5, 52)
+--Restart the experiment
 restartButton = forms.button(form, "Restart", initializePool, 5, 77)
+--Save the Network
 saveButton = forms.button(form, "Save", savePool, 5, 102)
+--Load the Network
 loadButton = forms.button(form, "Load", loadPool, 80, 102)
+--What you are going to name the file
 saveLoadFile = forms.textbox(form, Filename .. ".pool", 170, 25, nil, 5, 148)
 saveLoadLabel = forms.label(form, "Save/Load:", 5, 129)
+--Calls PlayTop function
 playTopButton = forms.button(form, "Play Top", playTop, 5, 170)
+--Hides banner
 hideBanner = forms.checkbox(form, "Hide Banner", 5, 190)
 
-
+--Infinte Fitness Loop
 while true do
+	--Sets the Top Bar Color
 	local backgroundColor = 0xD0FFFFFF
+
+	--Draws the Top Box
 	if not forms.ischecked(hideBanner) then
 		gui.drawBox(0, 0, 300, 26, backgroundColor, backgroundColor)
 	end
@@ -1245,6 +1294,7 @@ while true do
 	local species = pool.species[pool.currentSpecies]
 	local genome = species.genomes[pool.currentGenome]
 	
+
 	if forms.ischecked(showNetwork) then
 		displayGenome(genome)
 	end
