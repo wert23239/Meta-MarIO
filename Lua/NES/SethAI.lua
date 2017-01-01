@@ -54,7 +54,6 @@ EnableMutationChance = 0.2
 TimeoutConstant = 20
 
 MaxNodes = 1000000
-
 function getPositions()
 	if gameinfo.getromname() == "Super Mario World (USA)" then
 		marioX = memory.read_s16_le(0x94)
@@ -828,7 +827,7 @@ function clearJoypad()
 end
 
 function initializeRun()
-	if(memory.readbyte(0x0770)==0) then
+	if(memory.readbyte(0x0770)==0 or not forms.ischecked(showContinousPlay)) then
 		savestate.load(Filename); --Load from a specfic savestates
 	end
 	rightmost = 0
@@ -1010,6 +1009,7 @@ function displayGenome(genome)
 			pos = pos + 8
 		end
 	end
+
 end
 
 function writeFile(filename)
@@ -1138,6 +1138,7 @@ form = forms.newform(200, 260, "Fitness")
 maxFitnessLabel = forms.label(form, "Max Fitness: " .. math.floor(pool.maxFitness), 5, 8)
 showNetwork = forms.checkbox(form, "Show Map", 5, 30)
 showMutationRates = forms.checkbox(form, "Show M-Rates", 5, 52)
+showContinousPlay = forms.checkbox(form, "Continous Play", 5, 70)
 restartButton = forms.button(form, "Restart", initializePool, 5, 77)
 saveButton = forms.button(form, "Save", savePool, 5, 102)
 loadButton = forms.button(form, "Load", loadPool, 80, 102)
