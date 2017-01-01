@@ -828,7 +828,9 @@ function clearJoypad()
 end
 
 function initializeRun()
-	savestate.load(Filename);
+	if(memory.readbyte(0x0770)==0) then
+		savestate.load(Filename); --Load from a specfic savestates
+	end
 	rightmost = 0
 	pool.currentFrame = 0
 	timeout = TimeoutConstant

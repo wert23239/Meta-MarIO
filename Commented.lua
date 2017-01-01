@@ -302,7 +302,7 @@ function getInputs()
 end
 
 --[[
-Sigmoid: Machine Learning Error Function
+Sigmoid: Determine if a neuron value is postive or negative
 --]]
 function sigmoid(x)
 	return 2/(1+math.exp(-4.9*x))-1
@@ -396,6 +396,9 @@ function newGene()
 	return gene
 end
 
+--[[
+copyGene: Gene Copy Constructor
+--]]
 function copyGene(gene)
 	local gene2 = newGene()
 	gene2.into = gene.into
@@ -415,29 +418,51 @@ function newNeuron()
 	return neuron
 end
 
+--[[
+generateNetwork: Creates the input/output connection
+This network will take in inputs and spit back outputs
+parameter: takes in genome
+--]]
 function generateNetwork(genome)
+
 	local network = {}
 	network.neurons = {}
 	
+	--Create all the neurons needed for inputs
 	for i=1,Inputs do
 		network.neurons[i] = newNeuron()
 	end
 	
+
+	--Create the ouput neurons after the max number of Nodes
 	for o=1,Outputs do
 		network.neurons[MaxNodes+o] = newNeuron()
 	end
 	
+	--Sort genes by there output 
 	table.sort(genome.genes, function (a,b)
 		return (a.out < b.out)
 	end)
+
+	--Go through all the genes
 	for i=1,#genome.genes do
+
+
 		local gene = genome.genes[i]
+
+		--For each gene check for enabled
 		if gene.enabled then
+
+			--Make a new neuron for a each output
 			if network.neurons[gene.out] == nil then
 				network.neurons[gene.out] = newNeuron()
 			end
+			--Gain the local output neuron
 			local neuron = network.neurons[gene.out]
+			--Set the incoming of the output neuron to the neuron itself
 			table.insert(neuron.incoming, gene)
+
+			--Make sure the input of the neuron exists
 			if network.neurons[gene.into] == nil then
 				network.neurons[gene.into] = newNeuron()
 			end
@@ -447,25 +472,40 @@ function generateNetwork(genome)
 	genome.network = network
 end
 
+
+--[[
+evaluateNetwork: Figuire out the output from a network and inputs
+--]]
 function evaluateNetwork(network, inputs)
 	table.insert(inputs, 1)
+
+	--Assert statemtent to see if correct amount of inputs
 	if #inputs ~= Inputs then
 		console.writeline("Incorrect number of neural network inputs.")
 		return {}
 	end
 	
+
+	--Set each neuron to value of each input
 	for i=1,Inputs do
 		network.neurons[i].value = inputs[i]
 	end
 	
+	--For each neuron check the 
 	for _,neuron in pairs(network.neurons) do
-		local sum = 0
+		local sum = 0 --Find the sum
 		for j = 1,#neuron.incoming do
+			--Go to to all genes that connect to an output
 			local incoming = neuron.incoming[j]
+			
+			--Find which input this connects to
 			local other = network.neurons[incoming.into]
+
+			--Calculate the total sum by dot producting the weights with the trinary value of the an input
 			sum = sum + incoming.weight * other.value
 		end
 		
+		--Change the value of a neruon by the Sum and Sigmoid
 		if #neuron.incoming > 0 then
 			neuron.value = sigmoid(sum)
 		end
@@ -946,8 +986,14 @@ function clearJoypad()
 	joypad.set(controller)
 end
 
+
+--[[
+initalizeRun: Before a new orgranism starts
+--]]
 function initializeRun()
-	savestate.load(Filename);
+	if(memory.readbyte(0x0770)~=0) then
+		savestate.load(Filename); --Load from a specfic savestates
+	end
 	rightmost = 0
 	pool.currentFrame = 0
 	timeout = TimeoutConstant
