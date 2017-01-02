@@ -1151,7 +1151,7 @@ hideBanner = forms.checkbox(form, "Hide Banner", 5, 190)
 while true do
 	local backgroundColor = 0xD0FFFFFF
 	if not forms.ischecked(hideBanner) then
-		gui.drawBox(0, 0, 300, 26, backgroundColor, backgroundColor)
+		gui.drawBox(0, 0, 300, 40, backgroundColor, backgroundColor)
 	end
 
 	local species = pool.species[pool.currentSpecies]
@@ -1216,9 +1216,9 @@ while true do
 		end
 	end
 	if not forms.ischecked(hideBanner) then
-		gui.drawText(0, 0, "Gen " .. pool.generation .. " species " .. pool.currentSpecies .. " genome " .. pool.currentGenome .. " (" .. math.floor(measured/total*100) .. "%)", 0xFF000000, 11)
-		gui.drawText(0, 12, "Fitness: " .. math.floor(rightmost - (pool.currentFrame) / 2 - (timeout + timeoutBonus)*2/3), 0xFF000000, 11)
-		gui.drawText(100, 12, "Max Fitness: " .. math.floor(pool.maxFitness), 0xFF000000, 11)
+		gui.drawText(0, 12, "Gen " .. pool.generation .. " species " .. pool.currentSpecies .. " genome " .. pool.currentGenome .. " (" .. math.floor(measured/total*100) .. "%)", 0xFF000000, 11)
+		gui.drawText(0, 24, "Fitness: " .. math.floor(rightmost - (pool.currentFrame) / 2 - (timeout + timeoutBonus)*2/3), 0xFF000000, 11)
+		gui.drawText(100, 24, "Max Fitness: " .. math.floor(pool.maxFitness), 0xFF000000, 11)
 	end
 		
 	pool.currentFrame = pool.currentFrame + 1
