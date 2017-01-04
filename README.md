@@ -27,4 +27,4 @@ http://datacrystal.romhacking.net/wiki/Super_Mario_Bros.:RAM_map
 | 075A          |Lives             |
 | 0770          |At Menu or in Game|
 |07F9-07FB      |Time              | 
-|0747           |Freeze Timer      |  
+|0747,071E      |Freeze Timer      |  
