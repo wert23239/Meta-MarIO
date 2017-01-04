@@ -20,6 +20,7 @@ https://www.youtube.com/watch?v=qv6UVOQ0F44
 
 
 ##Important Bits
+http://datacrystal.romhacking.net/wiki/Super_Mario_Bros.:RAM_map
 
 | Bit           | Meaning          | 
 | ------------- |:-----------------| 
