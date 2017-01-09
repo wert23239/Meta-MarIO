@@ -17,3 +17,15 @@ https://www.youtube.com/watch?v=qv6UVOQ0F44
 -Run script in Lua Console with Script->Load Script   ->Lua->NES->"SethAI.lua"
 
 -In the Fitnes Dialog Box hit the Show Map Button
+
+
+##Important Bits
+http://datacrystal.romhacking.net/wiki/Super_Mario_Bros.:RAM_map
+
+| Bit           | Meaning          | 
+| ------------- |:-----------------| 
+| 075A          |Lives             |
+| 0770          |At Menu or in Game|
+|07F9-07FB      |Time              | 
+|0747,071E      |Freeze Timer      |  
+|07A0           |Level Timer       |
