@@ -833,6 +833,7 @@ function initializeRun()
 	rightmost = 0
 	pool.currentFrame = 0
 	timeout = TimeoutConstant
+	NetX = memory.readbyte(0x6D) * 0x100 + memory.readbyte(0x86)
 	clearJoypad()
 	
 	local species = pool.species[pool.currentSpecies]
@@ -1178,7 +1179,7 @@ while true do
 	
 	local timeoutBonus = pool.currentFrame / 4
 	if timeout + timeoutBonus <= 0 then
-		local fitness = rightmost - pool.currentFrame / 2
+		local fitness = rightmost - NetX
 		if gameinfo.getromname() == "Super Mario World (USA)" and rightmost > 4816 then
 			fitness = fitness + 1000
 		end
@@ -1217,7 +1218,7 @@ while true do
 	end
 	if not forms.ischecked(hideBanner) then
 		gui.drawText(0, 12, "Gen " .. pool.generation .. " species " .. pool.currentSpecies .. " genome " .. pool.currentGenome .. " (" .. math.floor(measured/total*100) .. "%)", 0xFF000000, 11)
-		gui.drawText(0, 24, "Fitness: " .. math.floor(rightmost - (pool.currentFrame) / 2 - (timeout + timeoutBonus)*2/3), 0xFF000000, 11)
+		gui.drawText(0, 24, "Fitness: " .. math.floor(rightmost - NetX), 0xFF000000, 11)
 		gui.drawText(100, 24, "Max Fitness: " .. math.floor(pool.maxFitness), 0xFF000000, 11)
 	end
 		

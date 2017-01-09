@@ -88,7 +88,7 @@ DeltaThreshold = 1.0
 
 
 --[[
-StaleSpecies: TODO:
+StaleSpecies: The number till a species disappears if it doesn't improve
 MutateConnectionsChance: TODO:
 PerturbChance: TODO:
 CrossoverChance: TODO: Chance of it mating
@@ -313,39 +313,51 @@ function newInnovation()
 	return pool.innovation
 end
 
+
+--[[
+newPool Contructor: A pool is the total collection of species for all generations
+Bascially a gene pool
+--]]
 function newPool()
 	local pool = {}
-	pool.species = {}
-	pool.generation = 0
-	pool.innovation = Outputs
-	pool.currentSpecies = 1
-	pool.currentGenome = 1
-	pool.currentFrame = 0
-	pool.maxFitness = 0
+	pool.species = {} --List of species
+	pool.generation = 0 --Generation Number
+	pool.innovation = Outputs --TODO
+	pool.currentSpecies = 1 --Species Number
+	pool.currentGenome = 1 -- Genome Number
+	pool.currentFrame = 0 --What frame in the game currecntly at. Made-up
+	pool.maxFitness = 0 --The highest fitness ever achieved.
 	
 	return pool
 end
 
+--[[
+newSpecies Contructor: A species is the indivual organism that evolves
+--]]
 function newSpecies()
 	local species = {}
-	species.topFitness = 0
-	species.staleness = 0
-	species.genomes = {}
-	species.averageFitness = 0
+	species.topFitness = 0 --Max fitness of species
+	species.staleness = 0 --How many generations in a row a species hasn't gotten better
+	species.genomes = {} --List of all variations of a species
+	species.averageFitness = 0 --Average fitnes across all genomes
 	
 	return species
 end
 
+
+--[[
+newGenome Contructor: A species is the indivual organism that evolves
+--]]
 function newGenome()
-	local genome = {}
-	genome.genes = {}
-	genome.fitness = 0
-	genome.adjustedFitness = 0
-	genome.network = {}
-	genome.maxneuron = 0
-	genome.globalRank = 0
-	genome.mutationRates = {}
-	genome.mutationRates["connections"] = MutateConnectionsChance
+	local genome = {} 
+	genome.genes = {} --All gene which are input to output mappings
+	genome.fitness = 0 --How far right an orgranism gets
+	genome.adjustedFitness = 0 --Nothing
+	genome.network = {} --Truth Table of all input output values
+	genome.maxneuron = 0 --TODO
+	genome.globalRank = 0 --TODO
+	genome.mutationRates = {} --The differnt mutation rates.
+	genome.mutationRates["connections"] = MutateConnectionsChance --
 	genome.mutationRates["link"] = LinkMutationChance
 	genome.mutationRates["bias"] = BiasMutationChance
 	genome.mutationRates["node"] = NodeMutationChance
@@ -356,6 +368,10 @@ function newGenome()
 	return genome
 end
 
+
+--[[
+Genome Copy Contructor: Transfering a genome to a new species
+--]]
 function copyGenome(genome)
 	local genome2 = newGenome()
 	for g=1,#genome.genes do
@@ -876,28 +892,37 @@ function breedChild(species)
 	return child
 end
 
+--[[
+removeStaleSpecies: Remove species that don't do anything+
+--]]
 function removeStaleSpecies()
 	local survived = {}
 
-	for s = 1,#pool.species do
+	--Go through alll species
+	for s = 1,#pool.species do 
 		local species = pool.species[s]
 		
+
+		--Sort genomes by fitness
 		table.sort(species.genomes, function (a,b)
 			return (a.fitness > b.fitness)
 		end)
 		
+		--Pick the top genome and see if it's higher then the current species
 		if species.genomes[1].fitness > species.topFitness then
-			species.topFitness = species.genomes[1].fitness
-			species.staleness = 0
+			species.topFitness = species.genomes[1].fitness --Set the fitness to the next top
+			species.staleness = 0 --Staleness is reset
 		else
-			species.staleness = species.staleness + 1
+			species.staleness = species.staleness + 1 --Counts up by one each time
 		end
+
+		--If a species is below the Stale constant or is the maxfiness keep it.
 		if species.staleness < StaleSpecies or species.topFitness >= pool.maxFitness then
 			table.insert(survived, species)
 		end
 	end
 
-	pool.species = survived
+	pool.species = survived --Set the species to only the survivors
 end
 
 function removeWeakSpecies()
@@ -1063,6 +1088,8 @@ function fitnessAlreadyMeasured()
 	
 	return genome.fitness ~= 0
 end
+
+
 
 function displayGenome(genome)
 	local network = genome.network
