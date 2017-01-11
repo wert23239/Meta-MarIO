@@ -17,7 +17,7 @@ if gameinfo.getromname() == "Super Mario World (USA)" then
 		"Right",
 	}
 elseif gameinfo.getromname() == "Super Mario Bros." then
-	Filename = "SMB1-1.state"
+	Filename = "DP2.state"
 	ButtonNames = {
 		"A",
 		"B",
@@ -1131,6 +1131,11 @@ function onExit()
 	forms.destroy(form)
 end
 
+function inPlay()
+	--console.writeline("0747 " .. memory.readbyte(0x0747)==0 .. " 071E " .. memory.readbyte(0x071E)~=11)
+	return memory.readbyte(0x0747)==0 and memory.readbyte(0x071E)~=11
+end
+
 writeFile("temp.pool")
 
 event.onexit(onExit)
@@ -1161,68 +1166,69 @@ while true do
 	if forms.ischecked(showNetwork) then
 		displayGenome(genome)
 	end
-	
-	if pool.currentFrame%5 == 0 then
-		evaluateCurrent()
-	end
+	if(inPlay()) then
+		if pool.currentFrame%5 == 0 then
+			evaluateCurrent()
+		end
 
-	joypad.set(controller)
+		joypad.set(controller)
 
-	getPositions()
-	if marioX > rightmost then
-		rightmost = marioX
-		timeout = TimeoutConstant
-	end
-	
-	timeout = timeout - 1
-	
-	
-	local timeoutBonus = pool.currentFrame / 4
-	if timeout + timeoutBonus <= 0 then
-		local fitness = rightmost - NetX
-		if gameinfo.getromname() == "Super Mario World (USA)" and rightmost > 4816 then
-			fitness = fitness + 1000
-		end
-		if gameinfo.getromname() == "Super Mario Bros." and rightmost > 3186 then
-			fitness = fitness + 1000
-		end
-		if fitness == 0 then
-			fitness = -1
-		end
-		genome.fitness = fitness
-		
-		if fitness > pool.maxFitness then
-			pool.maxFitness = fitness
-			forms.settext(maxFitnessLabel, "Max Fitness: " .. math.floor(pool.maxFitness))
-			writeFile("backup." .. pool.generation .. "." .. forms.gettext(saveLoadFile))
+		getPositions()
+		if marioX > rightmost then
+			rightmost = marioX
+			timeout = TimeoutConstant
 		end
 		
-		console.writeline("Gen " .. pool.generation .. " species " .. pool.currentSpecies .. " genome " .. pool.currentGenome .. " fitness: " .. fitness)
-		pool.currentSpecies = 1
-		pool.currentGenome = 1
-		while fitnessAlreadyMeasured() do
-			nextGenome()
+		timeout = timeout - 1
+		
+		
+		local timeoutBonus = pool.currentFrame / 4
+		if timeout + timeoutBonus <= 0 then
+			local fitness = rightmost - NetX
+			if gameinfo.getromname() == "Super Mario World (USA)" and rightmost > 4816 then
+				fitness = fitness + 1000
+			end
+			if gameinfo.getromname() == "Super Mario Bros." and rightmost > 3186 then
+				fitness = fitness + 1000
+			end
+			if fitness == 0 then
+				fitness = -1
+			end
+			genome.fitness = fitness
+			
+			if fitness > pool.maxFitness then
+				pool.maxFitness = fitness
+				forms.settext(maxFitnessLabel, "Max Fitness: " .. math.floor(pool.maxFitness))
+				writeFile("backup." .. pool.generation .. "." .. forms.gettext(saveLoadFile))
+			end
+			
+			console.writeline("Gen " .. pool.generation .. " species " .. pool.currentSpecies .. " genome " .. pool.currentGenome .. " fitness: " .. fitness)
+			pool.currentSpecies = 1
+			pool.currentGenome = 1
+			while fitnessAlreadyMeasured() do
+				nextGenome()
+			end
+			initializeRun()
 		end
-		initializeRun()
-	end
 
-	local measured = 0
-	local total = 0
-	for _,species in pairs(pool.species) do
-		for _,genome in pairs(species.genomes) do
-			total = total + 1
-			if genome.fitness ~= 0 then
-				measured = measured + 1
+		local measured = 0
+		local total = 0
+		for _,species in pairs(pool.species) do
+			for _,genome in pairs(species.genomes) do
+				total = total + 1
+				if genome.fitness ~= 0 then
+					measured = measured + 1
+				end
 			end
 		end
-	end
-	if not forms.ischecked(hideBanner) then
-		gui.drawText(0, 12, "Gen " .. pool.generation .. " species " .. pool.currentSpecies .. " genome " .. pool.currentGenome .. " (" .. math.floor(measured/total*100) .. "%)", 0xFF000000, 11)
-		gui.drawText(0, 24, "Fitness: " .. math.floor(rightmost - NetX), 0xFF000000, 11)
-		gui.drawText(100, 24, "Max Fitness: " .. math.floor(pool.maxFitness), 0xFF000000, 11)
-	end
-		
+		if not forms.ischecked(hideBanner) then
+			gui.drawText(0, 12, "Gen " .. pool.generation .. " species " .. pool.currentSpecies .. " genome " .. pool.currentGenome .. " (" .. math.floor(measured/total*100) .. "%)", 0xFF000000, 11)
+			gui.drawText(0, 24, "Fitness: " .. math.floor(rightmost - NetX), 0xFF000000, 11)
+			gui.drawText(100, 24, "Max Fitness: " .. math.floor(pool.maxFitness), 0xFF000000, 11)
+		end
 	pool.currentFrame = pool.currentFrame + 1
+	end	
+
 
 	emu.frameadvance();
 end
