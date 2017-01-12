@@ -25,7 +25,7 @@ if gameinfo.getromname() == "Super Mario World (USA)" then
 		"Right",
 	}
 elseif gameinfo.getromname() == "Super Mario Bros." then
-	Filename = "SMB1-1.state"
+	Filename = "DP2.state"
 	ButtonNames = {
 		"A",
 		"B",
@@ -77,7 +77,7 @@ Outputs = #ButtonNames
 
 
 --[[
-Population: The Number of Orgranims
+Population: The Number of Genomes
 Deltas: TODO: 
 --]]
 Population = 300
@@ -212,9 +212,9 @@ function getSprites()
 		for slot=0,4 do
 			--Reads the four slots and see if there are monsters 000F-0012
 			local enemy = memory.readbyte(0xF+slot)
-			if enemy ~= 0 
-				--What page number an enemy is on and what's it's x and y
-				local ex = memory.readbyte(0x6E + slot)*0x+100 + memory.readbyte(0x87+slot)
+			--What page number an enemy is on and what's it's x and y
+			if enemy ~= 0 then
+				local ex = memory.readbyte(0x6E + slot)*0x100 + memory.readbyte(0x87+slot)
 				local ey = memory.readbyte(0xCF + slot)+24
 				--Go to the end of the list no append
 				--Add the tuple X and Y of each monster
@@ -870,6 +870,7 @@ end
 
 --[[
 rankGlobally: rank all the genomes to see which has the highest fitness
+Higher number rank means higher fitness
 --]]
 function rankGlobally()
 	local global = {}
@@ -888,6 +889,10 @@ function rankGlobally()
 	end
 end
 
+--[[
+calculateAverageFitness: This average is the global rank added up divided by the number of genomes
+(species): the current species being evaulated
+--]]
 function calculateAverageFitness(species)
 	local total = 0
 	
@@ -900,7 +905,8 @@ function calculateAverageFitness(species)
 end
 
 --[[
-totalAverageFitness: 
+totalAverageFitness: Go through all species and add up the total average fitness per species
+This average fitness is the global rank of all the genomes divided by the number of genomes not actual fitness
 --]]
 function totalAverageFitness()
 	local total = 0
@@ -912,6 +918,13 @@ function totalAverageFitness()
 	return total
 end
 
+
+--[[
+cullSpecies: 
+(cutToOne):
+(False) Removes lowest half of the genomes that have the lowest fitness for a given species.
+(True) Only allows one genome to remain in a specific species.
+--]]
 function cullSpecies(cutToOne)
 	for s = 1,#pool.species do
 		local species = pool.species[s]
@@ -985,10 +998,16 @@ removeWeakSpecies:
 function removeWeakSpecies()
 	local survived = {}
 
+	--gather total rank of all species
 	local sum = totalAverageFitness()
+
+	--divide each species by total rank and times by population
+	--Strange formula :/
 	for s = 1,#pool.species do
 		local species = pool.species[s]
 		breed = math.floor(species.averageFitness / sum * Population)
+
+		--If population is above 1 then keep it
 		if breed >= 1 then
 			table.insert(survived, species)
 		end
@@ -1015,16 +1034,29 @@ function addToSpecies(child)
 	end
 end
 
+--[[
+newGeneration: Each time you go through all of the species a new generation will start
+This does the following:
+-Removes uneffective genomes with(cullSpecies,removeStaleSpecies,removeWeakSpecies)
+-
+-
+-
+-
+-
+-
+--]]
 function newGeneration()
-	cullSpecies(false) -- Cull the bottom half of each species
-	rankGlobally()
-	removeStaleSpecies()
-	rankGlobally()
-	for s = 1,#pool.species do
+	cullSpecies(false) -- Cull the bottom half of each species (The only comment written by SethBling in the entire code set)
+	rankGlobally() --rank all genomes by fitness order
+	removeStaleSpecies() --removes species who haven't improved in a while
+	rankGlobally() --re-rank
+
+	--Calculate Fitness for all species
+	for s = 1,#pool.species do  
 		local species = pool.species[s]
 		calculateAverageFitness(species)
 	end
-	removeWeakSpecies()
+	removeWeakSpecies() 
 	local sum = totalAverageFitness()
 	local children = {}
 	for s = 1,#pool.species do
@@ -1073,12 +1105,13 @@ end
 initalizeRun: Before a new orgranism starts
 --]]
 function initializeRun()
-	if(memory.readbyte(0x0770)~=0) then
+	if(memory.readbyte(0x0770)==0 or not forms.ischecked(showContinousPlay)) then
 		savestate.load(Filename); --Load from a specfic savestates
 	end
 	rightmost = 0
 	pool.currentFrame = 0
 	timeout = TimeoutConstant
+	NetX = memory.readbyte(0x6D) * 0x100 + memory.readbyte(0x86)
 	clearJoypad()
 	
 	local species = pool.species[pool.currentSpecies]
@@ -1281,8 +1314,7 @@ writeFile: See loadFile for specifics
 function writeFile(filename)
         local file = io.open(filename, "w")
 	file:write(pool.generation .. "\n")
-	file:write(pool.maxFitness .. 
-		"\n")
+	file:write(pool.maxFitness .. "\n")
 	file:write(#pool.species .. "\n")
         for n,species in pairs(pool.species) do
 		file:write(species.topFitness .. "\n")
@@ -1442,8 +1474,8 @@ function onExit()
 	forms.destroy(form)
 end
 
-function inPlay()
-	return memory.readbyte(0x0747)==0 and not memory.readbyte(0x071E)==11
+function inPlay()	
+	return memory.readbyte(0x0747)==0 and memory.readbyte(0x071E)~=11
 end
 
 
@@ -1459,9 +1491,11 @@ form = forms.newform(200, 260, "Fitness")
 maxFitnessLabel = forms.label(form, "Max Fitness: " .. math.floor(pool.maxFitness), 5, 8)
 --Checkbox are bools used in the infinite while loop
 --A checkbox to see whether or not the eye and controls is shown
-showNetwork = forms.checkbox(form, "Show Map", 5, 30)
+showNetwork = forms.checkbox(form, "Map", 5, 30)
 --A checkbox to see the Mutation rates
-showMutationRates = forms.checkbox(form, "Show M-Rates", 5, 52)
+showMutationRates = forms.checkbox(form, "Mutate", 120, 30)
+
+showContinousPlay = forms.checkbox(form, "Continous Play", 5, 52)
 --Restart the experiment
 restartButton = forms.button(form, "Restart", initializePool, 5, 77)
 --Save the Network
@@ -1483,7 +1517,7 @@ while true do
 
 	--Draws the Top Box
 	if not forms.ischecked(hideBanner) then
-		gui.drawBox(0, 0, 300, 26, backgroundColor, backgroundColor)
+		gui.drawBox(0, 0, 300, 40, backgroundColor, backgroundColor)
 	end
 
 
@@ -1526,7 +1560,7 @@ while true do
 		--If the orgranism has not evolved within the allotted time end the run
 		if timeout + timeoutBonus <= 0 then
 			--fitness equal how right subtracted from how long it takes
-			local fitness = rightmost - pool.currentFrame / 2
+			local fitness = rightmost - NetX
 
 			--Extra bonus for completeting the level
 			if gameinfo.getromname() == "Super Mario World (USA)" and rightmost > 4816 then
@@ -1584,13 +1618,12 @@ while true do
 		--Displays Max Fitness
 		if not forms.ischecked(hideBanner) then
 			gui.drawText(0, 0, "Gen " .. pool.generation .. " species " .. pool.currentSpecies .. " genome " .. pool.currentGenome .. " (" .. math.floor(measured/total*100) .. "%)", 0xFF000000, 11)
-			gui.drawText(0, 12, "Fitness: " .. math.floor(rightmost - (pool.currentFrame) / 2 - (timeout + timeoutBonus)*2/3), 0xFF000000, 11)
-			gui.drawText(100, 12, "Max Fitness: " .. math.floor(pool.maxFitness), 0xFF000000, 11)
+			gui.drawText(0, 24, "Fitness: " .. math.floor(rightmost - NetX), 0xFF000000, 11)
+			gui.drawText(100, 24, "Max Fitness: " .. math.floor(pool.maxFitness), 0xFF000000, 11)
 		end
-	end	
 	--Manual Update of Frame 	
 	pool.currentFrame = pool.currentFrame + 1
-
+	end
 	--Actual Update of Frame
 	emu.frameadvance();
 end

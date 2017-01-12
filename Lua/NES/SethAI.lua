@@ -3,7 +3,15 @@
 -- Intended for use with the BizHawk emulator and Super Mario World or Super Mario Bros. ROM.
 -- For SMW, make sure you have a save state named "DP1.state" at the beginning of a level,
 -- and put a copy in both the Lua folder and the root directory of BizHawk.
+-- Keep this top in mind
 
+
+
+--[[
+This is only for to change what game it is.
+This sets what the save state 
+As well as what buttons are used
+--]]
 if gameinfo.getromname() == "Super Mario World (USA)" then
 	Filename = "DP1.state"
 	ButtonNames = {
@@ -28,19 +36,70 @@ elseif gameinfo.getromname() == "Super Mario Bros." then
 	}
 end
 
+
+
+
+
+
+
+
+
+
+
+--[[
+Setting Constants
+--]]
+
+--[[
+BoxRadius: is the eye that the Organism can see. 
+It's where the inputs will be taken in at.
+(Left side of the visual)
+--]]
 BoxRadius = 6
+
+
+--[[
+InputSize: is the amount of inputs the Organism takes in.
+There is two times the amount of the box because there is two inputs
+White inputs are blocks (static objects)
+Black inputs are enemies (dynamic objects)
+--]]
 InputSize = (BoxRadius*2+1)*(BoxRadius*2+1)
 
+
+--[[
+Inputs : What they can see look above TODO: Why plus ones?
+Outputs: These are the actions that the organims can take
+That's why the only actions possible are contrller buttons
+--]]
 Inputs = InputSize+1
 Outputs = #ButtonNames
 
+
+--[[
+Population: The Number of Genomes
+Deltas: TODO: 
+--]]
 Population = 300
 DeltaDisjoint = 2.0
 DeltaWeights = 0.4
 DeltaThreshold = 1.0
 
-StaleSpecies = 15
 
+
+--[[
+StaleSpecies: The number till a species disappears if it doesn't improve
+MutateConnectionsChance: TODO:
+PerturbChance: Whether or not to increase or decrease weight to 
+CrossoverChance: TODO: Chance of it mating
+LinkMutationChance: TODO: 
+NodeMutationChance = TODO:
+BiasMutationChance = TODO: 
+StepSize = TODO: For Gradient Decent
+DisableMutationChance = TODO: Disable Mutation
+EnableMutationChance = TODO: Reenable Mutation
+--]]
+StaleSpecies = 15
 MutateConnectionsChance = 0.25
 PerturbChance = 0.90
 CrossoverChance = 0.75
@@ -51,11 +110,27 @@ StepSize = 0.1
 DisableMutationChance = 0.4
 EnableMutationChance = 0.2
 
+--[[
+TimeoutConstant: How long it take till the enemies to despawn.
+--]]
 TimeoutConstant = 20
 
+
+--[[
+MaxNodes: TODO: 
+--]]
 MaxNodes = 1000000
+
+
+--[[
+GetPostions: Return the postion of Mario Using in game Hex Bits
+--]]
 function getPositions()
+
+	--If statements for which mario game 
 	if gameinfo.getromname() == "Super Mario World (USA)" then
+		
+		--Mario X and Y bits are Both 2 Byte Words
 		marioX = memory.read_s16_le(0x94)
 		marioY = memory.read_s16_le(0x96)
 		
@@ -65,6 +140,9 @@ function getPositions()
 		screenX = marioX-layer1x
 		screenY = marioY-layer1y
 	elseif gameinfo.getromname() == "Super Mario Bros." then
+
+		--In the classic game the X bit is done using a paging bit first
+		--This allows you to have bigger numbers than 256
 		marioX = memory.readbyte(0x6D) * 0x100 + memory.readbyte(0x86)
 		marioY = memory.readbyte(0x03B8)+16
 	
@@ -73,21 +151,33 @@ function getPositions()
 	end
 end
 
+
+--[[
+getTile: Return each of the tiles used for the input
+Return:  Whether the tile is 
+--]]
 function getTile(dx, dy)
 	if gameinfo.getromname() == "Super Mario World (USA)" then
+
+		--Find the exact tile and get the offset
 		x = math.floor((marioX+dx+8)/16)
 		y = math.floor((marioY+dy)/16)
 		
+		--Read the byte of that dx,dy
 		return memory.readbyte(0x1C800 + math.floor(x/0x10)*0x1B0 + y*0x10 + x%0x10)
 	elseif gameinfo.getromname() == "Super Mario Bros." then
+
+		--Dx plus what page they are on
 		local x = marioX + dx + 8
 		local y = marioY + dy - 16
 		local page = math.floor(x/256)%2
+
 
 		local subx = math.floor((x%256)/16)
 		local suby = math.floor((y - 32)/16)
 		local addr = 0x500 + page*13*16+suby*16+subx
 		
+
 		if suby >= 13 or suby < 0 then
 			return 0
 		end
@@ -100,6 +190,9 @@ function getTile(dx, dy)
 	end
 end
 
+--[[
+GetSprites: Return the monster if they are on a tile
+--]]
 function getSprites()
 	if gameinfo.getromname() == "Super Mario World (USA)" then
 		local sprites = {}
@@ -116,10 +209,14 @@ function getSprites()
 	elseif gameinfo.getromname() == "Super Mario Bros." then
 		local sprites = {}
 		for slot=0,4 do
+			--Reads the four slots and see if there are monsters 000F-0012
 			local enemy = memory.readbyte(0xF+slot)
+			--What page number an enemy is on and what's it's x and y
 			if enemy ~= 0 then
 				local ex = memory.readbyte(0x6E + slot)*0x100 + memory.readbyte(0x87+slot)
 				local ey = memory.readbyte(0xCF + slot)+24
+				--Go to the end of the list no append
+				--Add the tuple X and Y of each monster
 				sprites[#sprites+1] = {["x"]=ex,["y"]=ey}
 			end
 		end
@@ -128,6 +225,10 @@ function getSprites()
 	end
 end
 
+
+--[[
+GetExtendedSprites: Only used for SNES
+--]]
 function getExtendedSprites()
 	if gameinfo.getromname() == "Super Mario World (USA)" then
 		local extended = {}
@@ -146,23 +247,34 @@ function getExtendedSprites()
 	end
 end
 
+
+--[[
+GetInputs: Uses the previous functions to generates all inputs
+--]]
 function getInputs()
+
+
 	getPositions()
 	
 	sprites = getSprites()
 	extended = getExtendedSprites()
 	
 	local inputs = {}
-	
+	--For loop dy from negative 16 times the BoxRadius to postive 16 times the BoxRadius incrementing by 16
+	--It will loop BoxRadius*Two
 	for dy=-BoxRadius*16,BoxRadius*16,16 do
+		--Do the same thing for y's
 		for dx=-BoxRadius*16,BoxRadius*16,16 do
+			--Initializes all inputs to 0
 			inputs[#inputs+1] = 0
 			
+
 			tile = getTile(dx, dy)
+			--If the current location is a block set input to 1
 			if tile == 1 and marioY+dy < 0x1B0 then
 				inputs[#inputs] = 1
 			end
-			
+			--If the current tile is then where a monster is set it to -1
 			for i = 1,#sprites do
 				distx = math.abs(sprites[i]["x"] - (marioX+dx))
 				disty = math.abs(sprites[i]["y"] - (marioY+dy))
@@ -170,7 +282,7 @@ function getInputs()
 					inputs[#inputs] = -1
 				end
 			end
-
+			--Only for SNES
 			for i = 1,#extended do
 				distx = math.abs(extended[i]["x"] - (marioX+dx))
 				disty = math.abs(extended[i]["y"] - (marioY+dy))
@@ -187,6 +299,10 @@ function getInputs()
 	return inputs
 end
 
+
+--[[
+Sigmoid: Determine if a neuron value is postive or negative
+--]]
 function sigmoid(x)
 	return 2/(1+math.exp(-4.9*x))-1
 end
@@ -196,39 +312,51 @@ function newInnovation()
 	return pool.innovation
 end
 
+
+--[[
+newPool Contructor: A pool is the total collection of species for all generations
+Bascially a gene pool
+--]]
 function newPool()
 	local pool = {}
-	pool.species = {}
-	pool.generation = 0
-	pool.innovation = Outputs
-	pool.currentSpecies = 1
-	pool.currentGenome = 1
-	pool.currentFrame = 0
-	pool.maxFitness = 0
+	pool.species = {} --List of species
+	pool.generation = 0 --Generation Number
+	pool.innovation = Outputs --TODO
+	pool.currentSpecies = 1 --Species Number
+	pool.currentGenome = 1 -- Genome Number
+	pool.currentFrame = 0 --What frame in the game currecntly at. Made-up
+	pool.maxFitness = 0 --The highest fitness ever achieved.
 	
 	return pool
 end
 
+--[[
+newSpecies Contructor: A species is the indivual organism that evolves
+--]]
 function newSpecies()
 	local species = {}
-	species.topFitness = 0
-	species.staleness = 0
-	species.genomes = {}
-	species.averageFitness = 0
+	species.topFitness = 0 --Max fitness of species
+	species.staleness = 0 --How many generations in a row a species hasn't gotten better
+	species.genomes = {} --List of all variations of a species
+	species.averageFitness = 0 --Average fitnes across all genomes
 	
 	return species
 end
 
+
+--[[
+newGenome Contructor: A species is the indivual organism that evolves
+--]]
 function newGenome()
-	local genome = {}
-	genome.genes = {}
-	genome.fitness = 0
-	genome.adjustedFitness = 0
-	genome.network = {}
-	genome.maxneuron = 0
-	genome.globalRank = 0
-	genome.mutationRates = {}
-	genome.mutationRates["connections"] = MutateConnectionsChance
+	local genome = {} 
+	genome.genes = {} --All gene which are input to output mappings
+	genome.fitness = 0 --How far right an orgranism gets
+	genome.adjustedFitness = 0 --Nothing
+	genome.network = {} --Truth Table of all input output values
+	genome.maxneuron = 0 --Number of inputs
+	genome.globalRank = 0 --This is how each genomer is ranked compared to the rest of the genomes
+	genome.mutationRates = {} --The differnt mutation rates.
+	genome.mutationRates["connections"] = MutateConnectionsChance --
 	genome.mutationRates["link"] = LinkMutationChance
 	genome.mutationRates["bias"] = BiasMutationChance
 	genome.mutationRates["node"] = NodeMutationChance
@@ -239,6 +367,10 @@ function newGenome()
 	return genome
 end
 
+
+--[[
+Genome Copy Contructor: Transfering a genome to a new species
+--]]
 function copyGenome(genome)
 	local genome2 = newGenome()
 	for g=1,#genome.genes do
@@ -265,6 +397,9 @@ function basicGenome()
 	return genome
 end
 
+--[[
+newGene: Gene Constructor
+--]]
 function newGene()
 	local gene = {}
 	gene.into = 0
@@ -276,6 +411,9 @@ function newGene()
 	return gene
 end
 
+--[[
+copyGene: Gene Copy Constructor
+--]]
 function copyGene(gene)
 	local gene2 = newGene()
 	gene2.into = gene.into
@@ -295,29 +433,51 @@ function newNeuron()
 	return neuron
 end
 
+--[[
+generateNetwork: Creates the input/output connection
+This network will take in inputs and spit back outputs
+parameter: takes in genome
+--]]
 function generateNetwork(genome)
+
 	local network = {}
 	network.neurons = {}
 	
+	--Create all the neurons needed for inputs
 	for i=1,Inputs do
 		network.neurons[i] = newNeuron()
 	end
 	
+
+	--Create the ouput neurons after the max number of Nodes
 	for o=1,Outputs do
 		network.neurons[MaxNodes+o] = newNeuron()
 	end
 	
+	--Sort genes by there output 
 	table.sort(genome.genes, function (a,b)
 		return (a.out < b.out)
 	end)
+
+	--Go through all the genes
 	for i=1,#genome.genes do
+
+
 		local gene = genome.genes[i]
+
+		--For each gene check for enabled
 		if gene.enabled then
+
+			--Make a new neuron for a each output
 			if network.neurons[gene.out] == nil then
 				network.neurons[gene.out] = newNeuron()
 			end
+			--Gain the local output neuron
 			local neuron = network.neurons[gene.out]
+			--Set the incoming of the output neuron to the neuron itself
 			table.insert(neuron.incoming, gene)
+
+			--Make sure the input of the neuron exists
 			if network.neurons[gene.into] == nil then
 				network.neurons[gene.into] = newNeuron()
 			end
@@ -327,30 +487,45 @@ function generateNetwork(genome)
 	genome.network = network
 end
 
+--[[
+evaluateNetwork: Figuire out the output from a network and inputs
+--]]
 function evaluateNetwork(network, inputs)
 	table.insert(inputs, 1)
+
+	--Assert statemtent to see if correct amount of inputs
 	if #inputs ~= Inputs then
 		console.writeline("Incorrect number of neural network inputs.")
 		return {}
 	end
 	
+
+	--Set each neuron to value of each input
 	for i=1,Inputs do
 		network.neurons[i].value = inputs[i]
 	end
 	
+	--For each neuron check the 
 	for _,neuron in pairs(network.neurons) do
-		local sum = 0
+		local sum = 0 --Find the sum
 		for j = 1,#neuron.incoming do
+			--Go to to all genes that connect to an output
 			local incoming = neuron.incoming[j]
+			
+			--Find which input this connects to
 			local other = network.neurons[incoming.into]
+
+			--Calculate the total sum by dot producting the weights with the trinary value of the an input
 			sum = sum + incoming.weight * other.value
 		end
 		
+		--Change the value of a neruon by the Sum and Sigmoid
 		if #neuron.incoming > 0 then
 			neuron.value = sigmoid(sum)
 		end
 	end
 	
+	--Add all active outputs for a current set of inputs
 	local outputs = {}
 	for o=1,Outputs do
 		local button = "P1 " .. ButtonNames[o]
@@ -399,21 +574,27 @@ function crossover(g1, g2)
 	return child
 end
 
+--[[
+randomNeuron: 
+(Genes):List of genes from a genome
+(nonInput): bool for whether the gene is an input or not
+Find a random neuron from a list of genes
+--]]
 function randomNeuron(genes, nonInput)
 	local neurons = {}
-	if not nonInput then
+	if not nonInput then --Add inputs to the randomneruon chance
 		for i=1,Inputs do
 			neurons[i] = true
 		end
 	end
-	for o=1,Outputs do
+	for o=1,Outputs do --Add outputs to randomnueron chance
 		neurons[MaxNodes+o] = true
 	end
 	for i=1,#genes do
-		if (not nonInput) or genes[i].into > Inputs then
+		if (not nonInput) or genes[i].into > Inputs then --Add in seperate gene inputs
 			neurons[genes[i].into] = true
 		end
-		if (not nonInput) or genes[i].out > Inputs then
+		if (not nonInput) or genes[i].out > Inputs then --Add in seperate gene outputs
 			neurons[genes[i].out] = true
 		end
 	end
@@ -421,11 +602,11 @@ function randomNeuron(genes, nonInput)
 	local count = 0
 	for _,_ in pairs(neurons) do
 		count = count + 1
-	end
-	local n = math.random(1, count)
+	end --Count how many genomes they currently are
+	local n = math.random(1, count) --generate random number in between these neurons
 	
 	for k,v in pairs(neurons) do
-		n = n-1
+		n = n-1 --keep decreasing the genomes till the 2
 		if n == 0 then
 			return k
 		end
@@ -434,6 +615,12 @@ function randomNeuron(genes, nonInput)
 	return 0
 end
 
+--[[
+contains link: 
+(genes): all genes for a genome
+(link): the current new link
+see if a link already exist before adding it 
+--]]
 function containsLink(genes, link)
 	for i=1,#genes do
 		local gene = genes[i]
@@ -443,29 +630,38 @@ function containsLink(genes, link)
 	end
 end
 
+
+--[[
+pointMutate: Connections Mutation rate for each Gene change the weight for mutation
+--]]
 function pointMutate(genome)
 	local step = genome.mutationRates["step"]
 	
 	for i=1,#genome.genes do
 		local gene = genome.genes[i]
 		if math.random() < PerturbChance then
-			gene.weight = gene.weight + math.random() * step*2 - step
+			gene.weight = gene.weight + math.random() * step*2 - step --increase weight by step size
 		else
-			gene.weight = math.random()*4-2
+			gene.weight = math.random()*4-2  --redo mutation
 		end
 	end
 end
 
+
+--[[
+linkMutate: Link and Bias mutation use this 
+Gather two genomes and set one as input on as ouptut in a new gene
+--]]
 function linkMutate(genome, forceBias)
-	local neuron1 = randomNeuron(genome.genes, false)
-	local neuron2 = randomNeuron(genome.genes, true)
+	local neuron1 = randomNeuron(genome.genes, false) --Gain one nueron that might be anything
+	local neuron2 = randomNeuron(genome.genes, true) --Gain one input that can be anything
 	 
-	local newLink = newGene()
+	local newLink = newGene()  --Create a new gene
 	if neuron1 <= Inputs and neuron2 <= Inputs then
 		--Both input nodes
 		return
 	end
-	if neuron2 <= Inputs then
+	if neuron2 <= Inputs then --neuron 2 has to be output
 		-- Swap output and input
 		local temp = neuron1
 		neuron1 = neuron2
@@ -474,32 +670,43 @@ function linkMutate(genome, forceBias)
 
 	newLink.into = neuron1
 	newLink.out = neuron2
-	if forceBias then
+	if forceBias then --if link function then make inputs vanilla
 		newLink.into = Inputs
 	end
 	
+	--Makes sure link isn't already there
 	if containsLink(genome.genes, newLink) then
 		return
 	end
-	newLink.innovation = newInnovation()
-	newLink.weight = math.random()*4-2
+	newLink.innovation = newInnovation() 
+	newLink.weight = math.random()*4-2 --determine weight of the new gene
 	
 	table.insert(genome.genes, newLink)
 end
 
+--[[
+nodeMutate: Link and Bias mutation use this 
+--]]
 function nodeMutate(genome)
+
+	--make sure at least one genome exists
 	if #genome.genes == 0 then
 		return
 	end
 
+	--increase the max neruon count to accomndate new neuron
 	genome.maxneuron = genome.maxneuron + 1
 
+	--gain a random gene in a list of genes from a genome
 	local gene = genome.genes[math.random(1,#genome.genes)]
 	if not gene.enabled then
 		return
 	end
+
+	--disable gene
 	gene.enabled = false
 	
+	--Copy gene and set it output to the end
 	local gene1 = copyGene(gene)
 	gene1.out = genome.maxneuron
 	gene1.weight = 1.0
@@ -507,6 +714,7 @@ function nodeMutate(genome)
 	gene1.enabled = true
 	table.insert(genome.genes, gene1)
 	
+	--Copy gene and set its input to the end
 	local gene2 = copyGene(gene)
 	gene2.into = genome.maxneuron
 	gene2.innovation = newInnovation()
@@ -514,6 +722,9 @@ function nodeMutate(genome)
 	table.insert(genome.genes, gene2)
 end
 
+--[[
+enableDisableMutate: Goes through each genome and changes one to enable/diable depnding on the boolean
+--]]
 function enableDisableMutate(genome, enable)
 	local candidates = {}
 	for _,gene in pairs(genome.genes) do
@@ -526,12 +737,17 @@ function enableDisableMutate(genome, enable)
 		return
 	end
 	
-	local gene = candidates[math.random(1,#candidates)]
-	gene.enabled = not gene.enabled
+	local gene = candidates[math.random(1,#candidates)] --random vaiable input/output
+	gene.enabled = not gene.enabled --set gene to the oppsite genome
 end
 
+
+--[[
+mutate: Randomly try differnt types of mutuations of a genome
+--]]
 function mutate(genome)
 	for mutation,rate in pairs(genome.mutationRates) do
+		--Randomly increase and decrese all types of mutations
 		if math.random(1,2) == 1 then
 			genome.mutationRates[mutation] = 0.95*rate
 		else
@@ -539,18 +755,21 @@ function mutate(genome)
 		end
 	end
 
+	--See if the connection rate is higher than random 0 to 1
 	if math.random() < genome.mutationRates["connections"] then
-		pointMutate(genome)
+		pointMutate(genome) --Mutate all Gene Rates
 	end
 	
+	--Add Gene links over and over again until p without forced bias
 	local p = genome.mutationRates["link"]
-	while p > 0 do
+	while p > 0 do 
 		if math.random() < p then
 			linkMutate(genome, false)
 		end
 		p = p - 1
 	end
-
+	
+	--Add Gene links over and over again until p is below 0 set at true
 	p = genome.mutationRates["bias"]
 	while p > 0 do
 		if math.random() < p then
@@ -559,6 +778,7 @@ function mutate(genome)
 		p = p - 1
 	end
 	
+	--Node muatation chance over and over 
 	p = genome.mutationRates["node"]
 	while p > 0 do
 		if math.random() < p then
@@ -567,6 +787,7 @@ function mutate(genome)
 		p = p - 1
 	end
 	
+	--Enable random genes
 	p = genome.mutationRates["enable"]
 	while p > 0 do
 		if math.random() < p then
@@ -575,6 +796,7 @@ function mutate(genome)
 		p = p - 1
 	end
 
+	--Disable random genes
 	p = genome.mutationRates["disable"]
 	while p > 0 do
 		if math.random() < p then
@@ -644,6 +866,10 @@ function sameSpecies(genome1, genome2)
 	return dd + dw < DeltaThreshold
 end
 
+--[[
+rankGlobally: rank all the genomes to see which has the highest fitness
+Higher number rank means higher fitness
+--]]
 function rankGlobally()
 	local global = {}
 	for s = 1,#pool.species do
@@ -661,6 +887,10 @@ function rankGlobally()
 	end
 end
 
+--[[
+calculateAverageFitness: This average is the global rank added up divided by the number of genomes
+(species): the current species being evaulated
+--]]
 function calculateAverageFitness(species)
 	local total = 0
 	
@@ -672,6 +902,10 @@ function calculateAverageFitness(species)
 	species.averageFitness = total / #species.genomes
 end
 
+--[[
+totalAverageFitness: Go through all species and add up the total average fitness per species
+This average fitness is the global rank of all the genomes divided by the number of genomes not actual fitness
+--]]
 function totalAverageFitness()
 	local total = 0
 	for s = 1,#pool.species do
@@ -682,6 +916,12 @@ function totalAverageFitness()
 	return total
 end
 
+--[[
+cullSpecies: 
+(cutToOne):
+(False) Removes lowest half of the genomes that have the lowest fitness for a given species.
+(True) Only allows one genome to remain in a specific species.
+--]]
 function cullSpecies(cutToOne)
 	for s = 1,#pool.species do
 		local species = pool.species[s]
@@ -716,37 +956,56 @@ function breedChild(species)
 	return child
 end
 
+--[[
+removeStaleSpecies: Remove species that don't do anything+
+--]]
 function removeStaleSpecies()
 	local survived = {}
 
-	for s = 1,#pool.species do
+	--Go through alll species
+	for s = 1,#pool.species do 
 		local species = pool.species[s]
 		
+
+		--Sort genomes by fitness
 		table.sort(species.genomes, function (a,b)
 			return (a.fitness > b.fitness)
 		end)
 		
+		--Pick the top genome and see if it's higher then the current species
 		if species.genomes[1].fitness > species.topFitness then
-			species.topFitness = species.genomes[1].fitness
-			species.staleness = 0
+			species.topFitness = species.genomes[1].fitness --Set the fitness to the next top
+			species.staleness = 0 --Staleness is reset
 		else
-			species.staleness = species.staleness + 1
+			species.staleness = species.staleness + 1 --Counts up by one each time
 		end
+
+		--If a species is below the Stale constant or is the maxfiness keep it.
 		if species.staleness < StaleSpecies or species.topFitness >= pool.maxFitness then
 			table.insert(survived, species)
 		end
 	end
 
-	pool.species = survived
+	pool.species = survived --Set the species to only the survivors
 end
 
+
+--[[
+removeWeakSpecies: 
+--]]
 function removeWeakSpecies()
 	local survived = {}
 
+	--gather total rank of all species
 	local sum = totalAverageFitness()
+
+	--divide each species by total rank and times by population
+	--Strange formula :/
 	for s = 1,#pool.species do
 		local species = pool.species[s]
 		breed = math.floor(species.averageFitness / sum * Population)
+
+		--If population is above 1 then keep it
 		if breed >= 1 then
 			table.insert(survived, species)
 		end
@@ -754,7 +1013,6 @@ function removeWeakSpecies()
 
 	pool.species = survived
 end
-
 
 function addToSpecies(child)
 	local foundSpecies = false
@@ -773,16 +1031,29 @@ function addToSpecies(child)
 	end
 end
 
+--[[
+newGeneration: Each time you go through all of the species a new generation will start
+This does the following:
+-Removes uneffective genomes with(cullSpecies,removeStaleSpecies,removeWeakSpecies)
+-
+-
+-
+-
+-
+-
+--]]
 function newGeneration()
-	cullSpecies(false) -- Cull the bottom half of each species
-	rankGlobally()
-	removeStaleSpecies()
-	rankGlobally()
-	for s = 1,#pool.species do
+	cullSpecies(false) -- Cull the bottom half of each species (The only comment written by SethBling in the entire code set)
+	rankGlobally() --rank all genomes by fitness order
+	removeStaleSpecies() --removes species who haven't improved in a while
+	rankGlobally() --re-rank
+
+	--Calculate Fitness for all species
+	for s = 1,#pool.species do  
 		local species = pool.species[s]
 		calculateAverageFitness(species)
 	end
-	removeWeakSpecies()
+	removeWeakSpecies() 
 	local sum = totalAverageFitness()
 	local children = {}
 	for s = 1,#pool.species do
@@ -826,6 +1097,10 @@ function clearJoypad()
 	joypad.set(controller)
 end
 
+
+--[[
+initalizeRun: Before a new orgranism starts
+--]]
 function initializeRun()
 	if(memory.readbyte(0x0770)==0 or not forms.ischecked(showContinousPlay)) then
 		savestate.load(Filename); --Load from a specfic savestates
@@ -842,17 +1117,26 @@ function initializeRun()
 	evaluateCurrent()
 end
 
+
+--[[
+evaluateCurrent: Figuire out which controller buttons to press
+--]]
 function evaluateCurrent()
 	local species = pool.species[pool.currentSpecies]
 	local genome = species.genomes[pool.currentGenome]
 
+
 	inputs = getInputs()
+
 	controller = evaluateNetwork(genome.network, inputs)
 	
+
+	--Stop P1 Left and P1 Right from being pressed at the same time
 	if controller["P1 Left"] and controller["P1 Right"] then
 		controller["P1 Left"] = false
 		controller["P1 Right"] = false
 	end
+	--Stop Pl Up and P1 Down from being pressed at the same time
 	if controller["P1 Up"] and controller["P1 Down"] then
 		controller["P1 Up"] = false
 		controller["P1 Down"] = false
@@ -866,8 +1150,12 @@ if pool == nil then
 end
 
 
+--[[
+nextGenome: Get next available genome if none start a new generation
+--]]
 function nextGenome()
 	pool.currentGenome = pool.currentGenome + 1
+
 	if pool.currentGenome > #pool.species[pool.currentSpecies].genomes then
 		pool.currentGenome = 1
 		pool.currentSpecies = pool.currentSpecies+1
@@ -878,12 +1166,18 @@ function nextGenome()
 	end
 end
 
+--[[
+fitnessAlreadyMesaured: Check to see if the fitness of 
+specfic species and genome have been mesaured.
+--]]
 function fitnessAlreadyMeasured()
 	local species = pool.species[pool.currentSpecies]
 	local genome = species.genomes[pool.currentGenome]
 	
 	return genome.fitness ~= 0
 end
+
+
 
 function displayGenome(genome)
 	local network = genome.network
@@ -1010,9 +1304,11 @@ function displayGenome(genome)
 			pos = pos + 8
 		end
 	end
-
 end
 
+--[[
+writeFile: See loadFile for specifics
+--]]
 function writeFile(filename)
         local file = io.open(filename, "w")
 	file:write(pool.generation .. "\n")
@@ -1053,12 +1349,47 @@ function savePool()
 	writeFile(filename)
 end
 
+--[[
+loadFile: takes in a pool file and reads the contents
+--]]
 function loadFile(filename)
-        local file = io.open(filename, "r")
+
+    local file = io.open(filename, "r")
+    --Create a new gene pool
 	pool = newPool()
+
+	--Read the generation
 	pool.generation = file:read("*number")
+
+	--Gather MaxFitness
 	pool.maxFitness = file:read("*number")
+
 	forms.settext(maxFitnessLabel, "Max Fitness: " .. math.floor(pool.maxFitness))
+
+		--Read the file
+		--[[
+		1 Line: Generation
+		2 Line: Max Fitness
+		3 Line: Number of Species
+		4 Line: Top Fitness for Species
+		5 Line: How Stale the species is
+		6 Line: Number of Genomes
+		7 Line: Top Fitness for set of genomes
+		8 Line: TODO: Max Neuron
+		9-23 Line: Set up diffent rates
+		24 Line: Number of Genes
+		For each gene 25- Number of Genes
+		2*.1 Line: Into Gene
+		2*.2 Line: Out Gene
+		2*.3 Line: Weight Gene
+		2*.4 Line: Innovation Gene
+		2*.5 Line: Enabled Boolean
+		Into Gene: What inputs need to be on the screen to run this
+		Out Gene: What controller output to execute
+		Weight Gene: How much the gene mattters
+		Inovation: TODO:
+		Enabled Gene: Determine whether to use the gene
+		--]]
         local numSpecies = file:read("*number")
         for s=1,numSpecies do
 		local species = newSpecies()
@@ -1100,11 +1431,17 @@ function loadFile(filename)
 	pool.currentFrame = pool.currentFrame + 1
 end
  
+ --[[
+loadPool: Button clicked to load a population 
+--]]
 function loadPool()
 	local filename = forms.gettext(saveLoadFile)
 	loadFile(filename)
 end
 
+--[[
+playTop: Plays the orgranism with the top fitness
+--]]
 function playTop()
 	local maxfitness = 0
 	local maxs, maxg
@@ -1127,92 +1464,143 @@ function playTop()
 	return
 end
 
+--[[
+OnExit: Exit function when you close the program
+--]]
 function onExit()
 	forms.destroy(form)
 end
 
-function inPlay()
-	--console.writeline("0747 " .. memory.readbyte(0x0747)==0 .. " 071E " .. memory.readbyte(0x071E)~=11)
+function inPlay()	
 	return memory.readbyte(0x0747)==0 and memory.readbyte(0x071E)~=11
 end
 
+
 writeFile("temp.pool")
 
+--makes the OnExit function work onExit
 event.onexit(onExit)
 
+
+--Create Fitness Form
 form = forms.newform(200, 260, "Fitness")
+--MaxFitness is the current Max
 maxFitnessLabel = forms.label(form, "Max Fitness: " .. math.floor(pool.maxFitness), 5, 8)
+--Checkbox are bools used in the infinite while loop
+--A checkbox to see whether or not the eye and controls is shown
 showNetwork = forms.checkbox(form, "Map", 5, 30)
+--A checkbox to see the Mutation rates
 showMutationRates = forms.checkbox(form, "Mutate", 120, 30)
+
 showContinousPlay = forms.checkbox(form, "Continous Play", 5, 52)
+--Restart the experiment
 restartButton = forms.button(form, "Restart", initializePool, 5, 77)
+--Save the Network
 saveButton = forms.button(form, "Save", savePool, 5, 102)
+--Load the Network
 loadButton = forms.button(form, "Load", loadPool, 80, 102)
+--What you are going to name the file
 saveLoadFile = forms.textbox(form, Filename .. ".pool", 170, 25, nil, 5, 148)
 saveLoadLabel = forms.label(form, "Save/Load:", 5, 129)
+--Calls PlayTop function
 playTopButton = forms.button(form, "Play Top", playTop, 5, 170)
+--Hides banner
 hideBanner = forms.checkbox(form, "Hide Banner", 5, 190)
 
-
+--Infinte Fitness Loop
 while true do
+	--Sets the Top Bar Color
 	local backgroundColor = 0xD0FFFFFF
+
+	--Draws the Top Box
 	if not forms.ischecked(hideBanner) then
 		gui.drawBox(0, 0, 300, 40, backgroundColor, backgroundColor)
 	end
 
+
 	local species = pool.species[pool.currentSpecies]
 	local genome = species.genomes[pool.currentGenome]
 	
+
+	--showNetwork Boolean this then draws the bottom section
 	if forms.ischecked(showNetwork) then
 		displayGenome(genome)
 	end
+	
+
 	if(inPlay()) then
+		--Every 5 frames evaluate the current orgranism
 		if pool.currentFrame%5 == 0 then
 			evaluateCurrent()
 		end
 
+		--Sets the output to whatever the netowrk chooses
 		joypad.set(controller)
 
+		--Get Postion of Mario reading the Hex Bits
 		getPositions()
+
+		--If mario reached more right than before reset his time to the constant
 		if marioX > rightmost then
 			rightmost = marioX
 			timeout = TimeoutConstant
 		end
 		
+
+		--Subtract one time unit each loop
 		timeout = timeout - 1
 		
 		
+		--Each extra four frames give mario and extra bonus living amount
 		local timeoutBonus = pool.currentFrame / 4
+
+		--If the orgranism has not evolved within the allotted time end the run
 		if timeout + timeoutBonus <= 0 then
+			--fitness equal how right subtracted from how long it takes
 			local fitness = rightmost - NetX
+
+			--Extra bonus for completeting the level
 			if gameinfo.getromname() == "Super Mario World (USA)" and rightmost > 4816 then
 				fitness = fitness + 1000
 			end
 			if gameinfo.getromname() == "Super Mario Bros." and rightmost > 3186 then
 				fitness = fitness + 1000
 			end
+
+			--Mark it is done
 			if fitness == 0 then
 				fitness = -1
 			end
+
+			--Set the current genomes fitness to the local fitness
 			genome.fitness = fitness
 			
+			--If newfitness record then 
 			if fitness > pool.maxFitness then
+				--Set the MaxFitness for the gene pool
 				pool.maxFitness = fitness
+				--Set the top text to the new fitness
 				forms.settext(maxFitnessLabel, "Max Fitness: " .. math.floor(pool.maxFitness))
+				--Create a backup
 				writeFile("backup." .. pool.generation .. "." .. forms.gettext(saveLoadFile))
 			end
 			
 			console.writeline("Gen " .. pool.generation .. " species " .. pool.currentSpecies .. " genome " .. pool.currentGenome .. " fitness: " .. fitness)
 			pool.currentSpecies = 1
 			pool.currentGenome = 1
+
+
 			while fitnessAlreadyMeasured() do
 				nextGenome()
 			end
+			--Resetup Run
 			initializeRun()
 		end
 
 		local measured = 0
 		local total = 0
+
+		--Count how many Organisms have fun
 		for _,species in pairs(pool.species) do
 			for _,genome in pairs(species.genomes) do
 				total = total + 1
@@ -1221,14 +1609,18 @@ while true do
 				end
 			end
 		end
+
+		--Displays in the banner the Generation, species, and genome
+		--Displays Fitness
+		--Displays Max Fitness
 		if not forms.ischecked(hideBanner) then
-			gui.drawText(0, 12, "Gen " .. pool.generation .. " species " .. pool.currentSpecies .. " genome " .. pool.currentGenome .. " (" .. math.floor(measured/total*100) .. "%)", 0xFF000000, 11)
+			gui.drawText(0, 0, "Gen " .. pool.generation .. " species " .. pool.currentSpecies .. " genome " .. pool.currentGenome .. " (" .. math.floor(measured/total*100) .. "%)", 0xFF000000, 11)
 			gui.drawText(0, 24, "Fitness: " .. math.floor(rightmost - NetX), 0xFF000000, 11)
 			gui.drawText(100, 24, "Max Fitness: " .. math.floor(pool.maxFitness), 0xFF000000, 11)
 		end
+	--Manual Update of Frame 	
 	pool.currentFrame = pool.currentFrame + 1
-	end	
-
-
+	end
+	--Actual Update of Frame
 	emu.frameadvance();
 end
