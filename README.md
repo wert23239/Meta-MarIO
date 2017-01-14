@@ -51,3 +51,8 @@ http://eplex.cs.ucf.edu/noveltysearch/userspage/
 
 Open-Source Code:
 https://github.com/jal278/novelty-search-cpp/blob/master/README
+
+
+##Tweaked SethBling Version
+
+http://pastebin.com/juRnkyEf
