@@ -12,6 +12,14 @@ This is only for to change what game it is.
 This sets what the save state 
 As well as what buttons are used
 --]]
+--client.SetGameExtraPadding(0,0,0,0); Used for  
+--C:\Users\Alex\Source\Repos\BizHawk\BizHawk.Client.EmuHawk\tools\Lua\Libraries\EmuLuaLibrary.Client
+--public static void SetGameExtraPadding(int left, int top, int right, int bottom)
+--		{
+--            //GlobalWin.DisplayManager.GameExtraPadding = new System.Windows.Forms.Padding(left, top, right, bottom);
+--            //GlobalWin.MainForm.FrameBufferResized();
+--            GlobalWin.MainForm.PauseEmulator();
+--		}
 if gameinfo.getromname() == "Super Mario World (USA)" then
 	Filename = "DP1.state"
 	ButtonNames = {
@@ -25,7 +33,7 @@ if gameinfo.getromname() == "Super Mario World (USA)" then
 		"Right",
 	}
 elseif gameinfo.getromname() == "Super Mario Bros." then
-	Filename = "DP2.state"
+	Filename = "SMB1-1.state"
 	ButtonNames = {
 		"A",
 		"B",
@@ -113,13 +121,16 @@ EnableMutationChance = 0.2
 --[[
 TimeoutConstant: How long it take till the enemies to despawn.
 --]]
-TimeoutConstant = 20
+TimeoutConstant = 40
 
 
 --[[
 MaxNodes: TODO: 
 --]]
 MaxNodes = 1000000
+
+
+ScoreFitness=true
 
 
 --[[
@@ -133,7 +144,6 @@ function getPositions()
 		--Mario X and Y bits are Both 2 Byte Words
 		marioX = memory.read_s16_le(0x94)
 		marioY = memory.read_s16_le(0x96)
-		
 		local layer1x = memory.read_s16_le(0x1A);
 		local layer1y = memory.read_s16_le(0x1C);
 		
@@ -145,7 +155,11 @@ function getPositions()
 		--This allows you to have bigger numbers than 256
 		marioX = memory.readbyte(0x6D) * 0x100 + memory.readbyte(0x86)
 		marioY = memory.readbyte(0x03B8)+16
-	
+		marioScore = memory.readbyte(0x7D8)*100000+memory.readbyte(0x07D9)*10000+memory.readbyte(0x07DA)*1000
+		marioScore = marioScore+memory.readbyte(0x07DB)*100 + memory.readbyte(0x07DC)*10 + memory.readbyte(0x07DC)*1
+		marioLevel = memory.readbyte(0x075F)
+		marioWorld = memory.readbyte(0x0760)
+		--marioScore= 19
 		screenX = memory.readbyte(0x03AD)
 		screenY = memory.readbyte(0x03B8)
 	end
@@ -1109,6 +1123,8 @@ function initializeRun()
 	pool.currentFrame = 0
 	timeout = TimeoutConstant
 	NetX = memory.readbyte(0x6D) * 0x100 + memory.readbyte(0x86)
+	NetScore = memory.readbyte(0x07D8)*100000+memory.readbyte(0x07D9)*10000+memory.readbyte(0x07DA)*1000
+	NetScore = NetScore + memory.readbyte(0x07DB)*100 + memory.readbyte(0x07DC)*10 + memory.readbyte(0x07DC)*1
 	clearJoypad()
 	
 	local species = pool.species[pool.currentSpecies]
@@ -1511,10 +1527,10 @@ hideBanner = forms.checkbox(form, "Hide Banner", 5, 190)
 while true do
 	--Sets the Top Bar Color
 	local backgroundColor = 0xD0FFFFFF
-
+	client.SetGameExtraPadding(pool.generation,0,0,0); 
 	--Draws the Top Box
 	if not forms.ischecked(hideBanner) then
-		gui.drawBox(0, 0, 300, 40, backgroundColor, backgroundColor)
+ 		gui.drawBox(0, 0, 300, 40, backgroundColor, backgroundColor)
 	end
 
 
@@ -1558,7 +1574,9 @@ while true do
 		if timeout + timeoutBonus <= 0 then
 			--fitness equal how right subtracted from how long it takes
 			local fitness = rightmost - NetX
-
+			if ScoreFitness == true then
+				local fintess = fitness+1000*(marioScore - NetScore)
+			end
 			--Extra bonus for completeting the level
 			if gameinfo.getromname() == "Super Mario World (USA)" and rightmost > 4816 then
 				fitness = fitness + 1000
@@ -1586,6 +1604,7 @@ while true do
 			end
 			
 			console.writeline("Gen " .. pool.generation .. " species " .. pool.currentSpecies .. " genome " .. pool.currentGenome .. " fitness: " .. fitness)
+			console.writeline("World " .. marioWorld .. " Level " .. marioLevel)
 			pool.currentSpecies = 1
 			pool.currentGenome = 1
 
@@ -1613,9 +1632,14 @@ while true do
 		--Displays in the banner the Generation, species, and genome
 		--Displays Fitness
 		--Displays Max Fitness
+
+		local fitnessDisplay = rightmost - NetX
+			if ScoreFitness == true then
+				local fitnessDisplay = fitnessDisplay+1000*(marioScore - NetScore)
+			end	
 		if not forms.ischecked(hideBanner) then
-			gui.drawText(0, 0, "Gen " .. pool.generation .. " species " .. pool.currentSpecies .. " genome " .. pool.currentGenome .. " (" .. math.floor(measured/total*100) .. "%)", 0xFF000000, 11)
-			gui.drawText(0, 24, "Fitness: " .. math.floor(rightmost - NetX), 0xFF000000, 11)
+			gui.drawText(0, 12, "Gen " .. pool.generation .. " species " .. pool.currentSpecies .. " genome " .. pool.currentGenome .. " (" .. math.floor(measured/total*100) .. "%)", 0xFF000000, 11)
+			gui.drawText(0, 24, "Fitness: " .. math.floor(fitnessDisplay), 0xFF000000, 11)
 			gui.drawText(100, 24, "Max Fitness: " .. math.floor(pool.maxFitness), 0xFF000000, 11)
 		end
 	--Manual Update of Frame 	
