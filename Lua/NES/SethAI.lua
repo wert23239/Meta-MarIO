@@ -7,6 +7,11 @@
 --LoadRom("C:\\Source\\SpartaHacks17\\Super Mario Bros. (Japan, USA).nes",)
 
 
+--TODO: NS reset constant
+--TODO: CP reset stalefitness when worlds change 
+--TODO: CP 5 rounds each genome
+--TODO: Fix negative y problem
+
 --[[
 This is only for to change what game it is.
 This sets what the save state 
@@ -88,7 +93,7 @@ Outputs = #ButtonNames
 Population: The Number of Genomes
 Deltas: TODO: 
 --]]
-Population = 10
+Population = 20
 DeltaDisjoint = 2.0
 DeltaWeights = 0.4
 DeltaThreshold = 1.0
@@ -130,9 +135,9 @@ MaxNodes: TODO:
 MaxNodes = 1000000
 
 
-ScoreFitness=true
+ScoreFitness=false
 
-
+NovelAmount=3
 --[[
 GetPostions: Return the postion of Mario Using in game Hex Bits
 --]]
@@ -1030,28 +1035,25 @@ end
 SetNoveltyFitness: Goes through all mario's and sets there fitness to whatever unqiue spots they have been
 --]]
 function SetNoveltyFitness()
-	local file = io.open("Fitness.pool", "w") 
-	-- for n,species in pairs(pool.species) do
-	-- 	file:write(species.topFitness .. "\n")
-	-- 	file:write(species.staleness .. "\n")
-	-- 	file:write(#species.genomes .. "\n")
-	-- 	for m,genome in pairs(species.genomes) do
-	-- 		console.writeline("Species".. n)
-	-- 		console.writeline("Genome" .. m)
-	-- 	end
-	-- end
+	--local file = io.open("Fitness.pool", "w") 
 	for loc,set in pairs(pool.landscape) do 
-		file:write("Location ".. loc .. "\n")
-		console.writeline(loc)
-        for sg,value in pairs(set) do
-        	local species=math.floor(tonumber(sg)/100)
-        	local genome=tonumber(sg)%100
-			file:write("Species " .. species .. "\n")
-			file:write("Genome " .. genome .. "\n")
-			file:write("SpeciesFitness " .. pool.species[species].genomes[genome].fitness .. "\n")
+		--file:write("Location ".. loc .. "\n")
+		local count=0
+		for sg,value in pairs(set) do
+        	count=count+1
+		end
+		if count<NovelAmount then
+		 	for sg,value in pairs(set) do
+	        	local species=math.floor(tonumber(sg)/100)
+	        	local genome=tonumber(sg)%100
+				--file:write("Species " .. species .. "\n")
+				--file:write("Genome " .. genome .. "\n")
+				--file:write("SpeciesFitness " .. pool.species[species].genomes[genome].fitness .." Loc " .. count .. "\n")
+				pool.species[species].genomes[genome].fitness=pool.species[species].genomes[genome].fitness+((NovelAmount-count)*10000) 
+			end
 		end
 	end
-	file:close()
+	--file:close()
 end
 
 --[[
@@ -1633,9 +1635,13 @@ while true do
 		if pool.landscape[tostring(cordLocation)]==nil then
 			pool.landscape[tostring(cordLocation)]={}
 		end
-		pool.landscape[tostring(cordLocation)][tostring(cordSpecies)]=true
-		-- console.writeline("Current Locations")
-		-- for k,v in pairs(pool.landscape) do console.writeline("Cords".. k) end
+
+		if not pool.landscape[tostring(cordLocation)][tostring(cordSpecies)]==true then
+			pool.landscape[tostring(cordLocation)][tostring(cordSpecies)]=true
+			timeout = TimeoutConstant
+		end
+
+
 
 		--If mario reached more right than before reset his time to the constant
 		if marioX > rightmost then

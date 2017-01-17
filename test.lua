@@ -1,11 +1,15 @@
-function newPool()
-	pool={}
-	pool.List={}
+
+pooltest={}
+pooltest.List={}
+pooltest.List={}
+if(pooltest.List["Hey"]==nil) then
+	pooltest.List["Hey"]={}
 end
-newPool()
-pool.List={}
-if(pool.List["Hey"]==nil) then
-	pool.List["Hey"]={}
+
+print(pooltest.List["Hey"]["Hello"])
+
+if not pooltest.List["Hey"]["Hello"]==true then
+	pooltest.List["Hey"]["Hello"]=true 
 end
-pool.List["23"]["Hello"]=true
-for k,v in pairs(pool.List) do print(k,v) end
+
+print(pooltest.List["Hey"]["Hello"])
