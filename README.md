@@ -20,7 +20,14 @@ https://www.youtube.com/watch?v=qv6UVOQ0F44
 
 
 ##Important Bits
+
+Basic Comprendium
+
 http://datacrystal.romhacking.net/wiki/Super_Mario_Bros.:RAM_map
+
+More Detailed Comprendium:
+
+https://gist.github.com/1wErt3r/4048722
 
 | Bit           | Meaning          | 
 | ------------- |:-----------------| 
@@ -30,6 +37,8 @@ http://datacrystal.romhacking.net/wiki/Super_Mario_Bros.:RAM_map
 |0747,071E      |Freeze Timer      |  
 |07A0           |Level Timer       |
 |07D8-07DD      |Score             |
+|000E           |Dead,alive or can't move        |
+|00B5           |Determine if player is in a pit|
 ##Distruptive Systems
 
 BizHawk Repo:
