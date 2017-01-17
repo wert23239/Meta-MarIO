@@ -10,7 +10,6 @@
 --TODO: NS reset constant
 --TODO: CP reset stalefitness when worlds change 
 --TODO: CP 5 rounds each genome
---TODO: Fix negative y problem
 
 --[[
 This is only for to change what game it is.
@@ -1567,6 +1566,7 @@ function LevelChangeHalfway()
 		half = true
 		Filename = "Level" .. NetWorld+1 .. NetLevel+1 .. 5 ..".state"
 		console.writeline("Next Level Half")
+		--resetStaleFitness
 	end 	
 end
 
@@ -1577,6 +1577,7 @@ function LevelChange()
 		half=false
 		Filename = "Level" .. NetWorld+1 .. NetLevel+1 .. ".state"
 		console.writeline("Next Level")
+		--resetStaleFitness
 	end	
 end
 function CalculateLocationCord()	
@@ -1602,29 +1603,66 @@ event.onexit(onExit)
 
 
 --Create Fitness Form
-form = forms.newform(200, 260, "Fitness")
+form = forms.newform(340, 280, "Fitness")
 --MaxFitness is the current Max
 maxFitnessLabel = forms.label(form, "Max Fitness: " .. math.floor(pool.maxFitness), 5, 8)
 --Checkbox are bools used in the infinite while loop
---A checkbox to see whether or not the eye and controls is shown
-showNetwork = forms.checkbox(form, "Map", 5, 30)
---A checkbox to see the Mutation rates
-showMutationRates = forms.checkbox(form, "Mutate", 120, 30)
 
-showContinousPlay = forms.checkbox(form, "Continous Play", 5, 52)
---Restart the experiment
-restartButton = forms.button(form, "Restart", initializePool, 5, 77)
+
+--A checkbox to see the Mutation rates
+showMutationRates = forms.checkbox(form, "Show Mutate", 230, 3)
+
+--A checkbox to see whether or not the eye10 and controls is shown
+showNetwork = forms.checkbox(form, "Show Map", 120, 3)
+
+FitnessTypeLabel = forms.label(form, "Fitness Type:", 5, 30)
+FitnessAmountLabel = forms.label(form, "Amount", 117, 30)
+FitnessTimeoutLabel = forms.label(form, "Timeout", 270, 30)
+FitnessCheckLabel = forms.label(form, "On", 230, 30)
+
+RightmostLabel = forms.label(form, "Rightmost ", 5, 55)
+RightMostAmount = forms.textbox(form, 1, 60, 20, nil, 120, 55)
+RightmostTimeout = forms.checkbox(form, "", 270, 55)
+RightmostFitness = forms.checkbox(form, "", 230, 55)
+
+NoveltyLabel = forms.label(form, "Novelty ", 5, 80)
+NoveltyAmount = forms.textbox(form, 10000, 60, 20, nil, 120, 80)
+NoveltyTimeout = forms.checkbox(form, "", 270, 80)
+NoveltyFitness = forms.checkbox(form, "", 230, 80)
+
+ScoreLabel = forms.label(form, "Score ", 5, 105)
+ScoreAmount = forms.textbox(form, 1, 60, 20, nil, 120, 105)
+ScoreTimeout = forms.checkbox(form, "", 270, 105)
+ScoreFitness = forms.checkbox(form, "", 230, 105)
+
+NovetlyConstant = forms.textbox(form, 1, 30, 20, nil, 270, 130)
+NoveltyLabel = forms.label(form, "Novelty Constant: ", 170, 130)
+TimeoutConstant = forms.textbox(form, 80, 30, 20, nil, 120, 130)
+TimeoutLabel = forms.label(form, "Timeout Constant: ", 5, 130)
+
+showDeterminedContinousPlay = forms.checkbox(form, "Determine Play", 120, 150)
+showContinousPlay = forms.checkbox(form, "Continous Play", 5, 150)
+
+
 --Save the Network
-saveButton = forms.button(form, "Save", savePool, 5, 102)
+saveButton = forms.button(form, "Save", savePool, 5, 175)
 --Load the Network
-loadButton = forms.button(form, "Load", loadPool, 80, 102)
---What you are going to name the file
-saveLoadFile = forms.textbox(form, Filename .. ".pool", 170, 25, nil, 5, 148)
-saveLoadLabel = forms.label(form, "Save/Load:", 5, 129)
+loadButton = forms.button(form, "Load", loadPool, 80, 175)
+--Restart the experiment
+restartButton = forms.button(form, "Restart", initializePool, 75+80, 175)
+
 --Calls PlayTop function
-playTopButton = forms.button(form, "Play Top", playTop, 5, 170)
+playTopButton = forms.button(form, "Play Top", playTop, 75+75+80, 175)
+
+
 --Hides banner
-hideBanner = forms.checkbox(form, "Hide Banner", 5, 190)
+hideBanner = forms.checkbox(form, "Hide Banner", 210, 210)
+
+--What you are going to name the file
+saveLoadFile = forms.textbox(form, Filename .. ".pool", 110, 25, nil, 80, 210)
+saveLoadLabel = forms.label(form, "Save/Load:", 5, 210)
+
+
 
 --Infinte Fitness Loop
 while true do
