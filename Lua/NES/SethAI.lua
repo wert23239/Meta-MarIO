@@ -4,7 +4,7 @@
 -- For SMW, make sure you have a save state named "DP1.state" at the beginning of a level,
 -- and put a copy in both the Lua folder and the root directory of BizHawk.
 -- Keep this top in mind
-
+--LoadRom("C:\\Source\\SpartaHacks17\\Super Mario Bros. (Japan, USA).nes",)
 
 
 --[[
@@ -364,6 +364,7 @@ function newPool()
       --return set
     --end
 	pool.landscape = {} 
+	pool.landscape["-1"]=0
 	return pool
 end
 
@@ -1515,13 +1516,18 @@ function inPlay()
 end
 
 function CalculateLocationCord()
-	return marioY*10000+marioX
+	return math.floor(marioY/16)*10000+memory.readbyte(0x6D) * 0x100 + math.floor(memory.readbyte(0x86)/16)
 end
 
 function CalculateSpeciesCord(species,genome)
 	return species*100+genome
 end
 
+-- function CheckLandscape(cordLocation,cordSpecies)
+-- 	if pool.landscape[tostring(cordLocation)]=nil then
+-- 		console.writeline("new")
+-- 	end
+-- end
 
 writeFile("temp.pool")
 
@@ -1590,12 +1596,18 @@ while true do
 
 		--Populate Cordinates
 		local cordLocation=CalculateLocationCord() --y*10000+p*256+x*1
-		local cordSpecies=CalculateSpeciesCord(pool.currentSpecies,pool.currentGenome) --species*100*1
-		-- if pool.landscape[cordLocation]==nil do
-		-- 	pool.landscape[cordLocation]={}
-		-- end 
-		-- pool.landscape[cordLocation][cordSpecies]=true
-		-- console.writeline("Location " .. cordLocation .. " species " .. cordSpecies)
+		local cordSpecies=CalculateSpeciesCord(pool.currentSpecies,pool.currentGenome) 		
+		-- if not pcall(CheckLandscape(cordLocation,cordSpecies)) then
+  --     		pool.landscape[tostring(cordLocation)]={}
+  --     		pool.landscape[topool.landscapestring(cordLocation)][tostring(cordSpecies)]=true--console.writeline(pool.landscape[cordLocation)])
+		-- 	console.writeline("old")
+  --   	end
+		if pool.landscape[tostring(cordLocation)]==nil then
+			pool.landscape[tostring(cordLocation)]={}
+		end
+		pool.landscape[tostring(cordLocation)][tostring(cordSpecies)]=true
+		console.writeline("Current Locations")
+		for k,v in pairs(pool.landscape) do console.writeline("Cords".. k) end
 
 		--If mario reached more right than before reset his time to the constant
 		if marioX > rightmost then
