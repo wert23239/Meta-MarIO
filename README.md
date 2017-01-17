@@ -31,6 +31,7 @@ http://datacrystal.romhacking.net/wiki/Super_Mario_Bros.:RAM_map
 |07A0           |Level Timer       |
 |07D8-07DD      |Score             |
 |000E           |Dead,alive or can't move        |
+|00B5           |Determine if player is in a pit|
 ##Distruptive Systems
 
 BizHawk Repo:
