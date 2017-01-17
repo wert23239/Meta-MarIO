@@ -88,7 +88,7 @@ Outputs = #ButtonNames
 Population: The Number of Genomes
 Deltas: TODO: 
 --]]
-Population = 300
+Population = 10
 DeltaDisjoint = 2.0
 DeltaWeights = 0.4
 DeltaThreshold = 1.0
@@ -364,7 +364,6 @@ function newPool()
       --return set
     --end
 	pool.landscape = {} 
-	pool.landscape["-1"]=0
 	return pool
 end
 
@@ -1027,6 +1026,33 @@ function removeStaleSpecies()
 	pool.species = survived --Set the species to only the survivors
 end
 
+--[[
+SetNoveltyFitness: Goes through all mario's and sets there fitness to whatever unqiue spots they have been
+--]]
+function SetNoveltyFitness()
+	local file = io.open("Fitness.pool", "w") 
+	for n,species in pairs(pool.species) do
+		file:write(species.topFitness .. "\n")
+		file:write(species.staleness .. "\n")
+		file:write(#species.genomes .. "\n")
+		for m,genome in pairs(species.genomes) do
+			console.writeline("Species".. n)
+			console.writeline("Genome" .. m)
+		end
+	end
+	for loc,set in pairs(pool.landscape) do 
+		file:write("Location ".. loc .. "\n")
+		console.writeline(loc)
+        for sg,value in pairs(set) do
+        	local species=math.floor(tonumber(sg)/100)
+        	local genome=tonumber(sg)%100
+			file:write("Species " .. species .. "\n")
+			file:write("Genome " .. genome .. "\n")
+			file:write("SpeciesFitness " .. pool.species[species].genomes[genome].fitness .. "\n")
+		end
+	end
+	file:close()
+end
 
 --[[
 removeWeakSpecies: 
@@ -1081,6 +1107,8 @@ This does the following:
 -
 --]]
 function newGeneration()
+	SetNoveltyFitness()
+	pool.landscape={}
 	cullSpecies(false) -- Cull the bottom half of each species (The only comment written by SethBling in the entire code set)
 	rankGlobally() --rank all genomes by fitness order
 	removeStaleSpecies() --removes species who haven't improved in a while
@@ -1606,8 +1634,8 @@ while true do
 			pool.landscape[tostring(cordLocation)]={}
 		end
 		pool.landscape[tostring(cordLocation)][tostring(cordSpecies)]=true
-		console.writeline("Current Locations")
-		for k,v in pairs(pool.landscape) do console.writeline("Cords".. k) end
+		-- console.writeline("Current Locations")
+		-- for k,v in pairs(pool.landscape) do console.writeline("Cords".. k) end
 
 		--If mario reached more right than before reset his time to the constant
 		if marioX > rightmost then
