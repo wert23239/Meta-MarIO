@@ -29,7 +29,7 @@ http://datacrystal.romhacking.net/wiki/Super_Mario_Bros.:RAM_map
 |07F9-07FB      |Time              | 
 |0747,071E      |Freeze Timer      |  
 |07A0           |Level Timer       |
-
+|07D8-07DD      |Score             |
 ##Distruptive Systems
 
 BizHawk Repo:
@@ -51,3 +51,8 @@ http://eplex.cs.ucf.edu/noveltysearch/userspage/
 
 Open-Source Code:
 https://github.com/jal278/novelty-search-cpp/blob/master/README
+
+
+##Tweaked SethBling Version
+
+http://pastebin.com/juRnkyEf
