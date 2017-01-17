@@ -38,7 +38,7 @@ if gameinfo.getromname() == "Super Mario World (USA)" then
 		"Right",
 	}
 elseif gameinfo.getromname() == "Super Mario Bros." then
-	Filename = "SMB1-1.state"
+	Filename = "Level11.state"
 	ButtonNames = {
 		"A",
 		"B",
@@ -170,8 +170,8 @@ function getPositions()
 		marioY = memory.readbyte(0x03B8)+16
 		marioScore = memory.readbyte(0x7D8)*100000+memory.readbyte(0x07D9)*10000+memory.readbyte(0x07DA)*1000
 		marioScore = marioScore+memory.readbyte(0x07DB)*100 + memory.readbyte(0x07DC)*10 + memory.readbyte(0x07DC)*1
-		marioLevel = memory.readbyte(0x075F)
-		marioWorld = memory.readbyte(0x0760)
+		marioLevel = memory.readbyte(0x075C)
+		marioWorld = memory.readbyte(0x075F)
 		--marioScore= 19
 		screenX = memory.readbyte(0x03AD)
 		screenY = memory.readbyte(0x03B8)
@@ -1565,14 +1565,18 @@ end
 function LevelChangeHalfway()
 	if memory.readbyte(0x071E)==11 and memory.readbyte(0x0728)~=0 and half==false then
 		half = true
-		Filename = "Level" .. World+1 .. Level+1 .. .5 ..".state"
+		Filename = "Level" .. NetWorld+1 .. NetLevel+1 .. 5 ..".state"
 		console.writeline("Next Level Half")
 	end 	
 end
 
 function LevelChange()
 	if NetLevel~=marioLevel or NetWorld~=marioWorld then
-		Filename = "Level" .. World+1 .. Level+1 .. ".state"
+		NetWorld=marioWorld
+		NetLevel=marioLevel
+		half=false
+		Filename = "Level" .. NetWorld+1 .. NetLevel+1 .. ".state"
+		console.writeline("Next Level")
 	end	
 end
 function CalculateLocationCord()	
@@ -1763,6 +1767,11 @@ while true do
 		end
 	--Manual Update of Frame 	
 	pool.currentFrame = pool.currentFrame + 1
+	else
+		getPositions()
+		LevelChange()
+		LevelChangeHalfway()
+		
 	end
 	
 
