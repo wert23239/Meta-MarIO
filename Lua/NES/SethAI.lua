@@ -93,7 +93,7 @@ Outputs = #ButtonNames
 Population: The Number of Genomes
 Deltas: TODO: 
 --]]
-Population = 20
+Population = 40
 DeltaDisjoint = 2.0
 DeltaWeights = 0.4
 DeltaThreshold = 1.0
@@ -135,9 +135,17 @@ MaxNodes: TODO:
 MaxNodes = 1000000
 
 
+--Give fitness based off of score 
 ScoreFitness=false
 
-NovelAmount=3
+--Give fitness based off of how unique the orgranism is.
+--This is measured by going to each X and Y coordinate and see how rare that location is
+
+--How many orgranisms can be on one coordinate and still get fitness
+NovelAmount=2
+
+--Simple boolean to turn on or off
+NoveltySearch=true
 --[[
 GetPostions: Return the postion of Mario Using in game Hex Bits
 --]]
@@ -369,6 +377,10 @@ function newPool()
       --return set
     --end
 	pool.landscape = {} 
+
+	NetWorld=marioWorld
+	NetLevel=marioLevel
+	half=false
 	return pool
 end
 
@@ -1048,7 +1060,8 @@ function SetNoveltyFitness()
 	        	local genome=tonumber(sg)%100
 				--file:write("Species " .. species .. "\n")
 				--file:write("Genome " .. genome .. "\n")
-				--file:write("SpeciesFitness " .. pool.species[species].genomes[genome].fitness .." Loc " .. count .. "\n")
+				--file:write("SpeciesFitness " .. pool.species[species].genomes[genome].fitness .." Amount " .. count .. "\n")
+				console.writeline("Loc" .. loc)
 				pool.species[species].genomes[genome].fitness=pool.species[species].genomes[genome].fitness+((NovelAmount-count)*10000) 
 			end
 		end
@@ -1542,11 +1555,30 @@ function onExit()
 end
 
 function inPlay()	
-	return memory.readbyte(0x0747)==0 and memory.readbyte(0x071E)~=11
+	--First Byte 747 is The Timer for Level Reset
+	--Second Byte 71E is for Loading Screens
+	--Third Byte 00E is Player State .. Alive,Dead,Level Animation, Flagpole
+	--Last Byte is whether the play is on screen or not
+	return memory.readbyte(0x0747)==0 and memory.readbyte(0x071E)~=11 and (memory.readbyte(0x000E)==8 or memory.readbyte(0x000E)==1 or memory.readbyte(0x000E)==0) and memory.readbyte(0x00B5)<=1
 end
 
-function CalculateLocationCord()
-	return math.floor(marioY/16)*10000+memory.readbyte(0x6D) * 0x100 + math.floor(memory.readbyte(0x86)/16)
+function LevelChangeHalfway()
+	if memory.readbyte(0x071E)==11 and memory.readbyte(0x0728)~=0 and half==false then
+		half = true
+		Filename = "Level" .. World+1 .. Level+1 .. .5 ..".state"
+		console.writeline("Next Level Half")
+	end 	
+end
+
+function LevelChange()
+	if NetLevel~=marioLevel or NetWorld~=marioWorld then
+		Filename = "Level" .. World+1 .. Level+1 .. ".state"
+	end	
+end
+function CalculateLocationCord()	
+	--console.writeline("X ".. memory.readbyte(0x86).. " Page " .. memory.readbyte(0x6D) .. " Y " .. marioY )
+	--console.writeline( math.floor(marioY/16)*10000+memory.readbyte(0x6D) * 1000  + math.floor(memory.readbyte(0x86)/16) )
+	return math.floor(marioY/16)*10000+memory.readbyte(0x6D) * 1000 + math.floor(memory.readbyte(0x86)/16)
 end
 
 function CalculateSpeciesCord(species,genome)
@@ -1624,24 +1656,21 @@ while true do
 		getPositions()
 
 
-		--Populate Cordinates
-		local cordLocation=CalculateLocationCord() --y*10000+p*256+x*1
-		local cordSpecies=CalculateSpeciesCord(pool.currentSpecies,pool.currentGenome) 		
-		-- if not pcall(CheckLandscape(cordLocation,cordSpecies)) then
-  --     		pool.landscape[tostring(cordLocation)]={}
-  --     		pool.landscape[topool.landscapestring(cordLocation)][tostring(cordSpecies)]=true--console.writeline(pool.landscape[cordLocation)])
-		-- 	console.writeline("old")
-  --   	end
-		if pool.landscape[tostring(cordLocation)]==nil then
-			pool.landscape[tostring(cordLocation)]={}
+		if pool.currentFrame%10 == 0 then
+			--Populate Cordinates
+			local cordLocation=CalculateLocationCord() --y*10000+p*256+x*1
+			local cordSpecies=CalculateSpeciesCord(pool.currentSpecies,pool.currentGenome) 		
+
+			if pool.landscape[tostring(cordLocation)]==nil then
+				pool.landscape[tostring(cordLocation)]={}
+			end
+
+			if not pool.landscape[tostring(cordLocation)][tostring(cordSpecies)]==true then
+				pool.landscape[tostring(cordLocation)][tostring(cordSpecies)]=true
+				timeout = TimeoutConstant
+			end
+
 		end
-
-		if not pool.landscape[tostring(cordLocation)][tostring(cordSpecies)]==true then
-			pool.landscape[tostring(cordLocation)][tostring(cordSpecies)]=true
-			timeout = TimeoutConstant
-		end
-
-
 
 		--If mario reached more right than before reset his time to the constant
 		if marioX > rightmost then
@@ -1662,7 +1691,10 @@ while true do
 			--fitness equal how right subtracted from how long it takes
 			local fitness = rightmost - NetX
 			if ScoreFitness == true then
-				local fintess = fitness+1000*(marioScore - NetScore)
+				fitness = fitness+1000*(marioScore - NetScore)
+			end
+			if NoveltySearch == true then
+				fitness = 0
 			end
 			--Extra bonus for completeting the level
 			if gameinfo.getromname() == "Super Mario World (USA)" and rightmost > 4816 then
@@ -1732,6 +1764,8 @@ while true do
 	--Manual Update of Frame 	
 	pool.currentFrame = pool.currentFrame + 1
 	end
+	
+
 	--Actual Update of Frame
 	emu.frameadvance();
 end
