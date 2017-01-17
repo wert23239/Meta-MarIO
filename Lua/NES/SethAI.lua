@@ -321,6 +321,10 @@ function sigmoid(x)
 	return 2/(1+math.exp(-4.9*x))-1
 end
 
+-- function newNoveltySearchFitnessLandscape()
+-- 	pool.landscape = {}	
+-- end
+
 function newInnovation()
 	pool.innovation = pool.innovation + 1
 	return pool.innovation
@@ -340,7 +344,26 @@ function newPool()
 	pool.currentGenome = 1 -- Genome Number
 	pool.currentFrame = 0 --What frame in the game currecntly at. Made-up
 	pool.maxFitness = 0 --The highest fitness ever achieved.
-	
+	--List of Sets
+	--Key
+	--y*10,000
+	--p*256
+	--x*1
+	--Value
+	--A set with key
+	--Species*100
+	--Genome*1
+	--Value
+	--True
+	--For loop through set
+	--Subtract 20 - all #items in  < 20
+	--Stores a dictiornary of each 
+	--function Set (list)
+      --local set = {}
+      --for _, l in ipairs(list) do set[l] = true end
+      --return set
+    --end
+	pool.landscape = {} 
 	return pool
 end
 
@@ -1491,6 +1514,14 @@ function inPlay()
 	return memory.readbyte(0x0747)==0 and memory.readbyte(0x071E)~=11
 end
 
+function CalculateLocationCord()
+	return marioY*10000+marioX
+end
+
+function CalculateSpeciesCord(species,genome)
+	return species*100+genome
+end
+
 
 writeFile("temp.pool")
 
@@ -1555,6 +1586,16 @@ while true do
 
 		--Get Postion of Mario reading the Hex Bits
 		getPositions()
+
+
+		--Populate Cordinates
+		local cordLocation=CalculateLocationCord() --y*10000+p*256+x*1
+		local cordSpecies=CalculateSpeciesCord(pool.currentSpecies,pool.currentGenome) --species*100*1
+		-- if pool.landscape[cordLocation]==nil do
+		-- 	pool.landscape[cordLocation]={}
+		-- end 
+		-- pool.landscape[cordLocation][cordSpecies]=true
+		-- console.writeline("Location " .. cordLocation .. " species " .. cordSpecies)
 
 		--If mario reached more right than before reset his time to the constant
 		if marioX > rightmost then
