@@ -30,6 +30,7 @@ http://datacrystal.romhacking.net/wiki/Super_Mario_Bros.:RAM_map
 |0747,071E      |Freeze Timer      |  
 |07A0           |Level Timer       |
 |07D8-07DD      |Score             |
+|000E           |Dead,alive or can't move        |
 ##Distruptive Systems
 
 BizHawk Repo:
