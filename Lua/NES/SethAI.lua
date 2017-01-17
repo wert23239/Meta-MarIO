@@ -1031,15 +1031,15 @@ SetNoveltyFitness: Goes through all mario's and sets there fitness to whatever u
 --]]
 function SetNoveltyFitness()
 	local file = io.open("Fitness.pool", "w") 
-	for n,species in pairs(pool.species) do
-		file:write(species.topFitness .. "\n")
-		file:write(species.staleness .. "\n")
-		file:write(#species.genomes .. "\n")
-		for m,genome in pairs(species.genomes) do
-			console.writeline("Species".. n)
-			console.writeline("Genome" .. m)
-		end
-	end
+	-- for n,species in pairs(pool.species) do
+	-- 	file:write(species.topFitness .. "\n")
+	-- 	file:write(species.staleness .. "\n")
+	-- 	file:write(#species.genomes .. "\n")
+	-- 	for m,genome in pairs(species.genomes) do
+	-- 		console.writeline("Species".. n)
+	-- 		console.writeline("Genome" .. m)
+	-- 	end
+	-- end
 	for loc,set in pairs(pool.landscape) do 
 		file:write("Location ".. loc .. "\n")
 		console.writeline(loc)
