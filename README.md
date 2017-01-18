@@ -1,5 +1,5 @@
 
-![FitnessFunctionTeamGUI.jpg](FitnessFunctionTeamGUI.png?raw=true "Optional Title")
+![FitnessFunctionTeam.png](FitnessFunctionTeam.png?raw=true "Optional Title")
 
 # SpartaHacks17
 Castlevania Bizhawk Repo
