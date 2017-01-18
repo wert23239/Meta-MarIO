@@ -1048,7 +1048,7 @@ function SetNoveltyFitness()
 		for sg,value in pairs(set) do
         	count=count+1
 		end
-		if count<=forms.gettext(NoveltyConstantText) then
+		if count<=tonumber(forms.gettext(NoveltyConstantText)) then
 		 	for sg,value in pairs(set) do
 	        	local species=math.floor(tonumber(sg)/100)
 	        	local genome=tonumber(sg)%100
@@ -1056,7 +1056,7 @@ function SetNoveltyFitness()
 				--file:write("Genome " .. genome .. "\n")
 				--file:write("SpeciesFitness " .. pool.species[species].genomes[genome].fitness .." Amount " .. count .. "\n")
 				console.writeline("Loc" .. loc)
-				pool.species[species].genomes[genome].fitness=pool.species[species].genomes[genome].fitness+((forms.gettext(NoveltyConstantText)-count)*10000) 
+				pool.species[species].genomes[genome].fitness=pool.species[species].genomes[genome].fitness+(tonumber((forms.gettext(NoveltyConstantText))-count)*10000) 
 			end
 		end
 	end
@@ -1627,7 +1627,7 @@ FitnessCheckLabel = forms.label(form, "On", 230, 30)
 --Rightmost Label is the fitness for how far right you can go
 RightmostLabel = forms.label(form, "Rightmost ", 5, 55)
 --Each pixel right move is multiplied by this number
-RightMostAmount = forms.textbox(form, 1, 60, 20, nil, 120, 55)
+RightmostAmount = forms.textbox(form, 1, 60, 20, nil, 120, 55)
 --If an organism reaches farther than right than ever before during a generation reset the timeout constant
 RightmostTimeout = forms.checkbox(form, "", 270, 55)
 --Toggle the rightmost fitness type
@@ -1717,29 +1717,32 @@ while true do
 		--Get Postion of Mario reading the Hex Bits
 		getPositions()
 
-		-- if forms.ischecked(NoveltyFitness) or forms.ischecked(NoveltyTimeout) then
-		-- 	if pool.currentFrame%10 == 0 then
-		-- 		--Populate Cordinates
-		-- 		local cordLocation=CalculateLocationCord() --y*10000+p*256+x*1
-		-- 		local cordSpecies=CalculateSpeciesCord(pool.currentSpecies,pool.currentGenome) 		
+		--Sets Each Point a 
+		if forms.ischecked(NoveltyFitness) or forms.ischecked(NoveltyTimeout) then
+			if pool.currentFrame%10 == 0 then
+				--Populate Cordinates
+				local cordLocation=CalculateLocationCord() --y/16*10000+page*1000+x/16*1
+				local cordSpecies=CalculateSpeciesCord(pool.currentSpecies,pool.currentGenome) --speices*100+genome*1	
 
-		-- 		if pool.landscape[tostring(cordLocation)]==nil then
-		-- 			pool.landscape[tostring(cordLocation)]={}
-		-- 		end
+				if pool.landscape[tostring(cordLocation)]==nil then
+					pool.landscape[tostring(cordLocation)]={}
+				end
 
-		-- 		if not pool.landscape[tostring(cordLocation)][tostring(cordSpecies)]==true then
-		-- 			pool.landscape[tostring(cordLocation)][tostring(cordSpecies)]=true
-		-- 			if forms.ischecked(NoveltyTimeout) then
-		-- 				timeout = TimeoutConstant
-		-- 			then
-		-- 		end
+				if not pool.landscape[tostring(cordLocation)][tostring(cordSpecies)]==true then
+					pool.landscape[tostring(cordLocation)][tostring(cordSpecies)]=true
+					if forms.ischecked(NoveltyTimeout) then
+						timeout = TimeoutConstant
+					end
+				end
 
-		-- 	end
-		-- end
+			end
+		end
 		--If mario reached more right than before reset his time to the constant
-		if marioX > rightmost and forms.ischecked(RightmostFitness) then
+		if marioX > rightmost and ( forms.ischecked(RightmostFitness) or forms.ischecked(RightmostTimeout)  )then
 			rightmost = marioX
-			timeout = TimeoutConstant
+			if forms.ischecked(RightmostTimeout) then
+				timeout = TimeoutConstant
+			end
 		end
 		
 
