@@ -125,7 +125,7 @@ EnableMutationChance = 0.2
 --[[
 TimeoutConstant: How long it take till the enemies to despawn.
 --]]
-TimeoutConstant = 40
+TimeoutConstant = 80
 
 
 --[[
@@ -134,17 +134,15 @@ MaxNodes: TODO:
 MaxNodes = 1000000
 
 
---Give fitness based off of score 
-ScoreFitness=false
 
 --Give fitness based off of how unique the orgranism is.
 --This is measured by going to each X and Y coordinate and see how rare that location is
 
 --How many orgranisms can be on one coordinate and still get fitness
-NovelAmount=2
+NoveltyConstant=1
 
---Simple boolean to turn on or off
-NoveltySearch=true
+
+
 --[[
 GetPostions: Return the postion of Mario Using in game Hex Bits
 --]]
@@ -333,9 +331,6 @@ function sigmoid(x)
 	return 2/(1+math.exp(-4.9*x))-1
 end
 
--- function newNoveltySearchFitnessLandscape()
--- 	pool.landscape = {}	
--- end
 
 function newInnovation()
 	pool.innovation = pool.innovation + 1
@@ -1053,7 +1048,7 @@ function SetNoveltyFitness()
 		for sg,value in pairs(set) do
         	count=count+1
 		end
-		if count<NovelAmount then
+		if count<=forms.gettext(NoveltyConstantText) then
 		 	for sg,value in pairs(set) do
 	        	local species=math.floor(tonumber(sg)/100)
 	        	local genome=tonumber(sg)%100
@@ -1061,7 +1056,7 @@ function SetNoveltyFitness()
 				--file:write("Genome " .. genome .. "\n")
 				--file:write("SpeciesFitness " .. pool.species[species].genomes[genome].fitness .." Amount " .. count .. "\n")
 				console.writeline("Loc" .. loc)
-				pool.species[species].genomes[genome].fitness=pool.species[species].genomes[genome].fitness+((NovelAmount-count)*10000) 
+				pool.species[species].genomes[genome].fitness=pool.species[species].genomes[genome].fitness+((forms.gettext(NoveltyConstantText)-count)*10000) 
 			end
 		end
 	end
@@ -1121,7 +1116,9 @@ This does the following:
 -
 --]]
 function newGeneration()
-	SetNoveltyFitness()
+	if forms.ischecked(NoveltyFitness) then
+		SetNoveltyFitness()
+	end
 	pool.landscape={}
 	cullSpecies(false) -- Cull the bottom half of each species (The only comment written by SethBling in the entire code set)
 	rankGlobally() --rank all genomes by fitness order
@@ -1612,35 +1609,58 @@ maxFitnessLabel = forms.label(form, "Max Fitness: " .. math.floor(pool.maxFitnes
 --A checkbox to see the Mutation rates
 showMutationRates = forms.checkbox(form, "Show Mutate", 230, 3)
 
---A checkbox to see whether or not the eye10 and controls is shown
+--A checkbox to see whether or not the eye(inputs) and controls(outputs) is shown
 showNetwork = forms.checkbox(form, "Show Map", 120, 3)
 
+--Label to describe the differnt types of fitness
+
+--Name of fitness
 FitnessTypeLabel = forms.label(form, "Fitness Type:", 5, 30)
+--How much each fitness is worth
 FitnessAmountLabel = forms.label(form, "Amount", 117, 30)
+--Whether the fitness timeout constant can be reseted with this fitness.
+--The Fitness type DOESn't have to be on.
 FitnessTimeoutLabel = forms.label(form, "Timeout", 270, 30)
+--Enable this fitness
 FitnessCheckLabel = forms.label(form, "On", 230, 30)
 
+--Rightmost Label is the fitness for how far right you can go
 RightmostLabel = forms.label(form, "Rightmost ", 5, 55)
+--Each pixel right move is multiplied by this number
 RightMostAmount = forms.textbox(form, 1, 60, 20, nil, 120, 55)
+--If an organism reaches farther than right than ever before during a generation reset the timeout constant
 RightmostTimeout = forms.checkbox(form, "", 270, 55)
+--Toggle the rightmost fitness type
 RightmostFitness = forms.checkbox(form, "", 230, 55)
 
+--Novelty Label is the fitness for how unique an orgranism travels
 NoveltyLabel = forms.label(form, "Novelty ", 5, 80)
+--Each spot an orgranism goes to that No more than the Novelty Constant goes to gets this many points 
 NoveltyAmount = forms.textbox(form, 10000, 60, 20, nil, 120, 80)
+--Each new place an orgranism goes resets the timeout
 NoveltyTimeout = forms.checkbox(form, "", 270, 80)
+--Toggle the Novelty fitness type
 NoveltyFitness = forms.checkbox(form, "", 230, 80)
 
+--Score Label is the fitness for how much score an organism gains during a run
 ScoreLabel = forms.label(form, "Score ", 5, 105)
+--The Score is multiplied by this number
 ScoreAmount = forms.textbox(form, 1, 60, 20, nil, 120, 105)
-ScoreTimeout = forms.checkbox(form, "", 270, 105)
+--Each time the score changes an orgranism resets there constant
+--ScoreTimeout = forms.checkbox(form, "", 270, 105)
+--Toggle the Score fitness type
 ScoreFitness = forms.checkbox(form, "", 230, 105)
 
-NovetlyConstant = forms.textbox(form, 1, 30, 20, nil, 270, 130)
+--How many orgranism can visit a spot and it still be unique
+NoveltyConstantText = forms.textbox(form, NoveltyConstant, 30, 20, nil, 270, 130)
 NoveltyLabel = forms.label(form, "Novelty Constant: ", 170, 130)
-TimeoutConstant = forms.textbox(form, 80, 30, 20, nil, 120, 130)
+--How many frames till an orgranism dies off if not reset by a fitness
+TimeoutConstantText = forms.textbox(form, TimeoutConstant, 30, 20, nil, 120, 130)
 TimeoutLabel = forms.label(form, "Timeout Constant: ", 5, 130)
 
+--Play from the beginning each time but if you reach a check point or level end change the start location to this
 showDeterminedContinousPlay = forms.checkbox(form, "Determine Play", 120, 150)
+--Play from where the last orgranism left off
 showContinousPlay = forms.checkbox(form, "Continous Play", 5, 150)
 
 
@@ -1697,25 +1717,27 @@ while true do
 		--Get Postion of Mario reading the Hex Bits
 		getPositions()
 
+		-- if forms.ischecked(NoveltyFitness) or forms.ischecked(NoveltyTimeout) then
+		-- 	if pool.currentFrame%10 == 0 then
+		-- 		--Populate Cordinates
+		-- 		local cordLocation=CalculateLocationCord() --y*10000+p*256+x*1
+		-- 		local cordSpecies=CalculateSpeciesCord(pool.currentSpecies,pool.currentGenome) 		
 
-		if pool.currentFrame%10 == 0 then
-			--Populate Cordinates
-			local cordLocation=CalculateLocationCord() --y*10000+p*256+x*1
-			local cordSpecies=CalculateSpeciesCord(pool.currentSpecies,pool.currentGenome) 		
+		-- 		if pool.landscape[tostring(cordLocation)]==nil then
+		-- 			pool.landscape[tostring(cordLocation)]={}
+		-- 		end
 
-			if pool.landscape[tostring(cordLocation)]==nil then
-				pool.landscape[tostring(cordLocation)]={}
-			end
+		-- 		if not pool.landscape[tostring(cordLocation)][tostring(cordSpecies)]==true then
+		-- 			pool.landscape[tostring(cordLocation)][tostring(cordSpecies)]=true
+		-- 			if forms.ischecked(NoveltyTimeout) then
+		-- 				timeout = TimeoutConstant
+		-- 			then
+		-- 		end
 
-			if not pool.landscape[tostring(cordLocation)][tostring(cordSpecies)]==true then
-				pool.landscape[tostring(cordLocation)][tostring(cordSpecies)]=true
-				timeout = TimeoutConstant
-			end
-
-		end
-
+		-- 	end
+		-- end
 		--If mario reached more right than before reset his time to the constant
-		if marioX > rightmost then
+		if marioX > rightmost and forms.ischecked(RightmostFitness) then
 			rightmost = marioX
 			timeout = TimeoutConstant
 		end
@@ -1730,13 +1752,17 @@ while true do
 
 		--If the orgranism has not evolved within the allotted time end the run
 		if timeout + timeoutBonus <= 0 then
+
+			local fitness=0
 			--fitness equal how right subtracted from how long it takes
-			local fitness = rightmost - NetX
-			if ScoreFitness == true then
+			if forms.ischecked(RightmostFitness) then
+				fitness = rightmost - NetX
+			end
+			if forms.ischecked(ScoreFitness) then
 				fitness = fitness+1000*(marioScore - NetScore)
 			end
-			if NoveltySearch == true then
-				fitness = 0
+			if forms.ischecked(NoveltyFitness) then
+				fitness = fitness + 0
 			end
 			--Extra bonus for completeting the level
 			if gameinfo.getromname() == "Super Mario World (USA)" and rightmost > 4816 then
@@ -1795,7 +1821,7 @@ while true do
 		--Displays Max Fitness
 
 		local fitnessDisplay = rightmost - NetX
-			if ScoreFitness == true then
+			if forms.ischecked(ScoreFitness) then
 				local fitnessDisplay = fitnessDisplay+1000*(marioScore - NetScore)
 			end	
 		if not forms.ischecked(hideBanner) then
