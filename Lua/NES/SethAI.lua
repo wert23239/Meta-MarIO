@@ -1759,10 +1759,10 @@ while true do
 			local fitness=0
 			--fitness equal how right subtracted from how long it takes
 			if forms.ischecked(RightmostFitness) then
-				fitness = rightmost - NetX
+				fitness = forms.gettext(RightmostAmount)*(rightmost - NetX)
 			end
 			if forms.ischecked(ScoreFitness) then
-				fitness = fitness+1000*(marioScore - NetScore)
+				fitness = fitness+forms.gettext(ScoreAmount)*(marioScore - NetScore)
 			end
 			if forms.ischecked(NoveltyFitness) then
 				fitness = fitness + 0
@@ -1825,7 +1825,7 @@ while true do
 
 		local fitnessDisplay = rightmost - NetX
 			if forms.ischecked(ScoreFitness) then
-				local fitnessDisplay = fitnessDisplay+1000*(marioScore - NetScore)
+				local fitnessDisplay = fitnessDisplay+forms.gettext(ScoreAmount)*(marioScore - NetScore)
 			end	
 		if not forms.ischecked(hideBanner) then
 			gui.drawText(0, 12, "Gen " .. pool.generation .. " species " .. pool.currentSpecies .. " genome " .. pool.currentGenome .. " (" .. math.floor(measured/total*100) .. "%)", 0xFF000000, 11)
@@ -1834,11 +1834,11 @@ while true do
 		end
 	--Manual Update of Frame 	
 	pool.currentFrame = pool.currentFrame + 1
-	else
+	elseif forms.ischecked(showDeterminedContinousPlay) then
 		getPositions()
 		LevelChange()
 		LevelChangeHalfway()
-		
+			
 	end
 	
 
