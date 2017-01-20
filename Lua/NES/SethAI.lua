@@ -1659,7 +1659,7 @@ TimeoutConstantText = forms.textbox(form, TimeoutConstant, 30, 20, nil, 120, 130
 TimeoutLabel = forms.label(form, "Timeout Constant: ", 5, 130)
 
 --Play from the beginning each time but if you reach a check point or level end change the start location to this
-showDeterminedContinousPlay = forms.checkbox(form, "Determine Play", 120, 150)
+--showDeterminedContinousPlay = forms.checkbox(form, "Determine Play", 120, 150)
 --Play from where the last orgranism left off
 showContinousPlay = forms.checkbox(form, "Continous Play", 5, 150)
 
@@ -1689,7 +1689,7 @@ TimeoutAuto=false
 while true do
 	--Sets the Top Bar Color
 	local backgroundColor = 0xD0FFFFFF
-	client.SetGameExtraPadding(pool.generation,0,0,0); 
+	--client.SetGameExtraPadding(pool.generation,0,0,0); 
 	--Draws the Top Box
 	if not forms.ischecked(hideBanner) then
  		gui.drawBox(0, 0, 300, 40, backgroundColor, backgroundColor)
