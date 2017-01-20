@@ -92,7 +92,7 @@ Outputs = #ButtonNames
 Population: The Number of Genomes
 Deltas: TODO: 
 --]]
-Population = 40
+Population = 300
 DeltaDisjoint = 2.0
 DeltaWeights = 0.4
 DeltaThreshold = 1.0
@@ -1731,7 +1731,7 @@ while true do
 				if not pool.landscape[tostring(cordLocation)][tostring(cordSpecies)]==true then
 					pool.landscape[tostring(cordLocation)][tostring(cordSpecies)]=true
 					if forms.ischecked(NoveltyTimeout) then
-						timeout = TimeoutConstant
+						timeout = tonumber(forms.gettext(TimeoutConstantText))
 					end
 				end
 
@@ -1741,7 +1741,7 @@ while true do
 		if marioX > rightmost and ( forms.ischecked(RightmostFitness) or forms.ischecked(RightmostTimeout)  )then
 			rightmost = marioX
 			if forms.ischecked(RightmostTimeout) then
-				timeout = TimeoutConstant
+				timeout = tonumber(forms.gettext(TimeoutConstantText))
 			end
 		end
 		
@@ -1759,10 +1759,10 @@ while true do
 			local fitness=0
 			--fitness equal how right subtracted from how long it takes
 			if forms.ischecked(RightmostFitness) then
-				fitness = forms.gettext(RightmostAmount)*(rightmost - NetX)
+				fitness = tonumber(forms.gettext(RightmostAmount))*(rightmost - NetX)
 			end
 			if forms.ischecked(ScoreFitness) then
-				fitness = fitness+forms.gettext(ScoreAmount)*(marioScore - NetScore)
+				fitness = fitness+tonumber(forms.gettext(ScoreAmount))*(marioScore - NetScore)
 			end
 			if forms.ischecked(NoveltyFitness) then
 				fitness = fitness + 0
@@ -1822,11 +1822,14 @@ while true do
 		--Displays in the banner the Generation, species, and genome
 		--Displays Fitness
 		--Displays Max Fitness
-
-		local fitnessDisplay = rightmost - NetX
-			if forms.ischecked(ScoreFitness) then
-				local fitnessDisplay = fitnessDisplay+forms.gettext(ScoreAmount)*(marioScore - NetScore)
-			end	
+		local fitnessDisplay = 0
+		if forms.ischecked(RightmostFitness) then
+				fitnessDisplay = (rightmost - NetX)*tonumber(forms.gettext(RightmostAmount))
+		end	
+		
+		if forms.ischecked(ScoreFitness) then
+				fitnessDisplay = fitnessDisplay+tonumber(forms.gettext(ScoreAmount))*(marioScore - NetScore)
+		end	
 		if not forms.ischecked(hideBanner) then
 			gui.drawText(0, 12, "Gen " .. pool.generation .. " species " .. pool.currentSpecies .. " genome " .. pool.currentGenome .. " (" .. math.floor(measured/total*100) .. "%)", 0xFF000000, 11)
 			gui.drawText(0, 24, "Fitness: " .. math.floor(fitnessDisplay), 0xFF000000, 11)
@@ -1834,7 +1837,7 @@ while true do
 		end
 	--Manual Update of Frame 	
 	pool.currentFrame = pool.currentFrame + 1
-	elseif forms.ischecked(showDeterminedContinousPlay) then
+	else
 		getPositions()
 		LevelChange()
 		LevelChangeHalfway()
