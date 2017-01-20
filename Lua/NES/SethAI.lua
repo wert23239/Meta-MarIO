@@ -1184,7 +1184,7 @@ function initializeRun()
 	end
 	rightmost = 0
 	pool.currentFrame = 0
-	timeout = TimeoutConstant
+	timeout =TimeoutConstant
 	NetX = memory.readbyte(0x6D) * 0x100 + memory.readbyte(0x86)
 	NetScore = memory.readbyte(0x07D8)*100000+memory.readbyte(0x07D9)*10000+memory.readbyte(0x07DA)*1000
 	NetScore = NetScore + memory.readbyte(0x07DB)*100 + memory.readbyte(0x07DC)*10 + memory.readbyte(0x07DC)*1
@@ -1683,6 +1683,7 @@ saveLoadFile = forms.textbox(form, Filename .. ".pool", 110, 25, nil, 80, 210)
 saveLoadLabel = forms.label(form, "Save/Load:", 5, 210)
 
 
+TimeoutAuto=false
 
 --Infinte Fitness Loop
 while true do
@@ -1710,6 +1711,7 @@ while true do
 		if pool.currentFrame%5 == 0 then
 			evaluateCurrent()
 		end
+
 
 		--Sets the output to whatever the netowrk chooses
 		joypad.set(controller)
@@ -1754,8 +1756,8 @@ while true do
 		local timeoutBonus = pool.currentFrame / 4
 
 		--If the orgranism has not evolved within the allotted time end the run
-		if timeout + timeoutBonus <= 0 then
-
+		if timeout + timeoutBonus <= 0  or TimeoutAuto == true then
+			TimeoutAuto=false
 			local fitness=0
 			--fitness equal how right subtracted from how long it takes
 			if forms.ischecked(RightmostFitness) then
@@ -1841,7 +1843,10 @@ while true do
 		getPositions()
 		LevelChange()
 		LevelChangeHalfway()
-			
+		if memory.readbyte(0x071E)==11 then
+			TimeoutAuto=true
+		end
+		
 	end
 	
 
