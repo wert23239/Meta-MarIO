@@ -1129,7 +1129,7 @@ function newGeneration()
 		SetNoveltyFitness()
 	end
 	pool.landscape={}
-	RoundAmount=3
+	RoundAmount=0
 	cullSpecies(false) -- Cull the bottom half of each species (The only comment written by SethBling in the entire code set)
 	rankGlobally() --rank all genomes by fitness order
 	removeStaleSpecies() --removes species who haven't improved in a while
@@ -1259,9 +1259,14 @@ function nextGenome()
 		pool.currentGenome = 1
 		pool.currentSpecies = pool.currentSpecies+1
 		if pool.currentSpecies > #pool.species then
-			RoundAmount=RoundAmount-1
+			RoundAmount=RoundAmount+1
 			console.writeline("Round".. RoundAmount .. "Finished")
+<<<<<<< HEAD
 			if RoundAmount==0 then
+=======
+			if RoundAmount >= tonumber(forms.gettext(RoundAmountValue)) or forms.ischecked(RoundAmountFitness) == false then
+			console.writeline("RoundAmount".. tonumber(forms.gettext(RoundAmountValue)) .. "Finished")
+>>>>>>> c3266f4... Fixed the round amount
 			newGeneration()
 			end
 			resetGenomeRan()
