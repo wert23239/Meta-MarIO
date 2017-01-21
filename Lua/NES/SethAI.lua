@@ -1563,8 +1563,10 @@ function LevelChangeHalfway()
 		half = true
 		Filename = "Level" .. NetWorld+1 .. NetLevel+1 .. 5 ..".state"
 		console.writeline("Next Level Half")
+		writeFile(Filename .. pool.generation .. ".txt")
 		--resetStaleFitness
 	end 	
+
 end
 
 function LevelChange()
@@ -1573,6 +1575,7 @@ function LevelChange()
 		NetLevel=marioLevel
 		half=false
 		Filename = "Level" .. NetWorld+1 .. NetLevel+1 .. ".state"
+		writeFile(Filename .. pool.generation .. ".txt")
 		console.writeline("Next Level")
 		--resetStaleFitness
 	end	
