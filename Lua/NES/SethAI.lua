@@ -69,7 +69,8 @@ It's where the inputs will be taken in at.
 --]]
 BoxRadius = 6
 
-
+FilenameTraining = "t1.state"
+training = false
 --[[
 InputSize: is the amount of inputs the Organism takes in.
 There is two times the amount of the box because there is two inputs
@@ -1182,7 +1183,9 @@ end
 initalizeRun: Before a new orgranism starts
 --]]
 function initializeRun()
-	if(memory.readbyte(0x0770)==0 or not forms.ischecked(showContinousPlay)) then
+	if training then
+		savestate.load(FilenameTraining);
+	elseif(memory.readbyte(0x0770)==0 or not forms.ischecked(showContinousPlay)) then
 		savestate.load(Filename); --Load from a specfic savestates
 	end
 	rightmost = 0
@@ -1566,7 +1569,7 @@ end
 
 
 --[[
-LevelChangeHalfway: 
+LevelChangeHalfway:
 --]]
 function LevelChangeHalfway()
 	if memory.readbyte(0x071E)==11 and memory.readbyte(0x0728)~=0 and half==false then
@@ -1596,7 +1599,7 @@ function LevelChange()
 end
 
 --[[
-CalculateLocationCord: Calculates a unique location identifier for the 
+CalculateLocationCord: Calculates a unique location identifier for the
 Novelty search hash table
 --]]
 function CalculateLocationCord()
@@ -1865,8 +1868,10 @@ while true do
 	pool.currentFrame = pool.currentFrame + 1
 	else
 		getPositions()
-		LevelChange()
-		LevelChangeHalfway()
+		if not training then
+			LevelChange()
+			LevelChangeHalfway()
+		end
 		if memory.readbyte(0x071E)==11 then
 			TimeoutAuto=true
 		end
