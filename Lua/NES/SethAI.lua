@@ -69,8 +69,13 @@ It's where the inputs will be taken in at.
 --]]
 BoxRadius = 6
 
+
 FilenameTraining = "t1.state"
 training = false
+RoundAmountConstant = 3
+RoundAmount = 0
+
+
 --[[
 InputSize: is the amount of inputs the Organism takes in.
 There is two times the amount of the box because there is two inputs
@@ -93,7 +98,7 @@ Outputs = #ButtonNames
 Population: The Number of Genomes
 Deltas: TODO:
 --]]
-Population = 300
+Population = 10
 DeltaDisjoint = 2.0
 DeltaWeights = 0.4
 DeltaThreshold = 1.0
@@ -412,7 +417,7 @@ function newGenome()
 	genome.mutationRates["enable"] = EnableMutationChance
 	genome.mutationRates["disable"] = DisableMutationChance
 	genome.mutationRates["step"] = StepSize
-
+	genome.ran=false
 	return genome
 end
 
@@ -1124,6 +1129,7 @@ function newGeneration()
 		SetNoveltyFitness()
 	end
 	pool.landscape={}
+	RoundAmount=0
 	cullSpecies(false) -- Cull the bottom half of each species (The only comment written by SethBling in the entire code set)
 	rankGlobally() --rank all genomes by fitness order
 	removeStaleSpecies() --removes species who haven't improved in a while
@@ -1234,6 +1240,14 @@ if pool == nil then
 	initializePool()
 end
 
+function resetGenomeRan(  )
+	for n,species in pairs(pool.species) do
+		for m,genome in pairs(species.genomes) do
+			genome.ran = false
+		end
+	end
+end
+
 
 --[[
 nextGenome: Get next available genome if none start a new generation
@@ -1245,7 +1259,13 @@ function nextGenome()
 		pool.currentGenome = 1
 		pool.currentSpecies = pool.currentSpecies+1
 		if pool.currentSpecies > #pool.species then
+			RoundAmount=RoundAmount+1
+			console.writeline("Round".. RoundAmount .. "Finished")
+			if RoundAmount >= tonumber(forms.gettext(RoundAmountValue)) or forms.ischecked(RoundAmountFitness) == false then
+			console.writeline("RoundAmount".. tonumber(forms.gettext(RoundAmountValue)) .. "Finished")
 			newGeneration()
+			end
+			resetGenomeRan()
 			pool.currentSpecies = 1
 		end
 	end
@@ -1258,8 +1278,8 @@ specfic species and genome have been mesaured.
 function fitnessAlreadyMeasured()
 	local species = pool.species[pool.currentSpecies]
 	local genome = species.genomes[pool.currentGenome]
-
-	return genome.fitness ~= 0
+	return genome.ran ~= false
+	--return genome.fitness ~= 0
 end
 
 
@@ -1569,7 +1589,7 @@ end
 
 
 --[[
-LevelChangeHalfway:
+LevelChangeHalfway: Check is Mario has gotten past the current World
 --]]
 function LevelChangeHalfway()
 	if memory.readbyte(0x071E)==11 and memory.readbyte(0x0728)~=0 and half==false then
@@ -1625,7 +1645,7 @@ event.onexit(onExit)
 
 
 --Create Fitness Form
-form = forms.newform(340, 280, "Fitness")
+form = forms.newform(500, 500, "Fitness")
 --MaxFitness is the current Max
 maxFitnessLabel = forms.label(form, "Max Fitness: " .. math.floor(pool.maxFitness), 5, 8)
 --Checkbox are bools used in the infinite while loop
@@ -1676,36 +1696,41 @@ ScoreAmount = forms.textbox(form, 1, 60, 20, nil, 120, 105)
 --Toggle the Score fitness type
 ScoreFitness = forms.checkbox(form, "", 230, 105)
 
+-- Round Amount
+RoundLabel = forms.label(form, "Round Amount ", 5, 130)
+RoundAmountValue = forms.textbox(form, RoundAmountConstant, 60, 20, nil, 120, 130)
+RoundAmountFitness = forms.checkbox(form, "", 230, 130)
+
 --How many orgranism can visit a spot and it still be unique
-NoveltyConstantText = forms.textbox(form, NoveltyConstant, 30, 20, nil, 270, 130)
-NoveltyLabel = forms.label(form, "Novelty Constant: ", 170, 130)
+NoveltyConstantText = forms.textbox(form, NoveltyConstant, 30, 20, nil, 270, 155)
+NoveltyLabel = forms.label(form, "Novelty Constant: ", 170, 155)
 --How many frames till an orgranism dies off if not reset by a fitness
-TimeoutConstantText = forms.textbox(form, TimeoutConstant, 30, 20, nil, 120, 130)
-TimeoutLabel = forms.label(form, "Timeout Constant: ", 5, 130)
+TimeoutConstantText = forms.textbox(form, TimeoutConstant, 30, 20, nil, 120, 155)
+TimeoutLabel = forms.label(form, "Timeout Constant: ", 5, 155)
 
 --Play from the beginning each time but if you reach a check point or level end change the start location to this
---showDeterminedContinousPlay = forms.checkbox(form, "Determine Play", 120, 150)
+--showDeterminedContinousPlay = forms.checkbox(form, "Determine Play", 120, 180)
 --Play from where the last orgranism left off
-showContinousPlay = forms.checkbox(form, "Continous Play", 5, 150)
+showContinousPlay = forms.checkbox(form, "Continous Play", 5, 180)
 
 
 --Save the Network
-saveButton = forms.button(form, "Save", savePool, 5, 175)
+saveButton = forms.button(form, "Save", savePool, 5, 205)
 --Load the Network
-loadButton = forms.button(form, "Load", loadPool, 80, 175)
+loadButton = forms.button(form, "Load", loadPool, 80, 205)
 --Restart the experiment
-restartButton = forms.button(form, "Restart", initializePool, 75+80, 175)
+restartButton = forms.button(form, "Restart", initializePool, 75+80, 205)
 
 --Calls PlayTop function
-playTopButton = forms.button(form, "Play Top", playTop, 75+75+80, 175)
+playTopButton = forms.button(form, "Play Top", playTop, 75+75+80, 205)
 
 
 --Hides banner
-hideBanner = forms.checkbox(form, "Hide Banner", 210, 210)
+hideBanner = forms.checkbox(form, "Hide Banner", 210, 230)
 
 --What you are going to name the file
-saveLoadFile = forms.textbox(form, Filename .. ".pool", 110, 25, nil, 80, 210)
-saveLoadLabel = forms.label(form, "Save/Load:", 5, 210)
+saveLoadFile = forms.textbox(form, Filename .. ".pool", 110, 25, nil, 80, 230)
+saveLoadLabel = forms.label(form, "Save/Load:", 5, 230)
 
 
 TimeoutAuto=false
@@ -1784,6 +1809,7 @@ while true do
 		if timeout + timeoutBonus <= 0  or TimeoutAuto == true then
 			TimeoutAuto=false
 			local fitness=0
+			genome.ran=true
 			--fitness equal how right subtracted from how long it takes
 			if forms.ischecked(RightmostFitness) then
 				fitness = tonumber(forms.gettext(RightmostAmount))*(rightmost - NetX)
@@ -1808,7 +1834,10 @@ while true do
 			end
 
 			--Set the current genomes fitness to the local fitness
-			genome.fitness = fitness
+			if genome.fitness < fitness then
+				genome.fitness = fitness
+			end
+
 
 			--If newfitness record then
 			if fitness > pool.maxFitness then
