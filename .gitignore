@@ -1,2 +1,3 @@
 #Pool Files
-backup.*.state.pool
+*.state.pool
+config.ini
