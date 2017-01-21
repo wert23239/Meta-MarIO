@@ -1,0 +1,830 @@
+Location 120513
+Species 3
+Genome 3
+SpeciesFitness 85 Loc 4
+Species 3
+Genome 2
+SpeciesFitness 85 Loc 4
+Species 2
+Genome 2
+SpeciesFitness 45 Loc 4
+Species 3
+Genome 4
+SpeciesFitness 84 Loc 4
+Location 110265
+Species 4
+Genome 2
+SpeciesFitness -1 Loc 7
+Species 4
+Genome 3
+SpeciesFitness -1 Loc 7
+Species 1
+Genome 5
+SpeciesFitness -1 Loc 7
+Species 1
+Genome 4
+SpeciesFitness -1 Loc 7
+Species 4
+Genome 5
+SpeciesFitness -1 Loc 7
+Species 1
+Genome 3
+SpeciesFitness -1 Loc 7
+Species 1
+Genome 2
+SpeciesFitness -1 Loc 7
+Location 70512
+Species 2
+Genome 4
+SpeciesFitness 85 Loc 4
+Species 3
+Genome 4
+SpeciesFitness 160084 Loc 4
+Species 2
+Genome 2
+SpeciesFitness 160045 Loc 4
+Species 2
+Genome 3
+SpeciesFitness 85 Loc 4
+Location 90512
+Species 2
+Genome 4
+SpeciesFitness 160085 Loc 6
+Species 3
+Genome 2
+SpeciesFitness 160085 Loc 6
+Species 3
+Genome 4
+SpeciesFitness 320084 Loc 6
+Species 3
+Genome 3
+SpeciesFitness 160085 Loc 6
+Species 2
+Genome 2
+SpeciesFitness 320045 Loc 6
+Species 2
+Genome 3
+SpeciesFitness 160085 Loc 6
+Location 80512
+Species 2
+Genome 4
+SpeciesFitness 300085 Loc 6
+Species 3
+Genome 2
+SpeciesFitness 300085 Loc 6
+Species 3
+Genome 4
+SpeciesFitness 460084 Loc 6
+Species 3
+Genome 3
+SpeciesFitness 300085 Loc 6
+Species 2
+Genome 2
+SpeciesFitness 460045 Loc 6
+Species 2
+Genome 3
+SpeciesFitness 300085 Loc 6
+Location 110512
+Species 3
+Genome 4
+SpeciesFitness 600084 Loc 1
+Location 110270
+Species 1
+Genome 5
+SpeciesFitness 129999 Loc 4
+Species 1
+Genome 4
+SpeciesFitness 129999 Loc 4
+Species 1
+Genome 3
+SpeciesFitness 129999 Loc 4
+Species 1
+Genome 2
+SpeciesFitness 129999 Loc 4
+Location 80268
+Species 1
+Genome 5
+SpeciesFitness 289999 Loc 1
+Location 90268
+Species 1
+Genome 4
+SpeciesFitness 289999 Loc 1
+Location 120267
+Species 3
+Genome 5
+SpeciesFitness -1 Loc 1
+Location 110266
+Species 3
+Genome 5
+SpeciesFitness 189999 Loc 3
+Species 4
+Genome 4
+SpeciesFitness -1 Loc 3
+Species 1
+Genome 4
+SpeciesFitness 479999 Loc 3
+Location 80266
+Species 1
+Genome 5
+SpeciesFitness 479999 Loc 3
+Species 1
+Genome 3
+SpeciesFitness 289999 Loc 3
+Species 1
+Genome 2
+SpeciesFitness 289999 Loc 3
+Location 90266
+Species 1
+Genome 5
+SpeciesFitness 649999 Loc 3
+Species 1
+Genome 3
+SpeciesFitness 459999 Loc 3
+Species 1
+Genome 2
+SpeciesFitness 459999 Loc 3
+Location 120266
+Species 3
+Genome 5
+SpeciesFitness 359999 Loc 1
+Location 90514
+Species 2
+Genome 4
+SpeciesFitness 440085 Loc 2
+Species 2
+Genome 3
+SpeciesFitness 440085 Loc 2
+Location 110269
+Species 3
+Genome 3
+SpeciesFitness 440085 Loc 5
+Species 3
+Genome 2
+SpeciesFitness 440085 Loc 5
+Species 1
+Genome 5
+SpeciesFitness 819999 Loc 5
+Species 1
+Genome 3
+SpeciesFitness 629999 Loc 5
+Species 1
+Genome 2
+SpeciesFitness 629999 Loc 5
+Location 110271
+Species 3
+Genome 3
+SpeciesFitness 590085 Loc 15
+Species 4
+Genome 3
+SpeciesFitness 129999 Loc 15
+Species 1
+Genome 5
+SpeciesFitness 969999 Loc 15
+Species 4
+Genome 5
+SpeciesFitness 129999 Loc 15
+Species 4
+Genome 4
+SpeciesFitness 169999 Loc 15
+Species 1
+Genome 3
+SpeciesFitness 779999 Loc 15
+Species 2
+Genome 3
+SpeciesFitness 620085 Loc 15
+Species 2
+Genome 4
+SpeciesFitness 620085 Loc 15
+Species 3
+Genome 2
+SpeciesFitness 590085 Loc 15
+Species 4
+Genome 2
+SpeciesFitness 129999 Loc 15
+Species 1
+Genome 4
+SpeciesFitness 649999 Loc 15
+Species 3
+Genome 5
+SpeciesFitness 549999 Loc 15
+Species 3
+Genome 4
+SpeciesFitness 790084 Loc 15
+Species 2
+Genome 2
+SpeciesFitness 600045 Loc 15
+Species 1
+Genome 2
+SpeciesFitness 779999 Loc 15
+Location 100267
+Species 3
+Genome 5
+SpeciesFitness 599999 Loc 9
+Species 4
+Genome 3
+SpeciesFitness 179999 Loc 9
+Species 1
+Genome 5
+SpeciesFitness 1019999 Loc 9
+Species 1
+Genome 3
+SpeciesFitness 829999 Loc 9
+Species 4
+Genome 5
+SpeciesFitness 179999 Loc 9
+Species 4
+Genome 2
+SpeciesFitness 179999 Loc 9
+Species 1
+Genome 4
+SpeciesFitness 699999 Loc 9
+Species 4
+Genome 4
+SpeciesFitness 219999 Loc 9
+Species 1
+Genome 2
+SpeciesFitness 829999 Loc 9
+Location 100513
+Species 2
+Genome 2
+SpeciesFitness 650045 Loc 1
+Location 70270
+Species 3
+Genome 5
+SpeciesFitness 709999 Loc 5
+Species 4
+Genome 3
+SpeciesFitness 289999 Loc 5
+Species 4
+Genome 2
+SpeciesFitness 289999 Loc 5
+Species 4
+Genome 4
+SpeciesFitness 329999 Loc 5
+Species 4
+Genome 5
+SpeciesFitness 289999 Loc 5
+Location 120516
+Species 3
+Genome 3
+SpeciesFitness 640085 Loc 5
+Species 3
+Genome 2
+SpeciesFitness 640085 Loc 5
+Species 3
+Genome 4
+SpeciesFitness 840084 Loc 5
+Species 2
+Genome 4
+SpeciesFitness 670085 Loc 5
+Species 2
+Genome 3
+SpeciesFitness 670085 Loc 5
+Location 80269
+Species 4
+Genome 2
+SpeciesFitness 439999 Loc 5
+Species 4
+Genome 3
+SpeciesFitness 439999 Loc 5
+Species 1
+Genome 5
+SpeciesFitness 1129999 Loc 5
+Species 4
+Genome 4
+SpeciesFitness 479999 Loc 5
+Species 4
+Genome 5
+SpeciesFitness 439999 Loc 5
+Location 110514
+Species 2
+Genome 4
+SpeciesFitness 820085 Loc 2
+Species 2
+Genome 3
+SpeciesFitness 820085 Loc 2
+Location 80270
+Species 3
+Genome 5
+SpeciesFitness 859999 Loc 7
+Species 3
+Genome 2
+SpeciesFitness 790085 Loc 7
+Species 4
+Genome 2
+SpeciesFitness 589999 Loc 7
+Species 3
+Genome 3
+SpeciesFitness 790085 Loc 7
+Species 4
+Genome 3
+SpeciesFitness 589999 Loc 7
+Species 4
+Genome 4
+SpeciesFitness 629999 Loc 7
+Species 4
+Genome 5
+SpeciesFitness 589999 Loc 7
+Location 90269
+Species 3
+Genome 5
+SpeciesFitness 989999 Loc 9
+Species 4
+Genome 3
+SpeciesFitness 719999 Loc 9
+Species 1
+Genome 5
+SpeciesFitness 1279999 Loc 9
+Species 1
+Genome 3
+SpeciesFitness 939999 Loc 9
+Species 4
+Genome 5
+SpeciesFitness 719999 Loc 9
+Species 4
+Genome 2
+SpeciesFitness 719999 Loc 9
+Species 1
+Genome 4
+SpeciesFitness 809999 Loc 9
+Species 4
+Genome 4
+SpeciesFitness 759999 Loc 9
+Species 1
+Genome 2
+SpeciesFitness 939999 Loc 9
+Location 70271
+Species 3
+Genome 3
+SpeciesFitness 920085 Loc 3
+Species 3
+Genome 2
+SpeciesFitness 920085 Loc 3
+Species 3
+Genome 5
+SpeciesFitness 1099999 Loc 3
+Location 120265
+Species 3
+Genome 5
+SpeciesFitness 1269999 Loc 9
+Species 4
+Genome 3
+SpeciesFitness 829999 Loc 9
+Species 1
+Genome 5
+SpeciesFitness 1389999 Loc 9
+Species 1
+Genome 3
+SpeciesFitness 1049999 Loc 9
+Species 4
+Genome 5
+SpeciesFitness 829999 Loc 9
+Species 4
+Genome 2
+SpeciesFitness 829999 Loc 9
+Species 1
+Genome 4
+SpeciesFitness 919999 Loc 9
+Species 4
+Genome 4
+SpeciesFitness 869999 Loc 9
+Species 1
+Genome 2
+SpeciesFitness 1049999 Loc 9
+Location 80271
+Species 3
+Genome 5
+SpeciesFitness 1379999 Loc 7
+Species 3
+Genome 2
+SpeciesFitness 1090085 Loc 7
+Species 4
+Genome 2
+SpeciesFitness 939999 Loc 7
+Species 3
+Genome 3
+SpeciesFitness 1090085 Loc 7
+Species 4
+Genome 3
+SpeciesFitness 939999 Loc 7
+Species 4
+Genome 4
+SpeciesFitness 979999 Loc 7
+Species 4
+Genome 5
+SpeciesFitness 939999 Loc 7
+Location 100265
+Species 4
+Genome 2
+SpeciesFitness 1069999 Loc 7
+Species 4
+Genome 3
+SpeciesFitness 1069999 Loc 7
+Species 1
+Genome 5
+SpeciesFitness 1499999 Loc 7
+Species 1
+Genome 4
+SpeciesFitness 1029999 Loc 7
+Species 4
+Genome 5
+SpeciesFitness 1069999 Loc 7
+Species 1
+Genome 3
+SpeciesFitness 1159999 Loc 7
+Species 1
+Genome 2
+SpeciesFitness 1159999 Loc 7
+Location 70513
+Species 2
+Genome 4
+SpeciesFitness 1000085 Loc 2
+Species 2
+Genome 3
+SpeciesFitness 1000085 Loc 2
+Location 120517
+Species 3
+Genome 3
+SpeciesFitness 1220085 Loc 5
+Species 3
+Genome 2
+SpeciesFitness 1220085 Loc 5
+Species 3
+Genome 4
+SpeciesFitness 990084 Loc 5
+Species 2
+Genome 4
+SpeciesFitness 1180085 Loc 5
+Species 2
+Genome 3
+SpeciesFitness 1180085 Loc 5
+Location 90513
+Species 2
+Genome 4
+SpeciesFitness 1330085 Loc 3
+Species 2
+Genome 2
+SpeciesFitness 840045 Loc 3
+Species 2
+Genome 3
+SpeciesFitness 1330085 Loc 3
+Location 80513
+Species 2
+Genome 4
+SpeciesFitness 1500085 Loc 3
+Species 2
+Genome 2
+SpeciesFitness 1010045 Loc 3
+Species 2
+Genome 3
+SpeciesFitness 1500085 Loc 3
+Location 120270
+Species 3
+Genome 3
+SpeciesFitness 1370085 Loc 5
+Species 3
+Genome 2
+SpeciesFitness 1370085 Loc 5
+Species 1
+Genome 4
+SpeciesFitness 1159999 Loc 5
+Species 1
+Genome 3
+SpeciesFitness 1289999 Loc 5
+Species 1
+Genome 2
+SpeciesFitness 1289999 Loc 5
+Location 100512
+Species 3
+Genome 4
+SpeciesFitness 1140084 Loc 1
+Location 120515
+Species 3
+Genome 3
+SpeciesFitness 1520085 Loc 5
+Species 3
+Genome 2
+SpeciesFitness 1520085 Loc 5
+Species 3
+Genome 4
+SpeciesFitness 1330084 Loc 5
+Species 2
+Genome 4
+SpeciesFitness 1670085 Loc 5
+Species 2
+Genome 3
+SpeciesFitness 1670085 Loc 5
+Location 120512
+Species 3
+Genome 3
+SpeciesFitness 1670085 Loc 3
+Species 3
+Genome 2
+SpeciesFitness 1670085 Loc 3
+Species 3
+Genome 4
+SpeciesFitness 1480084 Loc 3
+Location 90270
+Species 3
+Genome 3
+SpeciesFitness 1840085 Loc 4
+Species 3
+Genome 2
+SpeciesFitness 1840085 Loc 4
+Species 1
+Genome 5
+SpeciesFitness 1629999 Loc 4
+Species 3
+Genome 5
+SpeciesFitness 1509999 Loc 4
+Location 100514
+Species 2
+Genome 4
+SpeciesFitness 1820085 Loc 2
+Species 2
+Genome 3
+SpeciesFitness 1820085 Loc 2
+Location 110513
+Species 2
+Genome 2
+SpeciesFitness 1180045 Loc 1
+Location 120514
+Species 3
+Genome 3
+SpeciesFitness 2000085 Loc 4
+Species 3
+Genome 2
+SpeciesFitness 2000085 Loc 4
+Species 2
+Genome 2
+SpeciesFitness 1370045 Loc 4
+Species 3
+Genome 4
+SpeciesFitness 1650084 Loc 4
+Location 100266
+Species 4
+Genome 2
+SpeciesFitness 1199999 Loc 6
+Species 4
+Genome 3
+SpeciesFitness 1199999 Loc 6
+Species 1
+Genome 4
+SpeciesFitness 1309999 Loc 6
+Species 3
+Genome 5
+SpeciesFitness 1669999 Loc 6
+Species 4
+Genome 4
+SpeciesFitness 1109999 Loc 6
+Species 4
+Genome 5
+SpeciesFitness 1199999 Loc 6
+Location 80267
+Species 1
+Genome 5
+SpeciesFitness 1789999 Loc 1
+Location 100270
+Species 3
+Genome 3
+SpeciesFitness 2160085 Loc 6
+Species 3
+Genome 2
+SpeciesFitness 2160085 Loc 6
+Species 1
+Genome 5
+SpeciesFitness 1979999 Loc 6
+Species 1
+Genome 4
+SpeciesFitness 1449999 Loc 6
+Species 1
+Genome 3
+SpeciesFitness 1439999 Loc 6
+Species 1
+Genome 2
+SpeciesFitness 1439999 Loc 6
+Location 90265
+Species 1
+Genome 5
+SpeciesFitness 2119999 Loc 4
+Species 1
+Genome 4
+SpeciesFitness 1589999 Loc 4
+Species 1
+Genome 3
+SpeciesFitness 1579999 Loc 4
+Species 1
+Genome 2
+SpeciesFitness 1579999 Loc 4
+Location 90271
+Species 3
+Genome 3
+SpeciesFitness 2300085 Loc 13
+Species 4
+Genome 3
+SpeciesFitness 1339999 Loc 13
+Species 1
+Genome 5
+SpeciesFitness 2279999 Loc 13
+Species 1
+Genome 3
+SpeciesFitness 1739999 Loc 13
+Species 4
+Genome 5
+SpeciesFitness 1339999 Loc 13
+Species 4
+Genome 2
+SpeciesFitness 1339999 Loc 13
+Species 3
+Genome 4
+SpeciesFitness 1810084 Loc 13
+Species 4
+Genome 4
+SpeciesFitness 1249999 Loc 13
+Species 1
+Genome 4
+SpeciesFitness 1749999 Loc 13
+Species 3
+Genome 5
+SpeciesFitness 1809999 Loc 13
+Species 3
+Genome 2
+SpeciesFitness 2300085 Loc 13
+Species 2
+Genome 2
+SpeciesFitness 1530045 Loc 13
+Species 1
+Genome 2
+SpeciesFitness 1739999 Loc 13
+Location 80265
+Species 1
+Genome 5
+SpeciesFitness 2349999 Loc 3
+Species 1
+Genome 3
+SpeciesFitness 1809999 Loc 3
+Species 1
+Genome 2
+SpeciesFitness 1809999 Loc 3
+Location 120271
+Species 3
+Genome 5
+SpeciesFitness 1879999 Loc 10
+Species 4
+Genome 3
+SpeciesFitness 1409999 Loc 10
+Species 1
+Genome 3
+SpeciesFitness 1979999 Loc 10
+Species 4
+Genome 5
+SpeciesFitness 1409999 Loc 10
+Species 4
+Genome 2
+SpeciesFitness 1409999 Loc 10
+Species 3
+Genome 2
+SpeciesFitness 2370085 Loc 10
+Species 1
+Genome 4
+SpeciesFitness 1819999 Loc 10
+Species 3
+Genome 3
+SpeciesFitness 2370085 Loc 10
+Species 4
+Genome 4
+SpeciesFitness 1319999 Loc 10
+Species 1
+Genome 2
+SpeciesFitness 1979999 Loc 10
+Location 100269
+Species 3
+Genome 5
+SpeciesFitness 1979999 Loc 11
+Species 4
+Genome 3
+SpeciesFitness 1509999 Loc 11
+Species 1
+Genome 5
+SpeciesFitness 2519999 Loc 11
+Species 1
+Genome 3
+SpeciesFitness 2079999 Loc 11
+Species 4
+Genome 5
+SpeciesFitness 1509999 Loc 11
+Species 4
+Genome 2
+SpeciesFitness 1509999 Loc 11
+Species 3
+Genome 2
+SpeciesFitness 2470085 Loc 11
+Species 1
+Genome 4
+SpeciesFitness 1919999 Loc 11
+Species 3
+Genome 3
+SpeciesFitness 2470085 Loc 11
+Species 4
+Genome 4
+SpeciesFitness 1419999 Loc 11
+Species 1
+Genome 2
+SpeciesFitness 2079999 Loc 11
+Location 90267
+Species 1
+Genome 5
+SpeciesFitness 2609999 Loc 3
+Species 1
+Genome 3
+SpeciesFitness 2169999 Loc 3
+Species 1
+Genome 2
+SpeciesFitness 2169999 Loc 3
+Location 120269
+Species 3
+Genome 3
+SpeciesFitness 2560085 Loc 5
+Species 3
+Genome 2
+SpeciesFitness 2560085 Loc 5
+Species 1
+Genome 5
+SpeciesFitness 2779999 Loc 5
+Species 1
+Genome 3
+SpeciesFitness 2339999 Loc 5
+Species 1
+Genome 2
+SpeciesFitness 2339999 Loc 5
+Location 100268
+Species 3
+Genome 5
+SpeciesFitness 2069999 Loc 8
+Species 4
+Genome 3
+SpeciesFitness 1599999 Loc 8
+Species 4
+Genome 5
+SpeciesFitness 1599999 Loc 8
+Species 1
+Genome 4
+SpeciesFitness 2009999 Loc 8
+Species 4
+Genome 4
+SpeciesFitness 1509999 Loc 8
+Species 4
+Genome 2
+SpeciesFitness 1599999 Loc 8
+Species 1
+Genome 3
+SpeciesFitness 2489999 Loc 8
+Species 1
+Genome 2
+SpeciesFitness 2489999 Loc 8
+Location 100271
+Species 3
+Genome 3
+SpeciesFitness 2710085 Loc 15
+Species 4
+Genome 3
+SpeciesFitness 1719999 Loc 15
+Species 1
+Genome 5
+SpeciesFitness 2929999 Loc 15
+Species 4
+Genome 5
+SpeciesFitness 1719999 Loc 15
+Species 4
+Genome 4
+SpeciesFitness 1629999 Loc 15
+Species 1
+Genome 3
+SpeciesFitness 2609999 Loc 15
+Species 2
+Genome 3
+SpeciesFitness 2000085 Loc 15
+Species 2
+Genome 4
+SpeciesFitness 2000085 Loc 15
+Species 3
+Genome 2
+SpeciesFitness 2710085 Loc 15
+Species 4
+Genome 2
+SpeciesFitness 1719999 Loc 15
+Species 1
+Genome 4
+SpeciesFitness 2129999 Loc 15
+Species 3
+Genome 5
+SpeciesFitness 2189999 Loc 15
+Species 3
+Genome 4
+SpeciesFitness 1880084 Loc 15
+Species 2
+Genome 2
+SpeciesFitness 1600045 Loc 15
+Species 1
+Genome 2
+SpeciesFitness 2609999 Loc 15
