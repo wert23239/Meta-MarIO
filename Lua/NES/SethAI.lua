@@ -1056,7 +1056,7 @@ function SetNoveltyFitness()
 				--file:write("Genome " .. genome .. "\n")
 				--file:write("SpeciesFitness " .. pool.species[species].genomes[genome].fitness .." Amount " .. count .. "\n")
 				console.writeline("Loc" .. loc)
-				pool.species[species].genomes[genome].fitness=pool.species[species].genomes[genome].fitness+(tonumber((forms.gettext(NoveltyConstantText))-count)*10000) 
+				pool.species[species].genomes[genome].fitness=pool.species[species].genomes[genome].fitness+(tonumber((forms.gettext(NoveltyConstantText))-count)*tonumber(forms.gettext(NoveltyFitness))) 
 			end
 		end
 	end
