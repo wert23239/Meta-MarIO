@@ -92,7 +92,7 @@ Outputs = #ButtonNames
 Population: The Number of Genomes
 Deltas: TODO:
 --]]
-Population = 300
+Population = 10
 DeltaDisjoint = 2.0
 DeltaWeights = 0.4
 DeltaThreshold = 1.0
@@ -411,7 +411,7 @@ function newGenome()
 	genome.mutationRates["enable"] = EnableMutationChance
 	genome.mutationRates["disable"] = DisableMutationChance
 	genome.mutationRates["step"] = StepSize
-
+	genome.ran=false
 	return genome
 end
 
@@ -1123,6 +1123,7 @@ function newGeneration()
 		SetNoveltyFitness()
 	end
 	pool.landscape={}
+	RoundAmount=3
 	cullSpecies(false) -- Cull the bottom half of each species (The only comment written by SethBling in the entire code set)
 	rankGlobally() --rank all genomes by fitness order
 	removeStaleSpecies() --removes species who haven't improved in a while
@@ -1231,6 +1232,10 @@ if pool == nil then
 	initializePool()
 end
 
+function resetGenomeRan(  )
+	x=5
+end
+
 
 --[[
 nextGenome: Get next available genome if none start a new generation
@@ -1242,7 +1247,12 @@ function nextGenome()
 		pool.currentGenome = 1
 		pool.currentSpecies = pool.currentSpecies+1
 		if pool.currentSpecies > #pool.species then
+			RoundAmount=RoundAmount-1
+			console.writeline("Round".. RoundAmount .. "Finished")
+			if RoundAmount==0 then
 			newGeneration()
+			end
+			resetGenomeRan()
 			pool.currentSpecies = 1
 		end
 	end
@@ -1255,8 +1265,8 @@ specfic species and genome have been mesaured.
 function fitnessAlreadyMeasured()
 	local species = pool.species[pool.currentSpecies]
 	local genome = species.genomes[pool.currentGenome]
-
-	return genome.fitness ~= 0
+	return genome.ran ~= false
+	--return genome.fitness ~= 0
 end
 
 
@@ -1566,7 +1576,7 @@ end
 
 
 --[[
-LevelChangeHalfway: 
+LevelChangeHalfway: Check is Mario has gotten past the current World 
 --]]
 function LevelChangeHalfway()
 	if memory.readbyte(0x071E)==11 and memory.readbyte(0x0728)~=0 and half==false then
@@ -1781,6 +1791,7 @@ while true do
 		if timeout + timeoutBonus <= 0  or TimeoutAuto == true then
 			TimeoutAuto=false
 			local fitness=0
+			genome.ran=true
 			--fitness equal how right subtracted from how long it takes
 			if forms.ischecked(RightmostFitness) then
 				fitness = tonumber(forms.gettext(RightmostAmount))*(rightmost - NetX)
@@ -1805,7 +1816,10 @@ while true do
 			end
 
 			--Set the current genomes fitness to the local fitness
-			genome.fitness = fitness
+			if genome.fitness < fitness then
+				genome.fitness = fitness
+			end 
+			
 
 			--If newfitness record then
 			if fitness > pool.maxFitness then
