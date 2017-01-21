@@ -68,7 +68,7 @@ It's where the inputs will be taken in at.
 (Left side of the visual)
 --]]
 BoxRadius = 6
-
+RoundAmount=3
 
 --[[
 InputSize: is the amount of inputs the Organism takes in.
@@ -1233,7 +1233,11 @@ if pool == nil then
 end
 
 function resetGenomeRan(  )
-	x=5
+	for n,species in pairs(pool.species) do
+		for m,genome in pairs(species.genomes) do
+			genome.ran = false
+		end
+	end
 end
 
 
