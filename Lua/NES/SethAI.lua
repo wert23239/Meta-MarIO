@@ -1610,7 +1610,7 @@ maxFitnessLabel = forms.label(form, "Max Fitness: " .. math.floor(pool.maxFitnes
 showMutationRates = forms.checkbox(form, "Show Mutate", 230, 3)
 
 --A checkbox to see whether or not the eye(inputs) and controls(outputs) is shown
-showNetwork = forms.checkbox(form, "Show Map", 120, 3)
+showNetwork = forms.checkbox(form, "Show Map", 120, 3, "true")
 
 --Label to describe the differnt types of fitness
 
@@ -1629,9 +1629,9 @@ RightmostLabel = forms.label(form, "Rightmost ", 5, 55)
 --Each pixel right move is multiplied by this number
 RightmostAmount = forms.textbox(form, 1, 60, 20, nil, 120, 55)
 --If an organism reaches farther than right than ever before during a generation reset the timeout constant
-RightmostTimeout = forms.checkbox(form, "", 270, 55)
+RightmostTimeout = forms.checkbox(form, "", 270, 55 , "true")
 --Toggle the rightmost fitness type
-RightmostFitness = forms.checkbox(form, "", 230, 55)
+RightmostFitness = forms.checkbox(form, "", 230, 55, "true")
 
 --Novelty Label is the fitness for how unique an orgranism travels
 NoveltyLabel = forms.label(form, "Novelty ", 5, 80)
