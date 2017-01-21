@@ -68,9 +68,14 @@ It's where the inputs will be taken in at.
 (Left side of the visual)
 --]]
 BoxRadius = 6
+<<<<<<< HEAD
 
 FilenameTraining = "t1.state"
 training = false
+=======
+RoundAmount=3
+
+>>>>>>> b7ec558... Finished the ran function
 --[[
 InputSize: is the amount of inputs the Organism takes in.
 There is two times the amount of the box because there is two inputs
@@ -1236,7 +1241,11 @@ if pool == nil then
 end
 
 function resetGenomeRan(  )
-	x=5
+	for n,species in pairs(pool.species) do
+		for m,genome in pairs(species.genomes) do
+			genome.ran = false
+		end
+	end
 end
 
 
