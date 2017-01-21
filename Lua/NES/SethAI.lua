@@ -1426,6 +1426,9 @@ function writeFile(filename)
         file:close()
 end
 
+--[[
+savePool: Save the pool of the saveLoadfile form
+--]]
 function savePool()
 	local filename = forms.gettext(saveLoadFile)
 	writeFile(filename)
@@ -1561,6 +1564,10 @@ function inPlay()
 	return memory.readbyte(0x0747)==0 and memory.readbyte(0x071E)~=11 and (memory.readbyte(0x000E)==8 or memory.readbyte(0x000E)==1 or memory.readbyte(0x000E)==0) and memory.readbyte(0x00B5)<=1
 end
 
+
+--[[
+LevelChangeHalfway: 
+--]]
 function LevelChangeHalfway()
 	if memory.readbyte(0x071E)==11 and memory.readbyte(0x0728)~=0 and half==false then
 		half = true
@@ -1572,6 +1579,10 @@ function LevelChangeHalfway()
 
 end
 
+--[[
+LevelChange: Checks if Mario has gotten past the current Level he is on.
+if he has update the Filename
+--]]
 function LevelChange()
 	if NetLevel~=marioLevel or NetWorld~=marioWorld then
 		NetWorld=marioWorld
@@ -1583,6 +1594,11 @@ function LevelChange()
 		--resetStaleFitness
 	end
 end
+
+--[[
+CalculateLocationCord: Calculates a unique location identifier for the 
+Novelty search hash table
+--]]
 function CalculateLocationCord()
 	--console.writeline("X ".. memory.readbyte(0x86).. " Page " .. memory.readbyte(0x6D) .. " Y " .. marioY )
 	--console.writeline( math.floor(marioY/16)*10000+memory.readbyte(0x6D) * 1000  + math.floor(memory.readbyte(0x86)/16) )
