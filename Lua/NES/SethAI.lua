@@ -1796,7 +1796,9 @@ while true do
 			end
 			
 			console.writeline("Gen " .. pool.generation .. " species " .. pool.currentSpecies .. " genome " .. pool.currentGenome .. " fitness: " .. fitness)
-			console.writeline("World " .. marioWorld .. " Level " .. marioLevel)
+
+			console.writeline("World " .. marioWorld .. " Level " .. marioLevel .. " Half ")
+			console.writeline(half)
 			pool.currentSpecies = 1
 			pool.currentGenome = 1
 
