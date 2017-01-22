@@ -98,7 +98,7 @@ Outputs = #ButtonNames
 Population: The Number of Genomes
 Deltas: TODO:
 --]]
-Population = 10
+Population = 50
 DeltaDisjoint = 2.0
 DeltaWeights = 0.4
 DeltaThreshold = 1.0
@@ -1944,9 +1944,9 @@ while true do
 			LevelChange()
 			LevelChangeHalfway()
 		end
-		if memory.readbyte(0x071E)==11 then
-			TimeoutAuto=true
-		end
+		--if memory.readbyte(0x071E)==11 then
+		--	TimeoutAuto=true
+		--end
 
 	end
 
