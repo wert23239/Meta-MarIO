@@ -94,14 +94,16 @@ Inputs = InputSize+1
 Outputs = #ButtonNames
 
 
+
 --[[
 Population: The Number of Genomes
 Deltas: TODO:
 --]]
-Population = 50
+Population = 5
 DeltaDisjoint = 2.0
 DeltaWeights = 0.4
 DeltaThreshold = 1.0
+
 
 
 
@@ -1261,9 +1263,7 @@ function evaluateCurrent()
 	joypad.set(controller)
 end
 
-if pool == nil then
-	initializePool()
-end
+
 
 function resetGenomeRan(  )
 	for n,species in pairs(pool.species) do
@@ -1600,6 +1600,15 @@ function playTop()
 	pool.currentFrame = pool.currentFrame + 1
 	return
 end
+
+if pool == nil then
+	initializePool()
+	if tonumber(forms.getthreadNum())==0 then
+		client.SetGameExtraPadding(pool.generation,0,0,0)
+	end
+	
+end
+
 
 --[[
 OnExit: Exit function when you close the program
