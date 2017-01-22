@@ -37,7 +37,7 @@ if gameinfo.getromname() == "Super Mario World (USA)" then
 		"Right",
 	}
 elseif gameinfo.getromname() == "Super Mario Bros." then
-	Filename = "Level11.state"
+	Filename = "Level12.state"
 	ButtonNames = {
 		"A",
 		"B",
@@ -147,6 +147,7 @@ MaxNodes = 1000000
 --How many orgranisms can be on one coordinate and still get fitness
 NoveltyConstant=1
 
+CurrentNSFitness=0
 
 
 --[[
@@ -377,7 +378,7 @@ function newPool()
       --return set
     --end
 	pool.landscape = {}
-
+	pool.landscapeold= {}
 	NetWorld=marioWorld
 	NetLevel=marioLevel
 	half=false
@@ -1072,6 +1073,21 @@ function SetNoveltyFitness()
 	--file:close()
 end
 
+function GainNoveltyFitness(cordLocation)
+	if pool.generation > 0 then
+		local count = 0
+		if pool.landscapeold[cordLocation] ~= nil then
+			for sg,value in pairs(pool.landscapeold[cordLocation]) do
+		       	count=count+1
+			end
+		end
+		if count<=tonumber(forms.gettext(NoveltyConstantText)) then
+			CurrentNSFitness=CurrentNSFitness+1
+		end
+	end
+end
+
+
 --[[
 removeWeakSpecies:
 --]]
@@ -1113,6 +1129,7 @@ function addToSpecies(child)
 	end
 end
 
+
 --[[
 newGeneration: Each time you go through all of the species a new generation will start
 This does the following:
@@ -1127,6 +1144,13 @@ This does the following:
 function newGeneration()
 	if forms.ischecked(NoveltyFitness) then
 		SetNoveltyFitness()
+	end
+	for loc,set in pairs(pool.landscape) do
+		--file:write("Location ".. loc .. "\n")
+		pool.landscapeold[loc]={}
+		for sg,value in pairs(set) do
+        	pool.landscapeold[loc][sg]=true
+		end
 	end
 	pool.landscape={}
 	RoundAmount=0
@@ -1195,6 +1219,7 @@ function initializeRun()
 		savestate.load(Filename); --Load from a specfic savestates
 	end
 	rightmost = 0
+	CurrentNSFitness = 0
 	pool.currentFrame = 0
 	timeout =TimeoutConstant
 	NetX = memory.readbyte(0x6D) * 0x100 + memory.readbyte(0x86)
@@ -1691,9 +1716,9 @@ NoveltyLabel = forms.label(form, "Novelty ", 5, 80)
 --Each spot an orgranism goes to that No more than the Novelty Constant goes to gets this many points
 NoveltyAmount = forms.textbox(form, 10000, 60, 20, nil, 120, 80)
 --Each new place an orgranism goes resets the timeout
-NoveltyTimeout = forms.checkbox(form, "", 270, 80)
+NoveltyTimeout = forms.checkbox(form, "", 270, 80, "true")
 --Toggle the Novelty fitness type
-NoveltyFitness = forms.checkbox(form, "", 230, 80)
+NoveltyFitness = forms.checkbox(form, "", 230, 80, "true")
 
 --Score Label is the fitness for how much score an organism gains during a run
 ScoreLabel = forms.label(form, "Score ", 5, 105)
@@ -1702,7 +1727,7 @@ ScoreAmount = forms.textbox(form, 1, 60, 20, nil, 120, 105)
 --Each time the score changes an orgranism resets there constant
 --ScoreTimeout = forms.checkbox(form, "", 270, 105)
 --Toggle the Score fitness type
-ScoreFitness = forms.checkbox(form, "", 230, 105)
+ScoreFitness = forms.checkbox(form, "", 230, 105, "true")
 
 --How many orgranism can visit a spot and it still be unique
 NoveltyConstantText = forms.textbox(form, NoveltyConstant, 30, 20, nil, 270, 130)
@@ -1774,7 +1799,7 @@ while true do
 
 		--Sets Each Point a
 		if forms.ischecked(NoveltyFitness) or forms.ischecked(NoveltyTimeout) then
-			if pool.currentFrame%10 == 0 then
+			if pool.currentFrame%2 == 0 then
 				--Populate Cordinates
 				local cordLocation=CalculateLocationCord() --y/16*10000+page*1000+x/16*1
 				local cordSpecies=CalculateSpeciesCord(pool.currentSpecies,pool.currentGenome) --speices*100+genome*1
@@ -1787,6 +1812,7 @@ while true do
 					pool.landscape[tostring(cordLocation)][tostring(cordSpecies)]=true
 					if forms.ischecked(NoveltyTimeout) then
 						timeout = tonumber(forms.gettext(TimeoutConstantText))
+						GainNoveltyFitness(tostring(cordLocation))
 					end
 				end
 
@@ -1811,18 +1837,26 @@ while true do
 		--If the orgranism has not evolved within the allotted time end the run
 		if timeout + timeoutBonus <= 0  or TimeoutAuto == true then
 			TimeoutAuto=false
-			local fitness=0
+			local fitness = 0
+			local fitnesscheck={}
+			for slot=0,2 do
+			fitnesscheck[slot]=0
+			end
 			genome.ran=true
 			--fitness equal how right subtracted from how long it takes
 			if forms.ischecked(RightmostFitness) then
-				fitness = tonumber(forms.gettext(RightmostAmount))*(rightmost - NetX)
+				fitnesscheck[0] = tonumber(forms.gettext(RightmostAmount))*(rightmost - NetX)
 			end
 			if forms.ischecked(ScoreFitness) then
-				fitness = fitness+tonumber(forms.gettext(ScoreAmount))*(marioScore - NetScore)
+				fitnesscheck[1] = fitness+tonumber(forms.gettext(ScoreAmount))*(marioScore - NetScore)
 			end
 			if forms.ischecked(NoveltyFitness) then
-				fitness = fitness + 0
+				fitnesscheck[2] = fitness +tonumber(forms.gettext(NoveltyAmount))*(CurrentNSFitness)
 			end
+			--sort fitnesscheck
+			table.sort(fitnesscheck)
+			console.writeline(fitnesscheck[0])
+			fitness=fitnesscheck[2]
 			--Extra bonus for completeting the level
 			if gameinfo.getromname() == "Super Mario World (USA)" and rightmost > 4816 then
 				fitness = fitness + 1000
@@ -1883,18 +1917,24 @@ while true do
 		--Displays in the banner the Generation, species, and genome
 		--Displays Fitness
 		--Displays Max Fitness
-		local fitnessDisplay = 0
-		if forms.ischecked(RightmostFitness) then
-				fitnessDisplay = (rightmost - NetX)*tonumber(forms.gettext(RightmostAmount))
+		local fitnessDisplay = {}
+		for slot=0,2 do
+			fitnessDisplay[slot]=0
 		end
-
+		if forms.ischecked(RightmostFitness) then
+				fitnessDisplay[0] = (rightmost - NetX)*tonumber(forms.gettext(RightmostAmount))
+		end
+		if forms.ischecked(NoveltyFitness) then
+				fitnessDisplay[1] = CurrentNSFitness*tonumber(forms.gettext(NoveltyAmount))
+		end
 		if forms.ischecked(ScoreFitness) then
-				fitnessDisplay = fitnessDisplay+tonumber(forms.gettext(ScoreAmount))*(marioScore - NetScore)
+				fitnessDisplay[2] = tonumber(forms.gettext(ScoreAmount))*(marioScore - NetScore)
 		end
 		if not forms.ischecked(hideBanner) then
 			gui.drawText(0, 12, "Gen " .. pool.generation .. " species " .. pool.currentSpecies .. " genome " .. pool.currentGenome .. " (" .. math.floor(measured/total*100) .. "%)", 0xFF000000, 11)
-			gui.drawText(0, 24, "Fitness: " .. math.floor(fitnessDisplay), 0xFF000000, 11)
-			gui.drawText(100, 24, "Max Fitness: " .. math.floor(pool.maxFitness), 0xFF000000, 11)
+			gui.drawText(0, 24, "RM: " .. math.floor(fitnessDisplay[0]), 0xFF000000, 11)
+			gui.drawText(80, 24, "NS: " .. math.floor(fitnessDisplay[1]), 0xFF000000, 11)
+			gui.drawText(160, 24, "SO: " .. math.floor(fitnessDisplay[2]), 0xFF000000, 11)
 		end
 	--Manual Update of Frame
 	pool.currentFrame = pool.currentFrame + 1
