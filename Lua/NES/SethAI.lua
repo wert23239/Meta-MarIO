@@ -71,6 +71,8 @@ BoxRadius = 6
 <<<<<<< HEAD
 
 FilenameTraining = "t1.state"
+
+NetGeneration = 0
 training = false
 =======
 RoundAmount=3
@@ -99,7 +101,7 @@ Outputs = #ButtonNames
 Population: The Number of Genomes
 Deltas: TODO:
 --]]
-Population = 5
+Population = 10
 DeltaDisjoint = 2.0
 DeltaWeights = 0.4
 DeltaThreshold = 1.0
@@ -1771,6 +1773,7 @@ end
 LevelChange: Checks if Mario has gotten past the current Level he is on.
 if he has update the Filename
 --]]
+
 function LevelChange()
 	if NetLevel~=marioLevel or NetWorld~=marioWorld then
 		NetWorld=marioWorld
@@ -1779,6 +1782,8 @@ function LevelChange()
 		Filename = "Level" .. NetWorld+1 .. NetLevel+1 .. ".state"
 		writeFile(Filename .. pool.generation .. ".txt")
 		console.writeline("Next Level")
+		training = true
+		NetGeneration = pool.generation
 		--resetStaleFitness
 	end
 end
@@ -1961,7 +1966,7 @@ while true do
 
 		--Subtract one time unit each loop
 		timeout = timeout - 1
-
+	
 
 		--Each extra four frames give mario and extra bonus living amount
 		local timeoutBonus = pool.currentFrame / 4
@@ -1975,6 +1980,13 @@ while true do
 			fitnesscheck[slot]=0
 			end
 			genome.ran=true
+
+			console.writeline("NetGen: " .. NetGeneration - pool.generation);
+			if  pool.generation - NetGeneration  > 2  and training == true then 
+				training = false
+				savestate.load(Filename);
+			end
+			--loadstate  
 			--fitness equal how right subtracted from how long it takes
 			if forms.ischecked(RightmostFitness) then
 				fitnesscheck[0] = tonumber(forms.gettext(RightmostAmount))*(rightmost - NetX)
