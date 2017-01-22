@@ -1600,6 +1600,7 @@ end
 if pool == nil then
 	initializePool()
 	if tonumber(forms.getthreadNum())==-1 then
+		writeFile("Initial")
 		client.SetGameExtraPadding(pool.generation,0,0,0)
 	end
 	
