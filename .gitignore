@@ -1,3 +1,4 @@
 #Pool Files
 *.state.pool
 config.ini
+*.txt
