@@ -1,8 +1,6 @@
 
 ![FitnessFunctionTeam.png](FitnessFunctionTeam.png?raw=true "Optional Title")
 
-# SpartaHacks17
-Castlevania Bizhawk Repo
 
 
 ##Watch this video to get started with Virtual Evolution:
