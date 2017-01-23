@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/wert23239/Meta-MarIO.png?label=ready&title=Ready)](https://waffle.io/wert23239/Meta-MarIO)
 
 ![FitnessFunctionTeam.png](FitnessFunctionTeam.png?raw=true "Optional Title")
 
