@@ -101,7 +101,7 @@ Outputs = #ButtonNames
 Population: The Number of Genomes
 Deltas: TODO:
 --]]
-Population = 10
+Population = 300
 DeltaDisjoint = 2.0
 DeltaWeights = 0.4
 DeltaThreshold = 1.0
@@ -122,21 +122,20 @@ DisableMutationChance = TODO: Disable Mutation
 EnableMutationChance = TODO: Reenable Mutation
 --]]
 StaleSpecies = 15
-MutateConnectionsChance = 0.25
+MutateConnectionsChance = 0.70
 PerturbChance = 0.90
 CrossoverChance = 0.75
 LinkMutationChance = 2.0
 NodeMutationChance = 0.50
 BiasMutationChance = 0.40
-StepSize = 0.1
+StepSize = 0.3
 DisableMutationChance = 0.4
 EnableMutationChance = 0.2
 
 --[[
 TimeoutConstant: How long it take till the enemies to despawn.
 --]]
-TimeoutConstant = 80
-
+TimeoutConstant = 5
 
 --[[
 MaxNodes: TODO:
@@ -1782,7 +1781,7 @@ function LevelChange()
 		Filename = "Level" .. NetWorld+1 .. NetLevel+1 .. ".state"
 		writeFile(Filename .. pool.generation .. ".txt")
 		console.writeline("Next Level")
-		training = true
+		training = false
 		NetGeneration = pool.generation
 		--resetStaleFitness
 	end
@@ -1795,7 +1794,7 @@ Novelty search hash table
 function CalculateLocationCord()
 	--console.writeline("X ".. memory.readbyte(0x86).. " Page " .. memory.readbyte(0x6D) .. " Y " .. marioY )
 	--console.writeline( math.floor(marioY/16)*10000+memory.readbyte(0x6D) * 1000  + math.floor(memory.readbyte(0x86)/16) )
-	return math.floor(marioY/16)*10000+memory.readbyte(0x6D) * 1000 + math.floor(memory.readbyte(0x86)/16)
+	return math.floor(marioY/64)*10000+memory.readbyte(0x6D) * 1000 + math.floor(memory.readbyte(0x86)/64)
 end
 
 function CalculateSpeciesCord(species,genome)
@@ -1899,7 +1898,7 @@ saveLoadLabel = forms.label(form, "Save/Load:", 5, 210)
 
 
 TimeoutAuto=false
-
+NoFitness=false
 --Infinte Fitness Loop
 while true do
 	--Sets the Top Bar Color
@@ -1981,7 +1980,7 @@ while true do
 			end
 			genome.ran=true
 
-			console.writeline("NetGen: " .. NetGeneration - pool.generation);
+			
 			if  pool.generation - NetGeneration  > 2  and training == true then 
 				training = false
 				savestate.load(Filename);
@@ -1993,6 +1992,8 @@ while true do
 			end
 			if forms.ischecked(ScoreFitness) then
 				fitnesscheck[1] = fitness+tonumber(forms.gettext(ScoreAmount))*(marioScore - NetScore)
+				fitnesscheck[0] = fitness+tonumber(forms.gettext(ScoreAmount))*(marioScore - NetScore)
+				fitnesscheck[2] = fitness+tonumber(forms.gettext(ScoreAmount))*(marioScore - NetScore)
 			end
 			if forms.ischecked(NoveltyFitness) then
 				fitnesscheck[2] = fitness +tonumber(forms.gettext(NoveltyAmount))*(CurrentNSFitness)
@@ -2013,11 +2014,15 @@ while true do
 			if fitness == 0 then
 				fitness = -1
 			end
-
+			if NoFitness == true then
+				fitness= -1
+			end
 			if(tonumber(forms.getthreadNum())>0) then
 				writeMultiGenome("Genome"..tonumber(forms.getthreadNum()))
 				client.SetGameExtraPadding(pool.generation,0,0,0)
 			end
+
+
 			--Set the current genomes fitness to the local fitness
 			if genome.fitness < fitness then
 				genome.fitness = fitness
@@ -2035,10 +2040,10 @@ while true do
 				writeFile("backup." .. pool.generation .. "." .. forms.gettext(saveLoadFile))
 			end
 
-			console.writeline("Gen " .. pool.generation .. " species " .. pool.currentSpecies .. " genome " .. pool.currentGenome .. " fitness: " .. fitness)
+			--console.writeline("Gen " .. pool.generation .. " species " .. pool.currentSpecies .. " genome " .. pool.currentGenome .. " fitness: " .. fitness)
 
-			console.writeline("World " .. marioWorld .. " Level " .. marioLevel .. " Half ")
-			console.writeline(half)
+			--console.writeline("World " .. marioWorld .. " Level " .. marioLevel .. " Half ")
+			--console.writeline(half)
 			pool.currentSpecies = 1
 			pool.currentGenome = 1
 
@@ -2093,9 +2098,10 @@ while true do
 			LevelChange()
 			LevelChangeHalfway()
 		end
-		--if memory.readbyte(0x071E)==11 then
+		if memory.readbyte(0x071E)==11 then
 		--	TimeoutAuto=true
-		--end
+			NoFitness=true
+		end
 
 	end
 
