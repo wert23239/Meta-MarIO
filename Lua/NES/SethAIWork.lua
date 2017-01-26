@@ -68,11 +68,13 @@ It's where the inputs will be taken in at.
 (Left side of the visual)
 --]]
 BoxRadius = 6
-FilenameTraining = "t1.state"
 
-NetGeneration = 0
+
+FilenameTraining = "t1.state"
 training = false
-RoundAmount=3
+RoundAmountConstant = 3
+RoundAmount = 0
+
 
 --[[
 InputSize: is the amount of inputs the Organism takes in.
@@ -97,7 +99,7 @@ Outputs = #ButtonNames
 Population: The Number of Genomes
 Deltas: TODO:
 --]]
-Population = 300
+Population = 5
 DeltaDisjoint = 2.0
 DeltaWeights = 0.4
 DeltaThreshold = 1.0
@@ -118,20 +120,21 @@ DisableMutationChance = TODO: Disable Mutation
 EnableMutationChance = TODO: Reenable Mutation
 --]]
 StaleSpecies = 15
-MutateConnectionsChance = 0.70
+MutateConnectionsChance = 0.25
 PerturbChance = 0.90
 CrossoverChance = 0.75
 LinkMutationChance = 2.0
 NodeMutationChance = 0.50
 BiasMutationChance = 0.40
-StepSize = 0.3
+StepSize = 0.1
 DisableMutationChance = 0.4
 EnableMutationChance = 0.2
 
 --[[
 TimeoutConstant: How long it take till the enemies to despawn.
 --]]
-TimeoutConstant = 5
+TimeoutConstant = 80
+
 
 --[[
 MaxNodes: TODO:
@@ -1436,41 +1439,6 @@ end
 --[[
 writeFile: See loadFile for specifics
 --]]
-function writeMultiIntial(filename)
-        local file = io.open(filename, "w")
-        for n,species in pairs(pool.species) do
-		for m,genome in pairs(species.genomes) do
-			file:write(genome.fitness .. "\n")
-			file:write(genome.maxneuron .. "\n")
-			for mutation,rate in pairs(genome.mutationRates) do
-				file:write(mutation .. "\n")
-				file:write(rate .. "\n")
-			end
-			file:write("done\n")
-			file:write(#genome.genes .. "\n")
-			for l,gene in pairs(genome.genes) do
-				file:write(gene.into .. " ")
-				file:write(gene.out .. " ")
-				file:write(gene.weight .. " ")
-				file:write(gene.innovation .. " ")
-				if(gene.enabled) then
-					file:write("1\n")
-				else
-					file:write("0\n")
-				end
-			end
-			file:write("end\n")
-		end
-        end
-        file:close()
-end
-
-
-
-
---[[
-writeFile: See loadFile for specifics
---]]
 function writeFile(filename)
         local file = io.open(filename, "w")
 	file:write(pool.generation .. "\n")
@@ -1596,87 +1564,6 @@ function loadFile(filename)
 	pool.currentFrame = pool.currentFrame + 1
 end
 
---[[
-loadFile: takes in a pool file and reads the contents
---]]
-function loadFileMulti(filename)
-
-    local file = io.open(filename, "r")
-    --Create a new gene pool
-    Population=1
-	pool = newPool()
-
-	--Read the generation
-	pool.generation = 0
-
-	--Gather MaxFitness
-	pool.maxFitness = 0
-
-		--Read the file
-		--[[
-		1 Line: Generation
-		2 Line: Max Fitness
-		3 Line: Number of Species
-		4 Line: Top Fitness for Species
-		5 Line: How Stale the species is
-		6 Line: Number of Genomes
-		7 Line: Top Fitness for set of genomes
-		8 Line: TODO: Max Neuron
-		9-23 Line: Set up diffent rates
-		24 Line: Number of Genes
-		For each gene 25- Number of Genes
-		2*.1 Line: Into Gene
-		2*.2 Line: Out Gene
-		2*.3 Line: Weight Gene
-		2*.4 Line: Innovation Gene
-		2*.5 Line: Enabled Boolean
-		Into Gene: What inputs need to be on the screen to run this
-		Out Gene: What controller output to execute
-		Weight Gene: How much the gene mattters
-		Inovation: TODO:
-		Enabled Gene: Determine whether to use the gene
-		--]]
-        local numSpecies = 1
-        for s=1,numSpecies do
-		local species = newSpecies()
-		table.insert(pool.species, species)
-		species.topFitness = 0
-		species.staleness = 0
-		local numGenomes = 1
-		for g=1,numGenomes do
-			local genome = newGenome()
-			table.insert(species.genomes, genome)
-			genome.fitness = file:read("*number")
-			genome.maxneuron = file:read("*number")
-			local line = file:read("*line")
-			while line ~= "done" do
-				genome.mutationRates[line] = file:read("*number")
-				line = file:read("*line")
-			end
-			local numGenes = file:read("*number")
-			for n=1,numGenes do
-				local gene = newGene()
-				table.insert(genome.genes, gene)
-				local enabled
-				gene.into, gene.out, gene.weight, gene.innovation, enabled = file:read("*number", "*number", "*number", "*number", "*number")
-				if enabled == 0 then
-					gene.enabled = false
-				else
-					gene.enabled = true
-				end
-
-			end
-		end
-	end
-        file:close()
-
-	while fitnessAlreadyMeasured() do
-		nextGenome()
-	end
-	initializeRun()
-	pool.currentFrame = pool.currentFrame + 1
-end
-
  --[[
 loadPool: Button clicked to load a population
 --]]
@@ -1711,16 +1598,10 @@ function playTop()
 end
 
 if pool == nil then
-	if tonumber(forms.getthreadNum())==-1 then
-		initializePool()
-		writeMultiIntial("Initial")
-		Population=tonumber(forms.getthreadNum())
-		client.SetGameExtraPadding(pool.generation,0,0,0)
-	elseif tonumber(forms.getthreadNum())>0  then
-	loadFileMulti("Muation")
-	mutate(pool.species[0].genome[0])
-	else
 	initializePool()
+	if tonumber(forms.getthreadNum())==-1 then
+		writeFile("Initial")
+		client.SetGameExtraPadding(pool.generation,0,0,0)
 	end
 	
 end
@@ -1743,7 +1624,7 @@ end
 
 
 --[[
-LevelChangeHalfway: Check is Mario has gotten past the current World 
+LevelChangeHalfway: Check is Mario has gotten past the current World
 --]]
 function LevelChangeHalfway()
 	if memory.readbyte(0x071E)==11 and memory.readbyte(0x0728)~=0 and half==false then
@@ -1760,7 +1641,6 @@ end
 LevelChange: Checks if Mario has gotten past the current Level he is on.
 if he has update the Filename
 --]]
-
 function LevelChange()
 	if NetLevel~=marioLevel or NetWorld~=marioWorld then
 		NetWorld=marioWorld
@@ -1769,8 +1649,6 @@ function LevelChange()
 		Filename = "Level" .. NetWorld+1 .. NetLevel+1 .. ".state"
 		writeFile(Filename .. pool.generation .. ".txt")
 		console.writeline("Next Level")
-		training = false
-		NetGeneration = pool.generation
 		--resetStaleFitness
 	end
 end
@@ -1782,7 +1660,7 @@ Novelty search hash table
 function CalculateLocationCord()
 	--console.writeline("X ".. memory.readbyte(0x86).. " Page " .. memory.readbyte(0x6D) .. " Y " .. marioY )
 	--console.writeline( math.floor(marioY/16)*10000+memory.readbyte(0x6D) * 1000  + math.floor(memory.readbyte(0x86)/16) )
-	return math.floor(marioY/64)*10000+memory.readbyte(0x6D) * 1000 + math.floor(memory.readbyte(0x86)/64)
+	return math.floor(marioY/16)*10000+memory.readbyte(0x6D) * 1000 + math.floor(memory.readbyte(0x86)/16)
 end
 
 function CalculateSpeciesCord(species,genome)
@@ -1802,7 +1680,7 @@ event.onexit(onExit)
 
 
 --Create Fitness Form
-form = forms.newform(340, 280, "Fitness")
+form = forms.newform(500, 500, "Fitness")
 --MaxFitness is the current Max
 maxFitnessLabel = forms.label(form, "Max Fitness: " .. math.floor(pool.maxFitness), 5, 8)
 --Checkbox are bools used in the infinite while loop
@@ -1853,40 +1731,45 @@ ScoreAmount = forms.textbox(form, 1, 60, 20, nil, 120, 105)
 --Toggle the Score fitness type
 ScoreFitness = forms.checkbox(form, "", 230, 105, "true")
 
+-- Round Amount
+RoundLabel = forms.label(form, "Round Amount ", 5, 130)
+RoundAmountValue = forms.textbox(form, RoundAmountConstant, 60, 20, nil, 120, 130)
+RoundAmountFitness = forms.checkbox(form, "", 230, 130)
+
 --How many orgranism can visit a spot and it still be unique
-NoveltyConstantText = forms.textbox(form, NoveltyConstant, 30, 20, nil, 270, 130)
-NoveltyLabel = forms.label(form, "Novelty Constant: ", 170, 130)
+NoveltyConstantText = forms.textbox(form, NoveltyConstant, 30, 20, nil, 270, 155)
+NoveltyLabel = forms.label(form, "Novelty Constant: ", 170, 155)
 --How many frames till an orgranism dies off if not reset by a fitness
-TimeoutConstantText = forms.textbox(form, TimeoutConstant, 30, 20, nil, 120, 130)
-TimeoutLabel = forms.label(form, "Timeout Constant: ", 5, 130)
+TimeoutConstantText = forms.textbox(form, TimeoutConstant, 30, 20, nil, 120, 155)
+TimeoutLabel = forms.label(form, "Timeout Constant: ", 5, 155)
 
 --Play from the beginning each time but if you reach a check point or level end change the start location to this
---showDeterminedContinousPlay = forms.checkbox(form, "Determine Play", 120, 150)
+--showDeterminedContinousPlay = forms.checkbox(form, "Determine Play", 120, 180)
 --Play from where the last orgranism left off
-showContinousPlay = forms.checkbox(form, "Continous Play", 5, 150)
+showContinousPlay = forms.checkbox(form, "Continous Play", 5, 180)
 
 
 --Save the Network
-saveButton = forms.button(form, "Save", savePool, 5, 175)
+saveButton = forms.button(form, "Save", savePool, 5, 205)
 --Load the Network
-loadButton = forms.button(form, "Load", loadPool, 80, 175)
+loadButton = forms.button(form, "Load", loadPool, 80, 205)
 --Restart the experiment
-restartButton = forms.button(form, "Restart", initializePool, 75+80, 175)
+restartButton = forms.button(form, "Restart", initializePool, 75+80, 205)
 
 --Calls PlayTop function
-playTopButton = forms.button(form, "Play Top", playTop, 75+75+80, 175)
+playTopButton = forms.button(form, "Play Top", playTop, 75+75+80, 205)
 
 
 --Hides banner
-hideBanner = forms.checkbox(form, "Hide Banner", 210, 210)
+hideBanner = forms.checkbox(form, "Hide Banner", 210, 230)
 
 --What you are going to name the file
-saveLoadFile = forms.textbox(form, Filename .. ".pool", 110, 25, nil, 80, 210)
-saveLoadLabel = forms.label(form, "Save/Load:", 5, 210)
+saveLoadFile = forms.textbox(form, Filename .. ".pool", 110, 25, nil, 80, 230)
+saveLoadLabel = forms.label(form, "Save/Load:", 5, 230)
 
 
 TimeoutAuto=false
-NoFitness=false
+
 --Infinte Fitness Loop
 while true do
 	--Sets the Top Bar Color
@@ -1953,7 +1836,7 @@ while true do
 
 		--Subtract one time unit each loop
 		timeout = timeout - 1
-	
+
 
 		--Each extra four frames give mario and extra bonus living amount
 		local timeoutBonus = pool.currentFrame / 4
@@ -1967,28 +1850,19 @@ while true do
 			fitnesscheck[slot]=0
 			end
 			genome.ran=true
-
-			
-			if  pool.generation - NetGeneration  > 2  and training == true then 
-				training = false
-				savestate.load(Filename);
-			end
-			--loadstate  
 			--fitness equal how right subtracted from how long it takes
 			if forms.ischecked(RightmostFitness) then
 				fitnesscheck[0] = tonumber(forms.gettext(RightmostAmount))*(rightmost - NetX)
 			end
 			if forms.ischecked(ScoreFitness) then
 				fitnesscheck[1] = fitness+tonumber(forms.gettext(ScoreAmount))*(marioScore - NetScore)
-				fitnesscheck[0] = fitness+tonumber(forms.gettext(ScoreAmount))*(marioScore - NetScore)
-				fitnesscheck[2] = fitness+tonumber(forms.gettext(ScoreAmount))*(marioScore - NetScore)
 			end
 			if forms.ischecked(NoveltyFitness) then
 				fitnesscheck[2] = fitness +tonumber(forms.gettext(NoveltyAmount))*(CurrentNSFitness)
 			end
 			--sort fitnesscheck
 			table.sort(fitnesscheck)
-		
+			console.writeline(fitnesscheck[0])
 			fitness=fitnesscheck[2]
 			--Extra bonus for completeting the level
 			if gameinfo.getromname() == "Super Mario World (USA)" and rightmost > 4816 then
@@ -2002,20 +1876,11 @@ while true do
 			if fitness == 0 then
 				fitness = -1
 			end
-			if NoFitness == true then
-				fitness= -1
-			end
-			if(tonumber(forms.getthreadNum())>0) then
-				writeMultiGenome("Genome"..tonumber(forms.getthreadNum()))
-				client.SetGameExtraPadding(pool.generation,0,0,0)
-			end
-
 
 			--Set the current genomes fitness to the local fitness
 			if genome.fitness < fitness then
 				genome.fitness = fitness
-			end 
-			
+			end
 
 
 			--If newfitness record then
@@ -2028,10 +1893,10 @@ while true do
 				writeFile("backup." .. pool.generation .. "." .. forms.gettext(saveLoadFile))
 			end
 
-			--console.writeline("Gen " .. pool.generation .. " species " .. pool.currentSpecies .. " genome " .. pool.currentGenome .. " fitness: " .. fitness)
+			console.writeline("Gen " .. pool.generation .. " species " .. pool.currentSpecies .. " genome " .. pool.currentGenome .. " fitness: " .. fitness)
 
-			--console.writeline("World " .. marioWorld .. " Level " .. marioLevel .. " Half ")
-			--console.writeline(half)
+			console.writeline("World " .. marioWorld .. " Level " .. marioLevel .. " Half ")
+			console.writeline(half)
 			pool.currentSpecies = 1
 			pool.currentGenome = 1
 
@@ -2086,10 +1951,9 @@ while true do
 			LevelChange()
 			LevelChangeHalfway()
 		end
-		if memory.readbyte(0x071E)==11 then
+		--if memory.readbyte(0x071E)==11 then
 		--	TimeoutAuto=true
-			NoFitness=true
-		end
+		--end
 
 	end
 

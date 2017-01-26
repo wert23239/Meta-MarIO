@@ -1283,8 +1283,12 @@ function nextGenome()
 		if pool.currentSpecies > #pool.species then
 			RoundAmount=RoundAmount+1
 			console.writeline("Round".. RoundAmount .. "Finished")
+<<<<<<< HEAD
+			if RoundAmount==0 then
+=======
 			if RoundAmount >= tonumber(forms.gettext(RoundAmountValue)) or forms.ischecked(RoundAmountFitness) == false then
 			console.writeline("RoundAmount".. tonumber(forms.gettext(RoundAmountValue)) .. "Finished")
+>>>>>>> c3266f4... Fixed the round amount
 			newGeneration()
 			end
 			resetGenomeRan()
@@ -1743,7 +1747,11 @@ end
 
 
 --[[
+<<<<<<< HEAD
+LevelChangeHalfway:
+=======
 LevelChangeHalfway: Check is Mario has gotten past the current World 
+>>>>>>> 56dd6ae... Need to finish the rand reset function
 --]]
 function LevelChangeHalfway()
 	if memory.readbyte(0x071E)==11 and memory.readbyte(0x0728)~=0 and half==false then
