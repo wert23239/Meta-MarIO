@@ -67,3 +67,6 @@ https://github.com/jal278/novelty-search-cpp/blob/master/README
 ##Tweaked SethBling Version
 
 http://pastebin.com/juRnkyEf
+
+##Bizhawk Form Lua 
+https://github.com/denilsonsa/bizhawk-lua-scripts
