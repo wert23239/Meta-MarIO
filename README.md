@@ -70,3 +70,6 @@ http://pastebin.com/juRnkyEf
 
 ##Bizhawk Form Lua 
 https://github.com/denilsonsa/bizhawk-lua-scripts
+
+###GUI Goals
+http://socialblade.com/youtube/user/pewdiepie/realtime
