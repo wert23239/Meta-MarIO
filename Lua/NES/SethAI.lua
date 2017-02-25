@@ -98,7 +98,7 @@ Outputs = #ButtonNames
 Population: The Number of Genomes
 Deltas: TODO:
 --]]
-Population = 20
+Population = 10
 DeltaDisjoint = 2.0
 DeltaWeights = 0.4
 DeltaThreshold = 1.0
@@ -132,7 +132,7 @@ EnableMutationChance = 0.2
 --[[
 TimeoutConstant: How long it take till the enemies to despawn.
 --]]
-TimeoutConstant = 20
+TimeoutConstant = 40
 
 --[[
 MaxNodes: TODO:
@@ -1217,7 +1217,6 @@ initalizeRun: Before a new orgranism starts
 --]]
 function initializeRun()
 	if training then
-		console.writeline(RoundAmount)
 		if RoundAmount==0 then
 		savestate.load(FilenameTraining);
 		elseif RoundAmount==1 then
@@ -1227,7 +1226,6 @@ function initializeRun()
 		end
 	elseif(memory.readbyte(0x0770)==0 or not forms.ischecked(showContinousPlay)) then
 		savestate.load(Filename) --Load from a specfic savestates
-		console.writeline("here2")
 	end
 	rightmost = 0
 	CurrentNSFitness = 0
@@ -1797,6 +1795,7 @@ function CalculateLocationCord()
 	return math.floor(marioY/64)*10000+memory.readbyte(0x6D) * 1000 + math.floor(memory.readbyte(0x86)/64)
 end
 
+
 function CalculateSpeciesCord(species,genome)
 	return species*100+genome
 end
@@ -1991,7 +1990,7 @@ while true do
 			genome.ran=true
 
 			
-			if  pool.generation - NetGeneration  > 2  and training == true then 
+			if  pool.generation - NetGeneration  > 20  and training == true then 
 				training = false
 				console.writeline("here")
 				savestate.load(Filename)
@@ -2026,7 +2025,7 @@ while true do
 				fitness = -1
 			end
 			if NoFitness == true then
-				fitness= -1
+				fitness= fitness -20
 			end
 			if(tonumber(forms.getthreadNum())>0) then
 				writeMultiGenome("Genome"..tonumber(forms.getthreadNum()))
@@ -2035,8 +2034,9 @@ while true do
 
 
 			--Set the current genomes fitness to the local fitness
-			genome.fitness = genome.fitness + fitness
-			
+			if fitness > genome.fitness then
+				genome.fitness = fitness
+			end
 			
 
 
@@ -2109,7 +2109,7 @@ while true do
 			LevelChangeHalfway()
 		end
 		if memory.readbyte(0x071E)==11 then
-		--	TimeoutAuto=trueq
+		   TimeoutAuto=true
 			NoFitness=true
 		end
 
