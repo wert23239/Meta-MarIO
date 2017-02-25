@@ -1806,6 +1806,16 @@ end
 -- 	end
 -- end
 
+function WindowsFitnessBox()
+form = forms.newform(340, 300, "Fitness")
+
+end
+
+function MacFitnessBox()
+form = forms.newform(500, 500, "Fitness")
+
+end
+
 writeFile("temp.pool")
 
 --makes the OnExit function work onExit
@@ -1813,8 +1823,9 @@ event.onexit(onExit)
 
 
 --Create Fitness Form
+WindowsFitnessBox()
 --form = forms.newform(340, 300, "Fitness")
-form = forms.newform(500, 500, "Fitness")
+--form = forms.newform(500, 500, "Fitness")
 --MaxFitness is the current Max
 maxFitnessLabel = forms.label(form, "Max Fitness: " .. math.floor(pool.maxFitness), 5, 8)
 --Checkbox are bools used in the infinite while loop
