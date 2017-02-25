@@ -1813,6 +1813,7 @@ event.onexit(onExit)
 
 
 --Create Fitness Form
+--form = forms.newform(340, 300, "Fitness")
 form = forms.newform(500, 500, "Fitness")
 --MaxFitness is the current Max
 maxFitnessLabel = forms.label(form, "Max Fitness: " .. math.floor(pool.maxFitness), 5, 8)
@@ -1821,7 +1822,6 @@ maxFitnessLabel = forms.label(form, "Max Fitness: " .. math.floor(pool.maxFitnes
 
 --A checkbox to see the Mutation rates
 showMutationRates = forms.checkbox(form, "Show Mutate", 230, 3)
-
 --A checkbox to see whether or not the eye(inputs) and controls(outputs) is shown
 showNetwork = forms.checkbox(form, "Show Map", 120, 3, "true")
 
