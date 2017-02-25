@@ -69,11 +69,12 @@ It's where the inputs will be taken in at.
 --]]
 BoxRadius = 6
 FilenameTraining = "t1.state"
-
+FilenameTraining2 = "t2.state"
+FilenameTraining3 = "Level12.state"
 NetGeneration = 0
-training = false
-RoundAmount=3
-
+training = true
+RoundAmountConstant = 3
+RoundAmount = 0
 --[[
 InputSize: is the amount of inputs the Organism takes in.
 There is two times the amount of the box because there is two inputs
@@ -97,7 +98,7 @@ Outputs = #ButtonNames
 Population: The Number of Genomes
 Deltas: TODO:
 --]]
-Population = 300
+Population = 10
 DeltaDisjoint = 2.0
 DeltaWeights = 0.4
 DeltaThreshold = 1.0
@@ -131,7 +132,7 @@ EnableMutationChance = 0.2
 --[[
 TimeoutConstant: How long it take till the enemies to despawn.
 --]]
-TimeoutConstant = 5
+TimeoutConstant = 40
 
 --[[
 MaxNodes: TODO:
@@ -1129,6 +1130,8 @@ function addToSpecies(child)
 end
 
 
+
+
 --[[
 newGeneration: Each time you go through all of the species a new generation will start
 This does the following:
@@ -1141,6 +1144,7 @@ This does the following:
 -
 --]]
 function newGeneration()
+
 	if forms.ischecked(NoveltyFitness) then
 		SetNoveltyFitness()
 	end
@@ -1190,7 +1194,7 @@ end
 
 function initializePool()
 	pool = newPool()
-
+	RoundAmount=0
 	for i=1,Population do
 		basic = basicGenome()
 		addToSpecies(basic)
@@ -1213,9 +1217,15 @@ initalizeRun: Before a new orgranism starts
 --]]
 function initializeRun()
 	if training then
+		if RoundAmount==0 then
 		savestate.load(FilenameTraining);
+		elseif RoundAmount==1 then
+		savestate.load(FilenameTraining2);
+		else 
+		savestate.load(FilenameTraining3);
+		end
 	elseif(memory.readbyte(0x0770)==0 or not forms.ischecked(showContinousPlay)) then
-		savestate.load(Filename); --Load from a specfic savestates
+		savestate.load(Filename) --Load from a specfic savestates
 	end
 	rightmost = 0
 	CurrentNSFitness = 0
@@ -1769,7 +1779,7 @@ function LevelChange()
 		Filename = "Level" .. NetWorld+1 .. NetLevel+1 .. ".state"
 		writeFile(Filename .. pool.generation .. ".txt")
 		console.writeline("Next Level")
-		training = false
+		--training = true
 		NetGeneration = pool.generation
 		--resetStaleFitness
 	end
@@ -1784,6 +1794,7 @@ function CalculateLocationCord()
 	--console.writeline( math.floor(marioY/16)*10000+memory.readbyte(0x6D) * 1000  + math.floor(memory.readbyte(0x86)/16) )
 	return math.floor(marioY/64)*10000+memory.readbyte(0x6D) * 1000 + math.floor(memory.readbyte(0x86)/64)
 end
+
 
 function CalculateSpeciesCord(species,genome)
 	return species*100+genome
@@ -1802,7 +1813,7 @@ event.onexit(onExit)
 
 
 --Create Fitness Form
-form = forms.newform(340, 280, "Fitness")
+form = forms.newform(500, 500, "Fitness")
 --MaxFitness is the current Max
 maxFitnessLabel = forms.label(form, "Max Fitness: " .. math.floor(pool.maxFitness), 5, 8)
 --Checkbox are bools used in the infinite while loop
@@ -1853,36 +1864,43 @@ ScoreAmount = forms.textbox(form, 1, 60, 20, nil, 120, 105)
 --Toggle the Score fitness type
 ScoreFitness = forms.checkbox(form, "", 230, 105, "true")
 
+
+-- Round Amount
+RoundLabel = forms.label(form, "Round Amount ", 5, 130)
+RoundAmountValue = forms.textbox(form, RoundAmountConstant, 60, 20, nil, 120, 130)
+RoundAmountFitness = forms.checkbox(form, "", 230, 130)
+
+
 --How many orgranism can visit a spot and it still be unique
-NoveltyConstantText = forms.textbox(form, NoveltyConstant, 30, 20, nil, 270, 130)
-NoveltyLabel = forms.label(form, "Novelty Constant: ", 170, 130)
+NoveltyConstantText = forms.textbox(form, NoveltyConstant, 30, 20, nil, 270, 155)
+NoveltyLabel = forms.label(form, "Novelty Constant: ", 170, 155)
 --How many frames till an orgranism dies off if not reset by a fitness
-TimeoutConstantText = forms.textbox(form, TimeoutConstant, 30, 20, nil, 120, 130)
-TimeoutLabel = forms.label(form, "Timeout Constant: ", 5, 130)
+TimeoutConstantText = forms.textbox(form, TimeoutConstant, 30, 20, nil, 120, 155)
+TimeoutLabel = forms.label(form, "Timeout Constant: ", 5, 155)
 
 --Play from the beginning each time but if you reach a check point or level end change the start location to this
 --showDeterminedContinousPlay = forms.checkbox(form, "Determine Play", 120, 150)
 --Play from where the last orgranism left off
-showContinousPlay = forms.checkbox(form, "Continous Play", 5, 150)
+showContinousPlay = forms.checkbox(form, "Continous Play", 5, 180)
 
 
 --Save the Network
-saveButton = forms.button(form, "Save", savePool, 5, 175)
+saveButton = forms.button(form, "Save", savePool, 5, 205)
 --Load the Network
-loadButton = forms.button(form, "Load", loadPool, 80, 175)
+loadButton = forms.button(form, "Load", loadPool, 80, 205)
 --Restart the experiment
-restartButton = forms.button(form, "Restart", initializePool, 75+80, 175)
+restartButton = forms.button(form, "Restart", initializePool, 75+80, 205)
 
 --Calls PlayTop function
-playTopButton = forms.button(form, "Play Top", playTop, 75+75+80, 175)
+playTopButton = forms.button(form, "Play Top", playTop, 75+75+80, 205)
 
 
 --Hides banner
-hideBanner = forms.checkbox(form, "Hide Banner", 210, 210)
+hideBanner = forms.checkbox(form, "Hide Banner", 210, 230)
 
 --What you are going to name the file
-saveLoadFile = forms.textbox(form, Filename .. ".pool", 110, 25, nil, 80, 210)
-saveLoadLabel = forms.label(form, "Save/Load:", 5, 210)
+saveLoadFile = forms.textbox(form, Filename .. ".pool", 110, 25, nil, 80, 230)
+saveLoadLabel = forms.label(form, "Save/Load:", 5, 230)
 
 
 TimeoutAuto=false
@@ -1893,6 +1911,9 @@ while true do
 	local backgroundColor = 0xD0FFFFFF
 	--client.SetGameExtraPadding(pool.generation,0,0,0);
 	--Draws the Top Box
+
+
+
 	if not forms.ischecked(hideBanner) then
  		gui.drawBox(0, 0, 300, 40, backgroundColor, backgroundColor)
 	end
@@ -1969,9 +1990,10 @@ while true do
 			genome.ran=true
 
 			
-			if  pool.generation - NetGeneration  > 2  and training == true then 
+			if  pool.generation - NetGeneration  > 20  and training == true then 
 				training = false
-				savestate.load(Filename);
+				console.writeline("here")
+				savestate.load(Filename)
 			end
 			--loadstate  
 			--fitness equal how right subtracted from how long it takes
@@ -2003,7 +2025,7 @@ while true do
 				fitness = -1
 			end
 			if NoFitness == true then
-				fitness= -1
+				fitness= fitness -20
 			end
 			if(tonumber(forms.getthreadNum())>0) then
 				writeMultiGenome("Genome"..tonumber(forms.getthreadNum()))
@@ -2012,9 +2034,9 @@ while true do
 
 
 			--Set the current genomes fitness to the local fitness
-			if genome.fitness < fitness then
+			if fitness > genome.fitness then
 				genome.fitness = fitness
-			end 
+			end
 			
 
 
@@ -2087,7 +2109,7 @@ while true do
 			LevelChangeHalfway()
 		end
 		if memory.readbyte(0x071E)==11 then
-		--	TimeoutAuto=true
+		   TimeoutAuto=true
 			NoFitness=true
 		end
 
