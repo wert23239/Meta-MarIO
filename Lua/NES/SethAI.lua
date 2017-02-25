@@ -1806,31 +1806,37 @@ end
 -- 	end
 -- end
 
-function WindowsFitnessBox()
+
+--Create Fitness Form
+function windowsFitnessBox()
 form = forms.newform(340, 300, "Fitness")
-
 end
 
-function MacFitnessBox()
+function macFitnessBox()
 form = forms.newform(500, 500, "Fitness")
-
 end
 
+-- pass in true for windows and false for mac
+function macOrWindows()
+	if 
+		WindowsFitnessBox()
+	else
+		macFitnessBox()
+	end
+end
 writeFile("temp.pool")
 
 --makes the OnExit function work onExit
 event.onexit(onExit)
 
 
---Create Fitness Form
-WindowsFitnessBox()
+--call the FitnessBox
+
 --form = forms.newform(340, 300, "Fitness")
 --form = forms.newform(500, 500, "Fitness")
 --MaxFitness is the current Max
 maxFitnessLabel = forms.label(form, "Max Fitness: " .. math.floor(pool.maxFitness), 5, 8)
 --Checkbox are bools used in the infinite while loop
-
-
 --A checkbox to see the Mutation rates
 showMutationRates = forms.checkbox(form, "Show Mutate", 230, 3)
 --A checkbox to see whether or not the eye(inputs) and controls(outputs) is shown
