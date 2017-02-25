@@ -1292,9 +1292,9 @@ function nextGenome()
 		pool.currentSpecies = pool.currentSpecies+1
 		if pool.currentSpecies > #pool.species then
 			RoundAmount=RoundAmount+1
-			console.writeline("Round".. RoundAmount .. "Finished")
+			console.writeline("Round Number ".. RoundAmount .. " Finished")
 			if RoundAmount >= tonumber(forms.gettext(RoundAmountValue)) or forms.ischecked(RoundAmountFitness) == false then
-			console.writeline("RoundAmount".. tonumber(forms.gettext(RoundAmountValue)) .. "Finished")
+			console.writeline(tonumber(forms.gettext(RoundAmountValue)) .. " Rounds Finished")
 			newGeneration()
 			end
 			resetGenomeRan()
