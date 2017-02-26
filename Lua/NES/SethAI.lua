@@ -2288,9 +2288,9 @@ while true do
 		if memory.readbyte(0x071E)==11 then
 		   TimeoutAuto=true
 		   NoFitness=true
-		   --if training==false then
-			--savestate.rewind()
-		   --end
+		   if training==false then
+			savestate.rewind()
+		   end
 		end
 
 	end
