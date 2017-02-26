@@ -2074,11 +2074,8 @@ saveLoadFile = forms.textbox(form, Filename .. ".pool", 110, 25, nil, incrementM
 end
 
 -- Draw window for either mac or windows
-if System == "Windows" then
 WindowsFitnessBox()
-else
-macFitnessBox()
-end
+
 
 writeFile("temp.pool")
 
