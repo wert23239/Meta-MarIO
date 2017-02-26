@@ -98,7 +98,7 @@ Outputs = #ButtonNames
 Population: The Number of Genomes
 Deltas: TODO:
 --]]
-Population = 10
+Population = 5
 DeltaDisjoint = 2.0
 DeltaWeights = 0.4
 DeltaThreshold = 1.0
@@ -420,7 +420,7 @@ function newGenome()
 	local genome = {}
 	genome.genes = {} --All gene which are input to output mappings
 	genome.fitness = 0 --How far right an orgranism gets
-	genome.adjustedFitness = 0 --Nothing
+	genome.rightmostFitness = 0 --Nothing
 	genome.network = {} --Truth Table of all input output values
 	genome.maxneuron = 0 --Number of inputs
 	genome.globalRank = 0 --This is how each genomer is ranked compared to the rest of the genomes
@@ -1062,7 +1062,7 @@ end
 SetNoveltyFitness: Goes through all mario's and sets there fitness to whatever unqiue spots they have been
 --]]
 function SetNoveltyFitness()
-	--local file = io.open("Fitness.pool", "w")
+	local file = io.open("Fitness.csv", "a")
 	local nspCount = 0
 	for loc,set in pairs(pool.landscape) do
 		--file:write("Location ".. loc .. "\n")
@@ -1075,7 +1075,6 @@ function SetNoveltyFitness()
 		 	for sg,value in pairs(set) do
 	        	local species=math.floor(tonumber(sg)/100)
 	        	local genome=tonumber(sg)%100
-				--file:write("Species " .. species .. "\n")
 				--file:write("Genome " .. genome .. "\n")
 				--file:write("SpeciesFitness " .. pool.species[species].genomes[genome].fitness .." Amount " .. count .. "\n")
 
@@ -1083,8 +1082,9 @@ function SetNoveltyFitness()
 			end
 		end
 	end
+	file:write(pool.generation ..","..tostring(nspCount).. "\n")
 	console.writeline("NSP: " .. nspCount)
-	--file:close()
+	file:close()
 end
 
 function GainNoveltyFitness(cordLocation)
@@ -1246,7 +1246,6 @@ function initializeRun()
 	CurrentNSFitness = 0
 	pool.currentFrame = 0
 	timeout =TimeoutConstant
-	console.writeline(timeout)
 	NetX = memory.readbyte(0x6D) * 0x100 + memory.readbyte(0x86)
 	NetScore = memory.readbyte(0x07D8)*100000+memory.readbyte(0x07D9)*10000+memory.readbyte(0x07DA)*1000
 	NetScore = NetScore + memory.readbyte(0x07DB)*100 + memory.readbyte(0x07DC)*10 + memory.readbyte(0x07DC)*1
@@ -1296,16 +1295,27 @@ function resetGenomeRan()
 	end
 end
 
+--:/ you better change this 
 function findMaxFitnessForGeneration()
 		local generationMaxFitness=0
+		local generationRightmostFitness=0
+		console.writeline("findMaxFitnessForGenerationFunction")
+		console.writeline(1302)
 		for n,species in pairs(pool.species) do
 		for m,genome in pairs(species.genomes) do
+			
+			if genome.rightmostFitness>generationRightmostFitness then
+				generationRightmostFitness=genome.rightmostFitness
+			end
+
 			if genome.fitness>generationMaxFitness then
 				generationMaxFitness=genome.fitness
 			end
 		end
 	end
-	table.insert(pool.generationMaxFitnessGenome, generationMaxFitness)
+	--console.writeline(generationMaxFitnessgenerationRightmostfitness)
+	--pool.generationMaxFitnessGenome[#generationMaxFitnessGenome+1]=generationMaxFitness
+	--pool.generationMaxRightmostGenome[#generationMaxRightmostGenome+1]=generationRightmostfitness
 end
 
 
@@ -1322,8 +1332,11 @@ function nextGenome()
 			RoundAmount=RoundAmount+1
 			console.writeline("Round Number ".. RoundAmount .. " Finished")
 			if RoundAmount >= tonumber(forms.gettext(RoundAmountValue)) or forms.ischecked(RoundAmountFitness) == false then
-			console.writeline(tonumber(forms.gettext(RoundAmountValue)) .. " Rounds Finished")
+			console.writeline(tonumber(RoundAmount) .. " Rounds Finished")
 			newGeneration()
+			console.writeline("PrintMaxFitness")
+			console.writeline(1336)
+			console.writeline(pool.generationMaxRightmostGenome) --[Print the most recent]
 			end
 			resetGenomeRan()
 			pool.currentSpecies = 1
@@ -1723,6 +1736,9 @@ function loadPool()
 	loadFile(filename)
 end
 
+
+
+
 --[[
 playTop: Plays the orgranism with the top fitness
 --]]
@@ -2072,6 +2088,10 @@ event.onexit(onExit)
 
 TimeoutAuto=false
 NoFitness=false
+
+local file = io.open("Fitness.csv", "w")
+file:write("-1" ..","..tostring(0).. "\n")
+file:close()
 --Infinte Fitness Loop
 while true do
 	--Sets the Top Bar Color
@@ -2166,6 +2186,8 @@ while true do
 			--fitness equal how right subtracted from how long it takes
 			if forms.ischecked(RightmostFitness) then
 				fitnesscheck[0] = tonumber(forms.gettext(RightmostAmount))*(rightmost - NetX)
+				genome.rightmostFitness=fitnesscheck[0]
+				console.writeline(tonumber(forms.gettext(RightmostAmount))*(rightmost - NetX))
 			end
 			if forms.ischecked(ScoreFitness) then
 				fitnesscheck[1] = fitness+tonumber(forms.gettext(ScoreAmount))*(marioScore - NetScore)
