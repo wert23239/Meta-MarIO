@@ -1062,7 +1062,7 @@ end
 SetNoveltyFitness: Goes through all mario's and sets there fitness to whatever unqiue spots they have been
 --]]
 function SetNoveltyFitness()
-	--local file = io.open("Fitness.pool", "w")
+	local file = io.open("Fitness.csv", "a")
 	local nspCount = 0
 	for loc,set in pairs(pool.landscape) do
 		--file:write("Location ".. loc .. "\n")
@@ -1075,7 +1075,6 @@ function SetNoveltyFitness()
 		 	for sg,value in pairs(set) do
 	        	local species=math.floor(tonumber(sg)/100)
 	        	local genome=tonumber(sg)%100
-				--file:write("Species " .. species .. "\n")
 				--file:write("Genome " .. genome .. "\n")
 				--file:write("SpeciesFitness " .. pool.species[species].genomes[genome].fitness .." Amount " .. count .. "\n")
 
@@ -1083,8 +1082,9 @@ function SetNoveltyFitness()
 			end
 		end
 	end
+	file:write(pool.generation ..","..tostring(nspCount).. "\n")
 	console.writeline("NSP: " .. nspCount)
-	--file:close()
+	file:close()
 end
 
 function GainNoveltyFitness(cordLocation)
@@ -1723,6 +1723,9 @@ function loadPool()
 	loadFile(filename)
 end
 
+
+
+
 --[[
 playTop: Plays the orgranism with the top fitness
 --]]
@@ -2076,6 +2079,10 @@ macOrWindows(true)
 
 TimeoutAuto=false
 NoFitness=false
+
+local file = io.open("Fitness.csv", "w")
+file:write("-1" ..","..tostring(0).. "\n")
+file:close()
 --Infinte Fitness Loop
 while true do
 	--Sets the Top Bar Color
