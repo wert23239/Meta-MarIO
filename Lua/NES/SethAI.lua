@@ -1808,30 +1808,8 @@ end
 
 
 --Create Fitness Form
-function windowsFitnessBox()
+function WindowsFitnessBox()
 form = forms.newform(340, 300, "Fitness")
-end
-
-function macFitnessBox()
-form = forms.newform(500, 500, "Fitness")
-end
-
--- pass in true for windows and false for mac
-function macOrWindows()
-	if 
-		WindowsFitnessBox()
-	else
-		macFitnessBox()
-	end
-end
-writeFile("temp.pool")
-
---makes the OnExit function work onExit
-event.onexit(onExit)
-
-
---call the FitnessBox
-
 --form = forms.newform(340, 300, "Fitness")
 --form = forms.newform(500, 500, "Fitness")
 --MaxFitness is the current Max
@@ -1918,6 +1896,112 @@ hideBanner = forms.checkbox(form, "Hide Banner", 210, 230)
 --What you are going to name the file
 saveLoadFile = forms.textbox(form, Filename .. ".pool", 110, 25, nil, 80, 230)
 saveLoadLabel = forms.label(form, "Save/Load:", 5, 230)
+end
+
+function macFitnessBox()
+form = forms.newform(500, 500, "Fitness")
+--MaxFitness is the current Max
+maxFitnessLabel = forms.label(form, "Max Fitness: " .. math.floor(pool.maxFitness), 5, 8)
+--Checkbox are bools used in the infinite while loop
+--A checkbox to see the Mutation rates
+showMutationRates = forms.checkbox(form, "Show Mutate", 230, 3)
+--A checkbox to see whether or not the eye(inputs) and controls(outputs) is shown
+showNetwork = forms.checkbox(form, "Show Map", 120, 3, "true")
+
+--Label to describe the differnt types of fitness
+
+--Name of fitness
+FitnessTypeLabel = forms.label(form, "Fitness Type:", 5, 30)
+--How much each fitness is worth
+FitnessAmountLabel = forms.label(form, "Amount", 117, 30)
+--Whether the fitness timeout constant can be reseted with this fitness.
+--The Fitness type DOESn't have to be on.
+FitnessTimeoutLabel = forms.label(form, "Timeout", 270, 30)
+--Enable this fitness
+FitnessCheckLabel = forms.label(form, "On", 230, 30)
+
+--Rightmost Label is the fitness for how far right you can go
+RightmostLabel = forms.label(form, "Rightmost ", 5, 55)
+--Each pixel right move is multiplied by this number
+RightmostAmount = forms.textbox(form, 1, 60, 20, nil, 120, 55)
+--If an organism reaches farther than right than ever before during a generation reset the timeout constant
+RightmostTimeout = forms.checkbox(form, "", 270, 55 , "true")
+--Toggle the rightmost fitness type
+RightmostFitness = forms.checkbox(form, "", 230, 55, "true")
+
+--Novelty Label is the fitness for how unique an orgranism travels
+NoveltyLabel = forms.label(form, "Novelty ", 5, 80)
+--Each spot an orgranism goes to that No more than the Novelty Constant goes to gets this many points
+NoveltyAmount = forms.textbox(form, 10000, 60, 20, nil, 120, 80)
+--Each new place an orgranism goes resets the timeout
+NoveltyTimeout = forms.checkbox(form, "", 270, 80, "true")
+--Toggle the Novelty fitness type
+NoveltyFitness = forms.checkbox(form, "", 230, 80, "true")
+
+--Score Label is the fitness for how much score an organism gains during a run
+ScoreLabel = forms.label(form, "Score ", 5, 105)
+--The Score is multiplied by this number
+ScoreAmount = forms.textbox(form, 1, 60, 20, nil, 120, 105)
+--Each time the score changes an orgranism resets there constant
+--ScoreTimeout = forms.checkbox(form, "", 270, 105)
+--Toggle the Score fitness type
+ScoreFitness = forms.checkbox(form, "", 230, 105, "true")
+
+
+-- Round Amount
+RoundLabel = forms.label(form, "Round Amount ", 5, 130)
+RoundAmountValue = forms.textbox(form, RoundAmountConstant, 60, 20, nil, 120, 130)
+RoundAmountFitness = forms.checkbox(form, "", 230, 130)
+
+
+--How many orgranism can visit a spot and it still be unique
+NoveltyConstantText = forms.textbox(form, NoveltyConstant, 30, 20, nil, 270, 155)
+NoveltyLabel = forms.label(form, "Novelty Constant: ", 170, 155)
+--How many frames till an orgranism dies off if not reset by a fitness
+TimeoutConstantText = forms.textbox(form, TimeoutConstant, 30, 20, nil, 120, 155)
+TimeoutLabel = forms.label(form, "Timeout Constant: ", 5, 155)
+
+--Play from the beginning each time but if you reach a check point or level end change the start location to this
+--showDeterminedContinousPlay = forms.checkbox(form, "Determine Play", 120, 150)
+--Play from where the last orgranism left off
+showContinousPlay = forms.checkbox(form, "Continous Play", 5, 180)
+
+
+--Save the Network
+saveButton = forms.button(form, "Save", savePool, 5, 205)
+--Load the Network
+loadButton = forms.button(form, "Load", loadPool, 80, 205)
+--Restart the experiment
+restartButton = forms.button(form, "Restart", initializePool, 75+80, 205)
+
+--Calls PlayTop function
+playTopButton = forms.button(form, "Play Top", playTop, 75+75+80, 205)
+
+
+--Hides banner
+hideBanner = forms.checkbox(form, "Hide Banner", 210, 230)
+
+--What you are going to name the file
+saveLoadFile = forms.textbox(form, Filename .. ".pool", 110, 25, nil, 80, 230)
+saveLoadLabel = forms.label(form, "Save/Load:", 5, 230)
+end
+
+-- pass in true for windows and false for mac
+function macOrWindows(isWindows)
+	if isWindows==true then
+		WindowsFitnessBox()
+	else
+		macFitnessBox()
+	end
+end
+writeFile("temp.pool")
+
+--makes the OnExit function work onExit
+event.onexit(onExit)
+
+
+--call the FitnessBox
+macOrWindows(true)
 
 
 TimeoutAuto=false
