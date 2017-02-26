@@ -130,7 +130,7 @@ DisableMutationChance = 0.4
 EnableMutationChance = 0.2
 
 --[[
-TimeoutConstant: How long it take till the enemies to despawn.
+TimeoutConstant: How long it take till the enemies to despawn. Inital
 --]]
 TimeoutConstant = 40
 
@@ -379,6 +379,20 @@ function newPool()
     --end
 	pool.landscape = {}
 	pool.landscapeold= {}
+	--hashtables of stats
+	--key is generation value is the value at the generation
+	pool.generationMaxFitnessGenome={} --Vanillia Best Fitness of this Generation per Genome
+	pool.generationMaxRightmostGenome={} --Highest Rightmost Fitnes of this Generation per Genome
+	pool.generationMaxNoveltyGenome={} --Highest Novelty Fitness of this Generation per Genome
+	pool.generationMaxFitnessCollective={} --Vanillia Best Fitness of this Generation per Genome
+	pool.generationMaxRightmostCollective={} --Highest Rightmost Fitnes of this Generation per Genome
+	pool.generationMaxNoveltyCollective={} --Highest Novelty Fitness of this Generation per Genome
+	pool.generationAverageFitnessGenome={} --Vanillia Best Fitness of this Generation per Genome
+	pool.generationAverageRightmostGenome={} --Highest Rightmost Fitnes of this Generation per Genome
+	pool.generationAverageNoveltyGenome={} --Highest Novelty Fitness of this Generation per Genome
+	pool.generationAverageFitnessCollective={} --Vanillia Best Fitness of this Generation per Genome
+	pool.generationAverageRightmostCollective={} --Highest Rightmost Fitnes of this Generation per Genome
+	pool.generationAverageNoveltyCollective={} --Highest Novelty Fitness of this Generation per Genome
 	NetWorld=marioWorld
 	NetLevel=marioLevel
 	half=false
@@ -1155,6 +1169,7 @@ function newGeneration()
         	pool.landscapeold[loc][sg]=true
 		end
 	end
+	findMaxFitnessForGeneration()
 	pool.landscape={}
 	RoundAmount=0
 	cullSpecies(false) -- Cull the bottom half of each species (The only comment written by SethBling in the entire code set)
@@ -1231,6 +1246,7 @@ function initializeRun()
 	CurrentNSFitness = 0
 	pool.currentFrame = 0
 	timeout =TimeoutConstant
+	console.writeline(timeout)
 	NetX = memory.readbyte(0x6D) * 0x100 + memory.readbyte(0x86)
 	NetScore = memory.readbyte(0x07D8)*100000+memory.readbyte(0x07D9)*10000+memory.readbyte(0x07DA)*1000
 	NetScore = NetScore + memory.readbyte(0x07DB)*100 + memory.readbyte(0x07DC)*10 + memory.readbyte(0x07DC)*1
@@ -1272,12 +1288,24 @@ end
 
 
 
-function resetGenomeRan(  )
+function resetGenomeRan()
 	for n,species in pairs(pool.species) do
 		for m,genome in pairs(species.genomes) do
 			genome.ran = false
 		end
 	end
+end
+
+function findMaxFitnessForGeneration()
+		local generationMaxFitness=0
+		for n,species in pairs(pool.species) do
+		for m,genome in pairs(species.genomes) do
+			if genome.fitness>generationMaxFitness then
+				generationMaxFitness=genome.fitness
+			end
+		end
+	end
+	table.insert(pool.generationMaxFitnessGenome, generationMaxFitness)
 end
 
 
@@ -1809,14 +1837,17 @@ end
 
 --Create Fitness Form
 function WindowsFitnessBox()
-form = forms.newform(340, 300, "Fitness")
---form = forms.newform(340, 300, "Fitness")
---form = forms.newform(500, 500, "Fitness")
+
+--Create Fitness Form
+form = forms.newform(500, 500, "Fitness")
 --MaxFitness is the current Max
 maxFitnessLabel = forms.label(form, "Max Fitness: " .. math.floor(pool.maxFitness), 5, 8)
 --Checkbox are bools used in the infinite while loop
+
+
 --A checkbox to see the Mutation rates
 showMutationRates = forms.checkbox(form, "Show Mutate", 230, 3)
+
 --A checkbox to see whether or not the eye(inputs) and controls(outputs) is shown
 showNetwork = forms.checkbox(form, "Show Map", 120, 3, "true")
 
@@ -1867,11 +1898,11 @@ RoundAmountFitness = forms.checkbox(form, "", 230, 130)
 
 
 --How many orgranism can visit a spot and it still be unique
-NoveltyConstantText = forms.textbox(form, NoveltyConstant, 30, 20, nil, 270, yvalue)
-NoveltyLabel = forms.label(form, "Novelty Constant: ", 170, yvalue)
+NoveltyConstantText = forms.textbox(form, NoveltyConstant, 30, 20, nil, 270, 155)
+NoveltyLabel = forms.label(form, "Novelty Constant: ", 170, 155)
 --How many frames till an orgranism dies off if not reset by a fitness
-TimeoutConstantText = forms.textbox(form, TimeoutConstant, 30, 20, nil, 120, yvalue)
-TimeoutLabel = forms.label(form, "Timeout Constant: ", 5, yvalue)
+TimeoutConstantText = forms.textbox(form, TimeoutConstant, 30, 20, nil, 120, 155)
+TimeoutLabel = forms.label(form, "Timeout Constant: ", 5, 155)
 
 --Play from the beginning each time but if you reach a check point or level end change the start location to this
 --showDeterminedContinousPlay = forms.checkbox(form, "Determine Play", 120, 150)
@@ -1880,14 +1911,14 @@ showContinousPlay = forms.checkbox(form, "Continous Play", 5, 180)
 
 
 --Save the Network
-saveButton = forms.button(form, "Save", savePool, 5, yvalue)
+saveButton = forms.button(form, "Save", savePool, 5, 205)
 --Load the Network
-loadButton = forms.button(form, "Load", loadPool, 80, yvalue)
+loadButton = forms.button(form, "Load", loadPool, 80, 205)
 --Restart the experiment
-restartButton = forms.button(form, "Restart", initializePool, 75+80, yvalue)
+restartButton = forms.button(form, "Restart", initializePool, 75+80, 205)
 
 --Calls PlayTop function
-playTopButton = forms.button(form, "Play Top", playTop, 75+75+80, yvalue)
+playTopButton = forms.button(form, "Play Top", playTop, 75+75+80, 205)
 
 
 --Hides banner
@@ -2126,8 +2157,6 @@ while true do
 			end
 			if forms.ischecked(ScoreFitness) then
 				fitnesscheck[1] = fitness+tonumber(forms.gettext(ScoreAmount))*(marioScore - NetScore)
-				fitnesscheck[0] = fitness+tonumber(forms.gettext(ScoreAmount))*(marioScore - NetScore)
-				fitnesscheck[2] = fitness+tonumber(forms.gettext(ScoreAmount))*(marioScore - NetScore)
 			end
 			if forms.ischecked(NoveltyFitness) then
 				fitnesscheck[2] = fitness +tonumber(forms.gettext(NoveltyAmount))*(CurrentNSFitness)
@@ -2136,7 +2165,7 @@ while true do
 			table.sort(fitnesscheck)
 		
 			fitness=fitnesscheck[2]
-			--Extra bonus for completeting the level
+			--Extra bonus for compeletting the level
 			if gameinfo.getromname() == "Super Mario World (USA)" and rightmost > 4816 then
 				fitness = fitness + 1000
 			end
