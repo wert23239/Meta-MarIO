@@ -98,7 +98,7 @@ Outputs = #ButtonNames
 Population: The Number of Genomes
 Deltas: TODO:
 --]]
-Population = 5
+Population = 30
 DeltaDisjoint = 2.0
 DeltaWeights = 0.4
 DeltaThreshold = 1.0
@@ -1299,8 +1299,6 @@ end
 function findMaxFitnessForGeneration()
 		local generationMaxFitness=0
 		local generationRightmostFitness=0
-		console.writeline("findMaxFitnessForGenerationFunction")
-		console.writeline(1302)
 		for n,species in pairs(pool.species) do
 		for m,genome in pairs(species.genomes) do
 			
@@ -1334,9 +1332,6 @@ function nextGenome()
 			if RoundAmount >= tonumber(forms.gettext(RoundAmountValue)) or forms.ischecked(RoundAmountFitness) == false then
 			console.writeline(tonumber(RoundAmount) .. " Rounds Finished")
 			newGeneration()
-			console.writeline("PrintMaxFitness")
-			console.writeline(1336)
-			console.writeline(pool.generationMaxRightmostGenome) --[Print the most recent]
 			end
 			resetGenomeRan()
 			pool.currentSpecies = 1
@@ -2176,7 +2171,6 @@ while true do
 			
 			if  pool.generation - NetGeneration  > 20  and training == true then 
 				training = false
-				console.writeline("here")
 				savestate.load(Filename)
 			end
 			--loadstate  
@@ -2184,7 +2178,6 @@ while true do
 			if forms.ischecked(RightmostFitness) then
 				fitnesscheck[0] = tonumber(forms.gettext(RightmostAmount))*(rightmost - NetX)
 				genome.rightmostFitness=fitnesscheck[0]
-				console.writeline(tonumber(forms.gettext(RightmostAmount))*(rightmost - NetX))
 			end
 			if forms.ischecked(ScoreFitness) then
 				fitnesscheck[1] = fitness+tonumber(forms.gettext(ScoreAmount))*(marioScore - NetScore)
@@ -2294,7 +2287,10 @@ while true do
 		end
 		if memory.readbyte(0x071E)==11 then
 		   TimeoutAuto=true
-			NoFitness=true
+		   NoFitness=true
+		   --if training==false then
+			--savestate.rewind()
+		   --end
 		end
 
 	end
