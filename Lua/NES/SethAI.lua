@@ -1898,18 +1898,30 @@ saveLoadFile = forms.textbox(form, Filename .. ".pool", 110, 25, nil, 80, 230)
 saveLoadLabel = forms.label(form, "Save/Load:", 5, 230)
 end
 
+function incrementx()
+	xvalue=xvalue+250
+	return xvalue
+end
+
+function incrementy()
+	yvalue=yvalue+300
+	return yvalue
+end
+
 function macFitnessBox()
-form = forms.newform(500, 500, "Fitness")
+yvalue=0
+xvalue=0
+form = forms.newform(1400, 1400, "Fitness")
 --MaxFitness is the current Max
-maxFitnessLabel = forms.label(form, "Max Fitness: " .. math.floor(pool.maxFitness), 5, 8)
+maxFitnessLabel = forms.label(form, "Max Fitness: " .. math.floor(pool.maxFitness), incrementx(),yvalue)
+--A checkbox to see whether or not the eye(inputs) and controls(outputs) is shown
+showNetwork = forms.checkbox(form, "Show Map", incrementx(), yvalue, "true")
 --Checkbox are bools used in the infinite while loop
 --A checkbox to see the Mutation rates
-showMutationRates = forms.checkbox(form, "Show Mutate", 230, 3)
---A checkbox to see whether or not the eye(inputs) and controls(outputs) is shown
-showNetwork = forms.checkbox(form, "Show Map", 120, 3, "true")
-
+showMutationRates = forms.checkbox(form, "Show Mutate", incrementx(), yvalue)
+yvalue=incrementy()
+xvalue=0
 --Label to describe the differnt types of fitness
-
 --Name of fitness
 FitnessTypeLabel = forms.label(form, "Fitness Type:", 5, 30)
 --How much each fitness is worth
@@ -1917,15 +1929,14 @@ FitnessAmountLabel = forms.label(form, "Amount", 117, 30)
 --Whether the fitness timeout constant can be reseted with this fitness.
 --The Fitness type DOESn't have to be on.
 FitnessTimeoutLabel = forms.label(form, "Timeout", 270, 30)
---Enable this fitness
+--Enable this fitnyvaless
 FitnessCheckLabel = forms.label(form, "On", 230, 30)
-
 --Rightmost Label is the fitness for how far right you can go
 RightmostLabel = forms.label(form, "Rightmost ", 5, 55)
 --Each pixel right move is multiplied by this number
 RightmostAmount = forms.textbox(form, 1, 60, 20, nil, 120, 55)
 --If an organism reaches farther than right than ever before during a generation reset the timeout constant
-RightmostTimeout = forms.checkbox(form, "", 270, 55 , "true")
+RightmostTimeout = forms.checkbox(form, "", 270, 55, "true")
 --Toggle the rightmost fitness type
 RightmostFitness = forms.checkbox(form, "", 230, 55, "true")
 
@@ -2001,7 +2012,7 @@ event.onexit(onExit)
 
 
 --call the FitnessBox
-macOrWindows(true)
+macOrWindows(false)
 
 
 TimeoutAuto=false
