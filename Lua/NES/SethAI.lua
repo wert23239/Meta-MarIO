@@ -1833,12 +1833,13 @@ end
 -- 		console.writeline("new")
 -- 	end
 -- end
-function incrementx()
+
+function incrementWindowsX()
 	xvalue=xvalue+125
 	return xvalue
 end
 
-function incrementy()
+function incrementWindowsY()
 	yvalue=yvalue+50
 	return yvalue
 end
@@ -1849,229 +1850,224 @@ yvalue=25
 xvalue=25
 form = forms.newform(700, 600, "Fitness")
 --MaxFitness is the current Max
-maxFitnessLabel = forms.label(form, "Max Fitness: " .. math.floor(pool.maxFitness), incrementx(),yvalue)
+maxFitnessLabel = forms.label(form, "Max Fitness: " .. math.floor(pool.maxFitness), incrementWindowsX(),yvalue)
 --A checkbox to see whether or not the eye(inputs) and controls(outputs) is shown
-showNetwork = forms.checkbox(form, "Show Map", incrementx(), yvalue, "true")
+showNetwork = forms.checkbox(form, "Show Map", incrementWindowsX(), yvalue, "true")
 --Checkbox are bools used in the infinite while loop
 --A checkbox to see the Mutation rates
-showMutationRates = forms.checkbox(form, "Show Mutate", incrementx(), yvalue)
-yvalue=incrementy()
+showMutationRates = forms.checkbox(form, "Show Mutate", incrementWindowsX(), yvalue)
+yvalue=incrementWindowsY()
 xvalue=0
 --Label to describe the differnt types of fitness
 --Name of fitness
-FitnessTypeLabel = forms.label(form, "Fitness Type:", incrementx(), yvalue)
+FitnessTypeLabel = forms.label(form, "Fitness Type:", incrementWindowsX(), yvalue)
 --How much each fitness is worth
-FitnessAmountLabel = forms.label(form, "Amount", incrementx(), yvalue)
+FitnessAmountLabel = forms.label(form, "Amount", incrementWindowsX(), yvalue)
 --Whether the fitness timeout constant can be reseted with this fitness.
 --The Fitness type DOESn't have to be on.
-FitnessCheckLabel = forms.label(form, "On", incrementx(), yvalue)
+FitnessCheckLabel = forms.label(form, "On", incrementWindowsX(), yvalue)
 --Enable this fitnyvaless
-FitnessTimeoutLabel = forms.label(form, "Timeout", incrementx(), yvalue)
+FitnessTimeoutLabel = forms.label(form, "Timeout", incrementWindowsX(), yvalue)
 --Enable this fitnyvaless
-yvalue=incrementy()
+yvalue=incrementWindowsY()
 xvalue=0
 --Rightmost Label is the fitness for how far right you can go
-RightmostLabel = forms.label(form, "Rightmost ", incrementx(), yvalue)
+RightmostLabel = forms.label(form, "Rightmost ", incrementWindowsX(), yvalue)
 --Each pixel right move is multiplied by this number
-RightmostAmount = forms.textbox(form, 1, 60, 20, nil, incrementx(), yvalue)
+RightmostAmount = forms.textbox(form, 1, 60, 20, nil, incrementWindowsX(), yvalue)
 --If an organism reaches farther than right than ever before during a generation reset the timeout constant
-RightmostFitness = forms.checkbox(form, "", incrementx(), yvalue, "true")
+RightmostFitness = forms.checkbox(form, "", incrementWindowsX(), yvalue, "true")
 --Toggle the rightmost fitness type
-RightmostTimeout = forms.checkbox(form, "", incrementx(), yvalue, "true")
-yvalue=incrementy()
+RightmostTimeout = forms.checkbox(form, "", incrementWindowsX(), yvalue, "true")
+yvalue=incrementWindowsY()
 xvalue=0
 --Novelty Label is the fitness for how unique an orgranism travels
-NoveltyLabel = forms.label(form, "Novelty ", incrementx(), yvalue)
+NoveltyLabel = forms.label(form, "Novelty ", incrementWindowsX(), yvalue)
 --Each spot an orgranism goes to that No more than the Novelty Constant goes to gets this many points
-NoveltyAmount = forms.textbox(form, 10000, 60, 20, nil, incrementx(), yvalue)
+NoveltyAmount = forms.textbox(form, 10000, 60, 20, nil, incrementWindowsX(), yvalue)
 --Each new place an orgranism goes resets the timeout
-NoveltyFitness = forms.checkbox(form, "", incrementx(), yvalue, "true")
+NoveltyFitness = forms.checkbox(form, "", incrementWindowsX(), yvalue, "true")
 --Toggle the Novelty fitness type
-NoveltyTimeout = forms.checkbox(form, "", incrementx(), yvalue, "true")
-yvalue=incrementy()
+NoveltyTimeout = forms.checkbox(form, "", incrementWindowsX(), yvalue, "true")
+yvalue=incrementWindowsY()
 xvalue=0
 
 --Score Label is the fitness for how much score an organism gains during a run
-ScoreLabel = forms.label(form, "Score ", incrementx(), yvalue)
+ScoreLabel = forms.label(form, "Score ", incrementWindowsX(), yvalue)
 --The Score is multiplied by this number
-ScoreAmount = forms.textbox(form, 1, 60, 20, nil, incrementx(), yvalue)
+ScoreAmount = forms.textbox(form, 1, 60, 20, nil, incrementWindowsX(), yvalue)
 --Each time the score changes an orgranism resets there constant
-ScoreFitness = forms.checkbox(form, "", incrementx(), yvalue, "true")
+ScoreFitness = forms.checkbox(form, "", incrementWindowsX(), yvalue, "true")
 --Toggle the Score fitness type
-ScoreTimeout = forms.checkbox(form, "", incrementx(), yvalue)
-yvalue=incrementy()
+ScoreTimeout = forms.checkbox(form, "", incrementWindowsX(), yvalue)
+yvalue=incrementWindowsY()
 xvalue=0
 
 -- Round Amount
-RoundLabel = forms.label(form, "Round Amount ", incrementx(), yvalue)
-RoundAmountValue = forms.textbox(form, RoundAmountConstant, 60, 20, nil, incrementx(), yvalue)
-RoundAmountFitness = forms.checkbox(form, "", incrementx(), yvalue)
-yvalue=incrementy()
+RoundLabel = forms.label(form, "Round Amount ", incrementWindowsX(), yvalue)
+RoundAmountValue = forms.textbox(form, RoundAmountConstant, 60, 20, nil, incrementWindowsX(), yvalue)
+RoundAmountFitness = forms.checkbox(form, "", incrementWindowsX(), yvalue)
+yvalue=incrementWindowsY()
 xvalue=0
 
 --How many orgranism can visit a spot and it still be unique
-NoveltyLabel = forms.label(form, "Novelty Constant: ", incrementx(), yvalue)
-NoveltyConstantText = forms.textbox(form, NoveltyConstant, 30, 20, nil, incrementx(), yvalue)
+NoveltyLabel = forms.label(form, "Novelty Constant: ", incrementWindowsX(), yvalue)
+NoveltyConstantText = forms.textbox(form, NoveltyConstant, 30, 20, nil, incrementWindowsX(), yvalue)
 --How many frames till an orgranism dies off if not reset by a fitness
-TimeoutLabel = forms.label(form, "Timeout Constant: ", incrementx(), yvalue)
-TimeoutConstantText = forms.textbox(form, TimeoutConstant, 30, 20, nil, incrementx(), yvalue)
-yvalue=incrementy()
+TimeoutLabel = forms.label(form, "Timeout Constant: ", incrementWindowsX(), yvalue)
+TimeoutConstantText = forms.textbox(form, TimeoutConstant, 30, 20, nil, incrementWindowsX(), yvalue)
+yvalue=incrementWindowsY()
 xvalue=0
 --Play from the beginning each time but if you reach a check point or level end change the start location to this
 --showDeterminedContinousPlay = forms.checkbox(form, "Determine Play", 120, 150)
 --Play from where the last orgranism left off
-showContinousPlay = forms.checkbox(form, "Continous Play", incrementx(), yvalue)
-yvalue=incrementy()
+showContinousPlay = forms.checkbox(form, "Continous Play", incrementWindowsX(), yvalue)
+yvalue=incrementWindowsY()
 xvalue=0
 
 --Save the Network
-saveButton = forms.button(form, "Save", savePool, incrementx(), yvalue)
+saveButton = forms.button(form, "Save", savePool, incrementWindowsX(), yvalue)
 --Load the Network
-loadButton = forms.button(form, "Load", loadPool, incrementx(), yvalue)
+loadButton = forms.button(form, "Load", loadPool, incrementWindowsX(), yvalue)
 --Restart the experiment
-restartButton = forms.button(form, "Restart", initializePool, incrementx(), yvalue)
+restartButton = forms.button(form, "Restart", initializePool, incrementWindowsX(), yvalue)
 
 --Calls PlayTop function
-playTopButton = forms.button(form, "Play Top", playTop, incrementx(), yvalue)
-yvalue=incrementy()
+playTopButton = forms.button(form, "Play Top", playTop, incrementWindowsX(), yvalue)
+yvalue=incrementWindowsY()
 xvalue=0
 
 --Hides banner
-hideBanner = forms.checkbox(form, "Hide Banner", incrementx(), yvalue)
-yvalue=incrementy()
+hideBanner = forms.checkbox(form, "Hide Banner", incrementWindowsX(), yvalue)
+yvalue=incrementWindowsY()
 xvalue=0
 --What you are going to name the file
-saveLoadLabel = forms.label(form, "Save/Load:", incrementx(), yvalue)
-saveLoadFile = forms.textbox(form, Filename .. ".pool", 110, 25, nil, incrementx(), yvalue)
+saveLoadLabel = forms.label(form, "Save/Load:", incrementWindowsX(), yvalue)
+saveLoadFile = forms.textbox(form, Filename .. ".pool", 110, 25, nil, incrementWindowsX(), yvalue)
 end
 
---function incrementx()
-	--xvalue=xvalue+125
-	--return xvalue
---end
+function incrementMacX()
+	xvalue=xvalue+125
+	return xvalue
+end
 
---function incrementy()
-	--yvalue=yvalue+125
-	--return yvalue
---end
+function incrementMacY()
+	yvalue=yvalue+125
+	return yvalue
+end
 
 function macFitnessBox()
 yvalue=50
 xvalue=0
 form = forms.newform(1700, 1500, "Fitness")
 --MaxFitness is the current Max
-maxFitnessLabel = forms.label(form, "Max Fitness: " .. math.floor(pool.maxFitness), incrementx()+25,yvalue)
+maxFitnessLabel = forms.label(form, "Max Fitness: " .. math.floor(pool.maxFitness), incrementMacX()+25,yvalue)
 --A checkbox to see whether or not the eye(inputs) and controls(outputs) is shown
-showNetwork = forms.checkbox(form, "Show Map", incrementx()+25, yvalue, "true")
+showNetwork = forms.checkbox(form, "Show Map", incrementMacX()+25, yvalue, "true")
 --Checkbox are bools used in the infinite while loop
 --A checkbox to see the Mutation rates
-showMutationRates = forms.checkbox(form, "Show Mutate", incrementx()+25, yvalue)
-yvalue=incrementy()
+showMutationRates = forms.checkbox(form, "Show Mutate", incrementMacX()+25, yvalue)
+yvalue=incrementMacY()
 xvalue=0
 --Label to describe the differnt types of fitness
 --Name of fitness
-FitnessTypeLabel = forms.label(form, "Fitness Type:", incrementx(), yvalue)
+FitnessTypeLabel = forms.label(form, "Fitness Type:", incrementMacX(), yvalue)
 --How much each fitness is worth
-FitnessAmountLabel = forms.label(form, "Amount", incrementx(), yvalue)
+FitnessAmountLabel = forms.label(form, "Amount", incrementMacX(), yvalue)
 --Whether the fitness timeout constant can be reseted with this fitness.
 --The Fitness type DOESn't have to be on.
-FitnessCheckLabel = forms.label(form, "On", incrementx(), yvalue)
+FitnessCheckLabel = forms.label(form, "On", incrementMacX(), yvalue)
 --Enable this fitnyvaless
-FitnessTimeoutLabel = forms.label(form, "Timeout", incrementx(), yvalue)
+FitnessTimeoutLabel = forms.label(form, "Timeout", incrementMacX(), yvalue)
 --Enable this fitnyvaless
-yvalue=incrementy()
+yvalue=incrementMacY()
 xvalue=0
 --Rightmost Label is the fitness for how far right you can go
-RightmostLabel = forms.label(form, "Rightmost ", incrementx(), yvalue)
+RightmostLabel = forms.label(form, "Rightmost ", incrementMacX(), yvalue)
 --Each pixel right move is multiplied by this number
-RightmostAmount = forms.textbox(form, 1, 60, 20, nil, incrementx(), yvalue)
+RightmostAmount = forms.textbox(form, 1, 60, 20, nil, incrementMacX(), yvalue)
 --If an organism reaches farther than right than ever before during a generation reset the timeout constant
-RightmostFitness = forms.checkbox(form, "", incrementx(), yvalue, "true")
+RightmostFitness = forms.checkbox(form, "", incrementMacX(), yvalue, "true")
 --Toggle the rightmost fitness type
-RightmostTimeout = forms.checkbox(form, "", incrementx(), yvalue, "true")
-yvalue=incrementy()
+RightmostTimeout = forms.checkbox(form, "", incrementMacX(), yvalue, "true")
+yvalue=incrementMacY()
 xvalue=0
 --Novelty Label is the fitness for how unique an orgranism travels
-NoveltyLabel = forms.label(form, "Novelty ", incrementx(), yvalue)
+NoveltyLabel = forms.label(form, "Novelty ", incrementMacX(), yvalue)
 --Each spot an orgranism goes to that No more than the Novelty Constant goes to gets this many points
-NoveltyAmount = forms.textbox(form, 10000, 60, 20, nil, incrementx(), yvalue)
+NoveltyAmount = forms.textbox(form, 10000, 60, 20, nil, incrementMacX(), yvalue)
 --Each new place an orgranism goes resets the timeout
-NoveltyFitness = forms.checkbox(form, "", incrementx(), yvalue, "true")
+NoveltyFitness = forms.checkbox(form, "", incrementMacX(), yvalue, "true")
 --Toggle the Novelty fitness type
-NoveltyTimeout = forms.checkbox(form, "", incrementx(), yvalue, "true")
-yvalue=incrementy()
+NoveltyTimeout = forms.checkbox(form, "", incrementMacX(), yvalue, "true")
+yvalue=incrementMacY()
 xvalue=0
 
 --Score Label is the fitness for how much score an organism gains during a run
-ScoreLabel = forms.label(form, "Score ", incrementx(), yvalue)
+ScoreLabel = forms.label(form, "Score ", incrementMacX(), yvalue)
 --The Score is multiplied by this number
-ScoreAmount = forms.textbox(form, 1, 60, 20, nil, incrementx(), yvalue)
+ScoreAmount = forms.textbox(form, 1, 60, 20, nil, incrementMacX(), yvalue)
 --Each time the score changes an orgranism resets there constant
-ScoreFitness = forms.checkbox(form, "", incrementx(), yvalue, "true")
+ScoreFitness = forms.checkbox(form, "", incrementMacX(), yvalue, "true")
 --Toggle the Score fitness type
-ScoreTimeout = forms.checkbox(form, "", incrementx(), yvalue)
-yvalue=incrementy()
+ScoreTimeout = forms.checkbox(form, "", incrementMacX(), yvalue)
+yvalue=incrementMacY()
 xvalue=0
 
 -- Round Amount
-RoundLabel = forms.label(form, "Round Amount ", incrementx(), yvalue)
-RoundAmountValue = forms.textbox(form, RoundAmountConstant, 60, 20, nil, incrementx(), yvalue)
-RoundAmountFitness = forms.checkbox(form, "", incrementx(), yvalue)
-yvalue=incrementy()
+RoundLabel = forms.label(form, "Round Amount ", incrementMacX(), yvalue)
+RoundAmountValue = forms.textbox(form, RoundAmountConstant, 60, 20, nil, incrementMacX(), yvalue)
+RoundAmountFitness = forms.checkbox(form, "", incrementMacX(), yvalue)
+yvalue=incrementMacY()
 xvalue=0
 
 --How many orgranism can visit a spot and it still be unique
-NoveltyLabel = forms.label(form, "Novelty Constant: ", incrementx(), yvalue)
-NoveltyConstantText = forms.textbox(form, NoveltyConstant, 30, 20, nil, incrementx(), yvalue)
+NoveltyLabel = forms.label(form, "Novelty Constant: ", incrementMacX(), yvalue)
+NoveltyConstantText = forms.textbox(form, NoveltyConstant, 30, 20, nil, incrementMacX(), yvalue)
 --How many frames till an orgranism dies off if not reset by a fitness
-TimeoutLabel = forms.label(form, "Timeout Constant: ", incrementx(), yvalue)
-TimeoutConstantText = forms.textbox(form, TimeoutConstant, 30, 20, nil, incrementx(), yvalue)
-yvalue=incrementy()
+TimeoutLabel = forms.label(form, "Timeout Constant: ", incrementMacX(), yvalue)
+TimeoutConstantText = forms.textbox(form, TimeoutConstant, 30, 20, nil, incrementMacX(), yvalue)
+yvalue=incrementMacY()
 xvalue=0
 --Play from the beginning each time but if you reach a check point or level end change the start location to this
 --showDeterminedContinousPlay = forms.checkbox(form, "Determine Play", 120, 150)
 --Play from where the last orgranism left off
-showContinousPlay = forms.checkbox(form, "Continous Play", incrementx(), yvalue)
-yvalue=incrementy()
+showContinousPlay = forms.checkbox(form, "Continous Play", incrementMacX(), yvalue)
+yvalue=incrementMacY()
 xvalue=0
 
 --Save the Network
-saveButton = forms.button(form, "Save", savePool, incrementx(), yvalue)
+saveButton = forms.button(form, "Save", savePool, incrementMacX(), yvalue)
 --Load the Network
-loadButton = forms.button(form, "Load", loadPool, incrementx(), yvalue)
+loadButton = forms.button(form, "Load", loadPool, incrementMacX(), yvalue)
 --Restart the experiment
-restartButton = forms.button(form, "Restart", initializePool, incrementx(), yvalue)
+restartButton = forms.button(form, "Restart", initializePool, incrementMacX(), yvalue)
 
 --Calls PlayTop function
-playTopButton = forms.button(form, "Play Top", playTop, incrementx(), yvalue)
-yvalue=incrementy()
+playTopButton = forms.button(form, "Play Top", playTop, incrementMacX(), yvalue)
+yvalue=incrementMacY()
 xvalue=0
 
 --Hides banner
-hideBanner = forms.checkbox(form, "Hide Banner", incrementx(), yvalue)
-yvalue=incrementy()
+hideBanner = forms.checkbox(form, "Hide Banner", incrementMacX(), yvalue)
+yvalue=incrementMacY()
 xvalue=0
 --What you are going to name the file
-saveLoadLabel = forms.label(form, "Save/Load:", incrementx(), yvalue)
-saveLoadFile = forms.textbox(form, Filename .. ".pool", 110, 25, nil, incrementx(), yvalue)
+saveLoadLabel = forms.label(form, "Save/Load:", incrementMacX(), yvalue)
+saveLoadFile = forms.textbox(form, Filename .. ".pool", 110, 25, nil, incrementMacX(), yvalue)
 end
 
--- pass in true for windows and false for mac
-function macOrWindows(isWindows)
-	if isWindows==true then
-		WindowsFitnessBox()
-	else
-		macFitnessBox()
-	end
+-- Draw window for either mac or windows
+if System == "Windows" then
+WindowsFitnessBox()
+else
+macFitnessBox()
 end
+
 writeFile("temp.pool")
 
 --makes the OnExit function work onExit
 event.onexit(onExit)
-
-
---call the FitnessBox
-macOrWindows(true)
 
 
 TimeoutAuto=false
