@@ -3,4 +3,7 @@
 config.ini
 *.txt
 Initial
-*.csv
+*Fitness.csv
+*backup.*
+*.state*.txt
+*.speed
