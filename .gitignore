@@ -7,3 +7,5 @@ Initial
 *backup.*
 *.state*.txt
 *.speed
+#DataFiles
+Lua\NES\Fitness.csv
