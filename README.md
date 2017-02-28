@@ -1,7 +1,7 @@
 [![Stories in Ready](https://badge.waffle.io/wert23239/Meta-MarIO.png?label=ready&title=Ready)](https://waffle.io/wert23239/Meta-MarIO)
 
-![FitnessFunctionTeam.png](FitnessFunctionTeam.png?raw=true "Optional Title")
 
+![RealtimeGraphs.png](RealtimeGraphs.png?raw=true "Optional Title")
 
 
 ##Watch this video to get started with Virtual Evolution:
@@ -73,3 +73,5 @@ https://github.com/denilsonsa/bizhawk-lua-scripts
 
 ###GUI Goals
 http://socialblade.com/youtube/user/pewdiepie/realtime
+
+
