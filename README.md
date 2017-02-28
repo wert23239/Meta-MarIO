@@ -28,6 +28,10 @@ Parameter 2 is y spacing between items
 Parameter 3 is total screen width
 Parameter 4 is total screen height
 
+
+##Ideas
+[![Feature Requests](http://feathub.com/wert23239/Meta-MarIO?format=svg)](http://feathub.com/wert23239/Meta-MarIO)
+
 ##Important Bits
 
 Basic Comprendium
