@@ -1571,8 +1571,6 @@ function loadFile(filename)
 	--Gather MaxFitness
 	pool.maxFitness = file:read("*number")
 
-	forms.settext(maxFitnessLabel, "Max Fitness: " .. math.floor(pool.maxFitness))
-
 		--Read the file
 		--[[
 		1 Line: Generation
