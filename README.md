@@ -1,9 +1,10 @@
 [![Stories in Ready](https://badge.waffle.io/wert23239/Meta-MarIO.png?label=ready&title=Ready)](https://waffle.io/wert23239/Meta-MarIO)
 
 
-<img src="ContinousPlay.gif" width="500"/>
-<img src="ContinousDeath.gif" width="200"/>
-<img src="GraphVisualization.gif" width="200"/>
+<img src="ContinousPlay.gif" width="1000"/><br />
+<br />
+<img src="ContinousDeath.gif" width="420"/>
+<img src="GraphVisualization.gif" width="420"/>
 
 
 
