@@ -1,7 +1,12 @@
 [![Stories in Ready](https://badge.waffle.io/wert23239/Meta-MarIO.png?label=ready&title=Ready)](https://waffle.io/wert23239/Meta-MarIO)
 
 
-![RealtimeGraphs.png](RealtimeGraphs.png?raw=true "Optional Title")
+
+
+![ContinousPlay.gif](ContinousPlay.gif?raw=true "Optional Title" | width="150" height="250")
+![ContinousDeath.gif](ContinousDeath.gif "Optional Title")
+![GraphVisualization.gif](GraphVisualization.gif?raw=true "Optional Title")
+
 
 
 ##Watch this video to get started with Virtual Evolution:
