@@ -13,19 +13,20 @@
 ##Watch this video to get started with Virtual Evolution:
 https://www.youtube.com/watch?v=qv6UVOQ0F44
 
-##To understand the code:
--Read Commented.Lua
+##FAQ
 
--Open up EmuHawk
+**Where is the code located?**
 
--Load Game From File->Open ROM         ->"Super Mario Bros. (Japan, USA).nes"
+It is located at Lua->NES->MarioAI.lua
 
--Open Lua Console Tools->Lua Console
+**How do I adjust the GUI Width and Height?**
 
--Run script in Lua Console with Script->Load Script   ->Lua->NES->"SethAI.lua"
-
--In the Fitnes Dialog Box hit the Show Map Button
-
+Look for 
+FitnessBox(140,40,600,700) in code
+Parameter 1 is x spacing between items
+Parameter 2 is y spacing between items
+Parameter 3 is total screen width
+Parameter 4 is total screen height
 
 ##Important Bits
 
