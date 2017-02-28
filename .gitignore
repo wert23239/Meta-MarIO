@@ -3,4 +3,9 @@
 config.ini
 *.txt
 Initial
-*.csv
+*Fitness.csv
+*backup.*
+*.state*.txt
+*.speed
+#DataFiles
+Lua\NES\Fitness.csv
