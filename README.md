@@ -22,10 +22,10 @@ It is located at Lua->NES->MarioAI.lua
 **How do I adjust the GUI Width and Height?**
 
 Look for 
-FitnessBox(140,40,600,700) in code
-Parameter 1 is x spacing between items
-Parameter 2 is y spacing between items
-Parameter 3 is total screen width
+FitnessBox(140,40,600,700) in code <br />
+Parameter 1 is x spacing between items <br />
+Parameter 2 is y spacing between items <br />
+Parameter 3 is total screen width <br />
 Parameter 4 is total screen height
 
 
