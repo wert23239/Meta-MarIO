@@ -5,8 +5,8 @@
 -- and put a copy in both the Lua folder and the root directory of BizHawk.
 -- Keep this top in mind
 
-
-
+require "Hello"
+printHey()
 --[[
 This is only for to change what game it is.
 This sets what the save state
@@ -1570,7 +1570,6 @@ function loadFile(filename)
 
 	--Gather MaxFitness
 	pool.maxFitness = file:read("*number")
-
 		--Read the file
 		--[[
 		1 Line: Generation

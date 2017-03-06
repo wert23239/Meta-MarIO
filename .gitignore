@@ -9,3 +9,5 @@ Initial
 *.speed
 #DataFiles
 Lua\NES\Fitness.csv
+*auto.state
+*.pool
