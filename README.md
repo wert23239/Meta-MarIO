@@ -1,4 +1,5 @@
 #Meta-MarIO
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Meta-MarIO/Lobby?source=orgpage)
 [![Stories in Ready](https://badge.waffle.io/wert23239/Meta-MarIO.png?label=ready&title=Ready)](https://waffle.io/wert23239/Meta-MarIO)
 
 
