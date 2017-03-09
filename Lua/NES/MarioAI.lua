@@ -1645,25 +1645,31 @@ function LevelChange()
 	end
 end
 
---[[
-CalculateLocationCord: Calculates a unique location identifier for the
-Novelty search hash table
---]]
-function CalculateLocationCord()
-	--console.writeline("X ".. memory.readbyte(0x86).. " Page " .. memory.readbyte(0x6D) .. " Y " .. marioY )
-	--console.writeline( math.floor(marioY/16)*10000+memory.readbyte(0x6D) * 1000  + math.floor(memory.readbyte(0x86)/16) )
-	return math.floor(marioY/64)*10000+memory.readbyte(0x6D) * 1000 + math.floor(memory.readbyte(0x86)/64)
+
+
+function NoveltyTimeoutFunction()
+	--Populate Cordinates
+	local cordLocation=CalculateLocationCord() --y/16*10000+page*1000+x/16*1
+	local cordSpecies=CalculateSpeciesCord(pool.currentSpecies,pool.currentGenome) --speices*100+genome*1
+
+	if pool.landscape[tostring(cordLocation)]==nil then
+		pool.landscape[tostring(cordLocation)]={}
+	end
+
+	if not pool.landscape[tostring(cordLocation)][tostring(cordSpecies)]==true then
+		pool.landscape[tostring(cordLocation)][tostring(cordSpecies)]=true
+		if forms.ischecked(NoveltyTimeout) then
+			timeout = tonumber(forms.gettext(TimeoutConstantText))
+			GainNoveltyFitness(tostring(cordLocation))
+		end
+	end
 end
 
-
-function CalculateSpeciesCord(species,genome)
-	return species*100+genome
-end
-
-
+require "Forms"
 
 FitnessBox(140,40,600,700)
 
+require "Timeout"
 
 writeFile("temp.pool")
 
@@ -1711,36 +1717,24 @@ while true do
 
 		--Get Postion of Mario reading the Hex Bits
 		getPositions()
+		if pool.currentFrame%4 == 0 then
 
-		--Sets Each Point a
-		if forms.ischecked(NoveltyFitness) or forms.ischecked(NoveltyTimeout) then
-			if pool.currentFrame%2 == 0 then
-				--Populate Cordinates
-				local cordLocation=CalculateLocationCord() --y/16*10000+page*1000+x/16*1
-				local cordSpecies=CalculateSpeciesCord(pool.currentSpecies,pool.currentGenome) --speices*100+genome*1
+			--Novelty Timeout Check
+			if forms.ischecked(NoveltyFitness) or forms.ischecked(NoveltyTimeout) then
+				NoveltyTimeoutFunction()
+			end
 
-				if pool.landscape[tostring(cordLocation)]==nil then
-					pool.landscape[tostring(cordLocation)]={}
-				end
 
-				if not pool.landscape[tostring(cordLocation)][tostring(cordSpecies)]==true then
-					pool.landscape[tostring(cordLocation)][tostring(cordSpecies)]=true
-					if forms.ischecked(NoveltyTimeout) then
+			--If mario reached more right than before reset his time to the constant
+			if forms.ischecked(RightmostFitness) or forms.ischecked(RightmostTimeout) then
+				if marioX > rightmost then
+					rightmost = marioX
+					if forms.ischecked(RightmostTimeout) then
 						timeout = tonumber(forms.gettext(TimeoutConstantText))
-						GainNoveltyFitness(tostring(cordLocation))
 					end
 				end
-
 			end
 		end
-		--If mario reached more right than before reset his time to the constant
-		if marioX > rightmost and ( forms.ischecked(RightmostFitness) or forms.ischecked(RightmostTimeout)  )then
-			rightmost = marioX
-			if forms.ischecked(RightmostTimeout) then
-				timeout = tonumber(forms.gettext(TimeoutConstantText))
-			end
-		end
-
 
 		--Subtract one time unit each loop
 		timeout = timeout - 1
