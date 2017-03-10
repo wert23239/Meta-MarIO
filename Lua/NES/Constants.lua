@@ -3,8 +3,10 @@ Setting Constants
 --]]
 
 
+FilenameFolder="States/"
+
 if gameinfo.getromname() == "Super Mario World (USA)" then
-	Filename = "DP1.state"
+	Filename = FilenameFolder.."DP1.state"
 	ButtonNames = {
 		"A",
 		"B",
@@ -16,7 +18,7 @@ if gameinfo.getromname() == "Super Mario World (USA)" then
 		"Right",
 	}
 elseif gameinfo.getromname() == "Super Mario Bros." then
-	Filename = "Level12.state"
+	Filename = FilenameFolder.."Level12.state"
 	ButtonNames = {
 		"A",
 		"B",
@@ -34,9 +36,9 @@ It's where the inputs will be taken in at.
 (Left side of the visual)
 --]]
 BoxRadius = 6
-FilenameTraining = "t1.state"
-FilenameTraining2 = "t2.state"
-FilenameTraining3 = "Level12.state"
+FilenameTraining = "States/t1.state"
+FilenameTraining2 = "States/t2.state"
+FilenameTraining3 = "States/Level12.state"
 NetGeneration = 0
 training = false
 RoundAmountConstant = 3

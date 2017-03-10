@@ -7,8 +7,12 @@ Initial
 *backup.*
 *.state*.txt
 *.speed
+
 #DataFiles
 Lua\NES\Fitness.csv
 *auto.state
 *.pool
+Lua\NES\Pools\*
+
+#SMB 3
 *Super Mario Bros. 3*

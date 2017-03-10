@@ -63,7 +63,7 @@ function FitnessBox(AmountX,AmountY,BoxX,BoxY)
 	yvalue=incrementY(AmountY) xvalue=0
 	--File Save
 	saveLoadLabel = forms.label(form, "Save/Load:", xvalue, yvalue)
-	saveLoadFile = forms.textbox(form, Filename .. ".pool", 110, 25, nil, incrementX(AmountX), yvalue)
+	saveLoadFile = forms.textbox(form, "New.pool", 110, 25, nil, incrementX(AmountX), yvalue)
 	--playTopButton = forms.button(form, "Play Top", playTop, incrementX(AmountX), yvalue)
 	--Hides banner
 	-- hideBanner = forms.checkbox(form, "Hide Banner", incrementX(AmountX), yvalue)

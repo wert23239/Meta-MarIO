@@ -1167,7 +1167,7 @@ function displayGenome(genome)
 end
 
 
-require "FileManipulation"
+require "Pools"
 
 
 
@@ -1230,41 +1230,12 @@ function inPlay()
 end
 
 
---[[
-LevelChangeHalfway: Check is Mario has gotten past the current World 
---]]
-function LevelChangeHalfway()
-	if memory.readbyte(0x071E)==11 and memory.readbyte(0x0728)~=0 and half==false then
-		half = true
-		Filename = "Level" .. NetWorld+1 .. NetLevel+1 .. 5 ..".state"
-		console.writeline("Next Level Half")
-		writeFile(Filename .. pool.generation .. ".txt")
-		--resetStaleFitness
-	end
-
-end
-
---[[
-LevelChange: Checks if Mario has gotten past the current Level he is on.
-if he has update the Filename
---]]
-function LevelChange()
-	if NetLevel~=marioLevel or NetWorld~=marioWorld then
-		NetWorld=marioWorld
-		NetLevel=marioLevel
-		half=false
-		Filename = "Level" .. NetWorld+1 .. NetLevel+1 .. ".state"
-		writeFile(Filename .. pool.generation .. ".txt")
-		console.writeline("Next Level")
-		--training = true
-		NetGeneration = pool.generation
-		--resetStaleFitness
-	end
-end
 
 
 
 
+
+require "SaveStates"
 
 
 
@@ -1275,7 +1246,6 @@ FitnessBox(140,40,600,700)
 
 require "Timeout"
 
-writeFile("temp.pool")
 
 --makes the OnExit function work onExit
 event.onexit(onExit)
