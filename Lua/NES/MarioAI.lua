@@ -31,6 +31,8 @@ require "Timeout"
 
 
 
+
+
 --See if a multithread inilization or regular inilization
 if pool == nil then
 	if tonumber(forms.getthreadNum())==-1 then
@@ -52,8 +54,6 @@ FitnessBox(140,40,600,700)
 
 --makes the OnExit function work onExit
 event.onexit(onExit)
-
-
 
 
 --Infinte Fitness Loop
