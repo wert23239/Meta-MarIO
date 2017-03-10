@@ -113,3 +113,11 @@ MaxNodes = 1000000
 --How many orgranisms can be on one coordinate and still get fitness
 NoveltyConstant=1
 CurrentNSFitness=0
+
+
+--Inilizations for While Loop
+--:/should be moved to species
+--This determines if a species has died
+TimeoutAuto=false
+--This determines what happens if a species dies
+NoFitness=false

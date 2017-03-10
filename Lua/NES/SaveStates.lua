@@ -5,9 +5,10 @@ function LevelChangeHalfway()
 	if memory.readbyte(0x071E)==11 and memory.readbyte(0x0728)~=0 and half==false then
 		half = true
 		Filename = "Level" .. NetWorld+1 .. NetLevel+1 .. 5 ..".state"
+		writeFile("Pools/Backups/".. "backup." .. NetWorld+1 .. NetLevel+1 .. 5 ..pool.generation .. "." .. forms.gettext(saveLoadFile))
 		Filename = "States/"..Filename
 		console.writeline("Next Level Half")
-		writeFile(Filename .. pool.generation .. ".txt")
+		
 		--resetStaleFitness
 	end
 
@@ -24,7 +25,8 @@ function LevelChange()
 		NetLevel=marioLevel
 		half=false
 		Filename = "Level" .. NetWorld+1 .. NetLevel+1 .. ".state"
-		writeFile(Filename .. pool.generation .. ".txt")
+		Filename = "States/"..Filename
+		writeFile("Pools/Backups/".. "backup." ..NetWorld+1 .. NetLevel+1 .. pool.generation .. "." .. forms.gettext(saveLoadFile))
 		console.writeline("Next Level")
 		--training = true
 		NetGeneration = pool.generation

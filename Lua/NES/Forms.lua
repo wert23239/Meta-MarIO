@@ -73,3 +73,10 @@ function FitnessBox(AmountX,AmountY,BoxX,BoxY)
 end
 
 
+--[[
+OnExit: Exit function when you close the program
+--]]
+function onExit()
+	forms.destroy(form)
+end
+
