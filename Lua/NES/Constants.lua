@@ -2,7 +2,6 @@
 Setting Constants
 --]]
 
-
 FilenameFolder="States/"
 
 if gameinfo.getromname() == "Super Mario World (USA)" then
