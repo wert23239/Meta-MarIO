@@ -1,4 +1,4 @@
-#Meta-MarIO
+# Meta-MarIO
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Meta-MarIO/Lobby?source=orgpage)
 [![Stories in Ready](https://badge.waffle.io/wert23239/Meta-MarIO.png?label=ready&title=Ready)](https://waffle.io/wert23239/Meta-MarIO)
 
@@ -11,10 +11,10 @@
 
 
 
-##Watch this video to get started with Virtual Evolution:
+## Watch this video to get started with Virtual Evolution:
 https://www.youtube.com/watch?v=qv6UVOQ0F44
 
-##FAQ
+## FAQ
 
 **Where is the code located?**
 
@@ -30,10 +30,10 @@ Parameter 3 is total screen width <br />
 Parameter 4 is total screen height
 
 
-##Ideas
+## Ideas
 [![Feature Requests](http://feathub.com/wert23239/Meta-MarIO?format=svg)](http://feathub.com/wert23239/Meta-MarIO)
 
-##Important Bits
+## Important Bits
 
 Basic Comprendium
 
@@ -53,7 +53,7 @@ https://gist.github.com/1wErt3r/4048722
 |07D8-07DD      |Score             |
 |000E           |Dead,alive or can't move        |
 |00B5           |Determine if player is in a pit|
-##Distruptive Systems
+## Distruptive Systems
 
 BizHawk Repo:
 https://github.com/TASVideos/BizHawk
@@ -67,7 +67,7 @@ https://github.com/wert23239/MHacks216/blob/master/ros_evolve/src/mabe_ros/World
 Lua Translator:
 http://www.jeremyong.com/blog/2014/01/10/interfacing-lua-with-templates-in-c-plus-plus-11/
 
-##Valley-Crossing (Novelty Search)
+## Valley-Crossing (Novelty Search)
 
 Theory:
 http://eplex.cs.ucf.edu/noveltysearch/userspage/
@@ -76,14 +76,14 @@ Open-Source Code:
 https://github.com/jal278/novelty-search-cpp/blob/master/README
 
 
-##Tweaked SethBling Version
+## Tweaked SethBling Version
 
 http://pastebin.com/juRnkyEf
 
-##Bizhawk Form Lua 
+## Bizhawk Form Lua 
 https://github.com/denilsonsa/bizhawk-lua-scripts
 
-###GUI Goals
+### GUI Goals
 http://socialblade.com/youtube/user/pewdiepie/realtime
 
 
