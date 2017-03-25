@@ -1,3 +1,25 @@
+
+--[[
+rankGlobally: rank all the genomes to see which has the highest fitness
+Higher number rank means higher fitness
+--]]
+function rankGlobally()
+	local global = {}
+	for s = 1,#pool.species do
+		local species = pool.species[s]
+		for g = 1,#species.genomes do
+			table.insert(global, species.genomes[g])
+		end
+	end
+	table.sort(global, function (a,b)
+		return (a.fitness < b.fitness)
+	end)
+
+	for g=1,#global do
+		global[g].globalRank = g
+	end
+end
+
 --[[
 contains link:
 (genes): all genes for a genome

@@ -1,6 +1,6 @@
 
 require "Mutations"
-
+require "Fitness"
 
 --[[
 Sigmoid: Determine if a neuron value is postive or negative
