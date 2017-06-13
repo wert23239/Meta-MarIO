@@ -29,8 +29,9 @@ require "SaveStates"
 require "Forms"
 require "Timeout"
 
-
-
+M=require "lua-sendinput/SendInput"
+--M.key_press(Keys.Q,200)
+require "lua-sendinput/Keys"
 
 
 --See if a multithread inilization or regular inilization
@@ -56,13 +57,13 @@ FitnessBox(140,40,600,700)
 event.onexit(onExit)
 
 
+
 --Infinte Fitness Loop
 while true do
 	--Sets the Top Bar Color
 	local backgroundColor = 0xD0FFFFFF
 	--client.SetGameExtraPadding(pool.generation,0,0,0);
 	--Draws the Top Box
-
 
 
  	gui.drawBox(0, 0, 300, 40, backgroundColor, backgroundColor)
@@ -85,12 +86,12 @@ while true do
 		end
 
 
+		
 		--Sets the output to whatever the netowrk chooses
 		joypad.set(controller)
 
 		--Get Postion of Mario reading the Hex Bits
 		getPositions()
-
 		--Refeshes Timeout
 		if pool.currentFrame%4 == 0 then
 			CallTimeoutFunctions()
@@ -232,6 +233,7 @@ while true do
 		   NoFitness=true
 		   if training==false and forms.ischecked(showContinousDeath) then
 				savestate.rewind()
+
 		   end
 		end
 

@@ -795,6 +795,7 @@ function nextGenome()
 			if RoundAmount >= tonumber(forms.gettext(RoundAmountValue)) or forms.ischecked(RoundAmountFitness) == false then
 			console.writeline(tonumber(RoundAmount) .. " Rounds Finished")
 			newGeneration()
+
 			end
 			resetGenomeRan()
 			pool.currentSpecies = 1
