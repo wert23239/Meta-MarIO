@@ -4,21 +4,8 @@ Setting Constants
 
 FilenameFolder="States/"
 
-if gameinfo.getromname() == "Super Mario World (USA)" then
-	Filename = FilenameFolder.."DP1.state"
-	ButtonNames = {
-		"A",
-		"B",
-		"X",
-		"Y",
-		"Up",
-		"Down",
-		"Left",
-		"Right",
-	}
-elseif gameinfo.getromname() == "Super Mario Bros." then
-	Filename = FilenameFolder.."Level12.state"
-	ButtonNames = {
+
+ButtonNames = {
 		"A",
 		"B",
 		"Up",
@@ -26,7 +13,12 @@ elseif gameinfo.getromname() == "Super Mario Bros." then
 		"Left",
 		"Right",
 	}
-end
+
+Filename=FilenameFolder .. "Level11.state"
+
+
+
+
 
 
 --[[
@@ -35,9 +27,9 @@ It's where the inputs will be taken in at.
 (Left side of the visual)
 --]]
 BoxRadius = 6
-FilenameTraining = "States/t1.state"
-FilenameTraining2 = "States/t2.state"
-FilenameTraining3 = "States/Level12.state"
+FilenameTraining = FilenameFolder .."t1.state"
+FilenameTraining2 = FilenameFolder .. "t2.state"
+FilenameTraining3 = FilenameFolder .. "Level12.state"
 NetGeneration = 0
 training = false
 RoundAmountConstant = 3
@@ -120,3 +112,4 @@ CurrentNSFitness=0
 TimeoutAuto=false
 --This determines what happens if a species dies
 NoFitness=false
+
