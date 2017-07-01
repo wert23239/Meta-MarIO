@@ -4,7 +4,6 @@ Setting Constants
 
 FilenameFolder="States/"
 
-
 ButtonNames = {
 		"A",
 		"B",

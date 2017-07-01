@@ -27,11 +27,26 @@ end
 
 
 function UpdateReward(fitness_value)
-	emu.writecommand([[=1;
-	PRAGMA read_uncommitted 
+	emu.writecommand([[
+	PRAGMA read_uncommitted =1;
 	update rewards
-	set score=]] .. fitness_value .." WHERE score is NULL")
-
+	set score=]] .. fitness_value .." WHERE score is NULL;")
 end
 
+function UpdateGenes(GeneCollection)
+	console.writeline(emu.updategenetable(GeneCollection))
+end
 
+function CreateGeneTable()
+	console.writeline(emu.writecommand([[
+	PRAGMA read_uncommitted =1;
+	CREATE TABLE Genes 
+	(
+		Species int(11) NOT NULL, 
+		Genome int(11) NOT NULL, 
+		Gene int(11) NOT NULL, 
+		GeneContent varchar(100) NOT NULL, 
+		PRIMARY KEY (Species, Genome, Gene)
+	);]]))
+
+end

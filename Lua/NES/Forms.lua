@@ -13,7 +13,6 @@ end
 function FitnessBox(AmountX,AmountY,BoxX,BoxY)
 	yvalue=5 xvalue=5
 	form = forms.newform(BoxX, BoxY, "Fitness")
-
 	showNetwork = forms.checkbox(form, "Show Map", xvalue, yvalue, "true") --A checkbox to see whether or not the eye(inputs) and controls(outputs) is shown
 	showMutationRates = forms.checkbox(form, "Show Mutate", incrementX(AmountX), yvalue)
 	yvalue=incrementY(AmountY) xvalue=0

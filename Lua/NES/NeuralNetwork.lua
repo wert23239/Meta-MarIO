@@ -1,6 +1,7 @@
 
 require "Mutations"
 require "Fitness"
+require "SQL"
 
 --[[
 Sigmoid: Determine if a neuron value is postive or negative
@@ -139,34 +140,6 @@ function basicGenome()
 end
 
 
---[[
-Genome Copy Contructor: Transfering a genome to a new species
---]]
-function copyGenome(genome)
-	local genome2 = newGenome()
-	for g=1,#genome.genes do
-		table.insert(genome2.genes, copyGene(genome.genes[g]))
-	end
-	genome2.maxneuron = genome.maxneuron
-	genome2.mutationRates["connections"] = genome.mutationRates["connections"]
-	genome2.mutationRates["link"] = genome.mutationRates["link"]
-	genome2.mutationRates["bias"] = genome.mutationRates["bias"]
-	genome2.mutationRates["node"] = genome.mutationRates["node"]
-	genome2.mutationRates["enable"] = genome.mutationRates["enable"]
-	genome2.mutationRates["disable"] = genome.mutationRates["disable"]
-
-	return genome2
-end
-
-function basicGenome()
-	local genome = newGenome()
-	local innovation = 1
-
-	genome.maxneuron = Inputs
-	mutate(genome)
-
-	return genome
-end
 
 --[[
 newGene: Gene Constructor
@@ -659,7 +632,7 @@ function newGeneration()
 	end
 
 	pool.generation = pool.generation + 1
-
+	UpdateGenes(CollectGenes())
 	writeFile("backup." .. pool.generation .. "." .. forms.gettext(saveLoadFile))
 end
 
@@ -713,7 +686,6 @@ function initializeRun()
 	NetScore = memory.readbyte(0x07D8)*100000+memory.readbyte(0x07D9)*10000+memory.readbyte(0x07DA)*1000
 	NetScore = NetScore + memory.readbyte(0x07DB)*100 + memory.readbyte(0x07DC)*10 + memory.readbyte(0x07DC)*1
 	clearJoypad()
-
 	local species = pool.species[pool.currentSpecies]
 	local genome = species.genomes[pool.currentGenome]
 	generateNetwork(genome)
@@ -780,6 +752,10 @@ function findMaxFitnessForGeneration()
 end
 
 
+
+
+
+
 --[[
 nextGenome: Get next available genome if none start a new generation
 --]]
@@ -795,7 +771,6 @@ function nextGenome()
 			if RoundAmount >= tonumber(forms.gettext(RoundAmountValue)) or forms.ischecked(RoundAmountFitness) == false then
 			console.writeline(tonumber(RoundAmount) .. " Rounds Finished")
 			newGeneration()
-
 			end
 			resetGenomeRan()
 			pool.currentSpecies = 1
@@ -949,4 +924,26 @@ function inPlay()
 	--Third Byte 00E is Player State .. Alive,Dead,Level Animation, Flagpole
 	--Last Byte is whether the play is on screen or not
 	return memory.readbyte(0x0747)==0 and memory.readbyte(0x071E)~=11 and (memory.readbyte(0x000E)==8 or memory.readbyte(0x000E)==1 or memory.readbyte(0x000E)==0) and memory.readbyte(0x00B5)<=1
+end
+
+
+function CollectGenes()
+	local GeneCollection={}
+	local speciesNum=0
+	local genomeNum=0
+	local geneNum=0
+	for n,species in pairs(pool.species) do
+		speciesNum=speciesNum+1
+		for m,genome in pairs(species.genomes) do
+			genomeNum=genomeNum+1
+			for l,gene in pairs(genome.genes) do
+				if gene.enabled then
+					geneNum=geneNum+1
+					Key=speciesNum .. " " .. genomeNum .. " " .. geneNum
+					GeneCollection[Key]=gene.into .. " " .. gene.out .. " " .. gene.innovation
+				end
+			end
+		end
+	end
+	return GeneCollection
 end
