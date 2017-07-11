@@ -9,67 +9,32 @@ require "SQL"
 
 
 
--- local function SetUpInput()
--- 	controller = {}
--- 	for b = 1,#ButtonNames do
--- 		controller["P1 " .. ButtonNames[b]] = false
--- 	end
--- 	--joypad.set(controller)
--- 	return controller
--- end
 
--- local function CalculateFitness()
--- 	fitness= math.abs(marioX - NetX)
--- 	if fitness>2 then
--- 		fitness=-10
--- 	end
--- 	if mode==DEATH_ACTION then
--- 		fitness=-20
--- 	end
--- 	return fitness
--- end
-
-
--- function ResetPositions()
--- 	NetX = memory.readbyte(0x6D) * 0x100 + memory.readbyte(0x86)
--- 	NetScore = memory.readbyte(0x07D8)*100000+memory.readbyte(0x07D9)*10000+memory.readbyte(0x07DA)*1000
--- 	NetScore = NetScore + memory.readbyte(0x07DB)*100 + memory.readbyte(0x07DC)*10 + memory.readbyte(0x07DC)*1
--- 	NetLevel = 1
--- 	NetWorld = 1
--- end
-
-
-
-
-
-
-
-
-
--- function PressButton(button)
--- 	Buttons=SetUpInput()
--- 	Button=ButtonNames[button]
--- 	Buttons["P1 "..Button]=true	
--- 	--joypad.set(Buttons)
--- end
-
--- function ClearButtons()
--- 	Buttons=SetUpInput()
--- 	Button=ButtonNames[1]
--- 	Buttons["P1 "..Button]=true
--- 	Button=ButtonNames[2]
--- 	Buttons["P1 "..Button]=true
--- 	--joypad.set(Buttons)
--- end
-
-local function GatherReward()
-	fitness=GeneticAlgorithmLoop()
-	UpdateReward(fitness)
+function GatherReward(probalisticGenome,probalisticSpecies)
+	isDone=nextGenome(probalisticGenome,probalisticSpecies)
+	console.writeline(GenomeAmount)
+	if isDone ==1 then 
+		mode=DEATH_ACTION
+		GenomeAmount=0
+	elseif isDone==2 then
+		console.writeline("Generation " .. pool.generation .. " Completed")
+		mode=GENERATION_OVER
+		GenomeAmount=0	
+	else
+		GenomeAmount=GenomeAmount+1
+		initializeRun()
+		fitness=GeneticAlgorithmLoop(probalisticGenome)
+		UpdateReward(fitness)
+		mode=WAIT
+		DummyRow()
+	end
 end
 
-function GeneticAlgorithmLoop()
+function GeneticAlgorithmLoop(probalisticGenome)
 	local Alive=true
 	local GlobalFitness=0
+	
+
 	while Alive do
 
 		local species = pool.species[pool.currentSpecies]
@@ -133,25 +98,19 @@ function GeneticAlgorithmLoop()
 				fitness = -1
 			end
 
-			if memory.readbyte(0x000E)==11 then
-				mode=DEATH_ACTION
-				fitness= fitness-20
-			else 
-				mode=WAIT
-				DummyRow()
-			end
 
+			--New Code for Super Meta
+			if memory.readbyte(0x000E)==11 then
+				fitness= fitness-20
+				savestate.load(Filename)
+			end
+			--End here
 			if fitness > genome.fitness then
 				genome.fitness = fitness
 			end
 
-			pool.currentSpecies = 1
-			pool.currentGenome = 1
+			GlobalFitness=fitness
 
-			while fitnessAlreadyMeasured() do
-				nextGenome()
-			end
-			initializeRun()
 
 		end
 
@@ -159,13 +118,10 @@ function GeneticAlgorithmLoop()
 		emu.frameadvance()
 	end	
 	return GlobalFitness
-
-
-
 end
 
 
-DEATH_WAIT,DEATH_ACTION,WAIT,ACTION = 0,1,2,3
+DEATH_WAIT,DEATH_ACTION,WAIT,ACTION,GENERATION_OVER = 0,1,2,3,4
 mode=WAIT
 
 
@@ -174,9 +130,7 @@ Open()
 savestate.load(Filename) --load Level 1
 FitnessBox(140,40,600,700) --Set Dimensions of GUI
 DummyRow()
-
-
-
+GenomeAmount=0
 
 initializePool()
 UpdateGenes(CollectGenes())
@@ -185,14 +139,21 @@ UpdateGenes(CollectGenes())
 
 while true do
 	if (mode~=DEATH_ACTION) and memory.readbyte(0x000E)==11 then    
-	   mode=DEATH_WAIT 
+	   --mode=DEATH_WAIT 
 	end
 	if mode==DEATH_ACTION then
 		DummyRowDead()
 		savestate.load(Filename)
 		mode=WAIT
 	end 
-	if mode==DEATH_WAIT then
+	if mode==GENERATION_OVER then
+		console.writeline("GEN_OVER")
+		DummyRowEnd()
+		savestate.load(Filename)
+		mode=WAIT
+		console.writeline("GEN_OVER_2")
+	end 
+	if mode==DEATH_WAIT and emu.checktable()==false then
 		EraseLastAction()
 		DummyRowDead()
 		savestate.load(Filename)
@@ -202,8 +163,11 @@ while true do
  		mode=ACTION
  	end
  	if mode==ACTION then
- 		GatherReward()
+ 		local probalisticGenome=GatherGenomeNum() --Fix Functi
+ 		local probalisticSpecies=GatherSpeciesNum() --Fix Function
+ 		console.writeline(probalisticSpecies)
+ 		GatherReward(probalisticGenome,probalisticSpecies)
  	end	
-
  	emu.frameadvance()
+
 end

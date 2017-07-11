@@ -759,23 +759,28 @@ end
 --[[
 nextGenome: Get next available genome if none start a new generation
 --]]
-function nextGenome()
-	pool.currentGenome = pool.currentGenome + 1
+function nextGenome(probalisticGenome,probalisticSpecies)
+	console.writeline("Genome " .. probalisticGenome)
+	console.writeline("Species " .. probalisticSpecies)
+	result=0
+	pool.currentGenome = probalisticGenome
+	pool.currentSpecies = probalisticSpecies
+	if GenomeAmount == 25 then
 
-	if pool.currentGenome > #pool.species[pool.currentSpecies].genomes then
-		pool.currentGenome = 1
-		pool.currentSpecies = pool.currentSpecies+1
-		if pool.currentSpecies > #pool.species then
-			RoundAmount=RoundAmount+1
-			console.writeline("Round Number ".. RoundAmount .. " Finished")
-			if RoundAmount >= tonumber(forms.gettext(RoundAmountValue)) or forms.ischecked(RoundAmountFitness) == false then
-			console.writeline(tonumber(RoundAmount) .. " Rounds Finished")
-			newGeneration()
-			end
-			resetGenomeRan()
-			pool.currentSpecies = 1
+		RoundAmount=RoundAmount+1
+		console.writeline("Round Number ".. RoundAmount .. " Finished")
+		if RoundAmount >= tonumber(forms.gettext(RoundAmountValue)) or forms.ischecked(RoundAmountFitness) == false then
+				console.writeline(tonumber(RoundAmount) .. " Rounds Finished")
+				newGeneration()
+				result=result+1
 		end
+		resetGenomeRan()
+		pool.currentSpecies = 1
+		result=result+1
+		return result
 	end
+
+	return result
 end
 
 --[[
@@ -931,15 +936,18 @@ function CollectGenes()
 	local GeneCollection={}
 	local speciesNum=0
 	local genomeNum=0
+	local genomeIndividualNum=0
 	local geneNum=0
 	for n,species in pairs(pool.species) do
 		speciesNum=speciesNum+1
+		genomeIndividualNum=0
 		for m,genome in pairs(species.genomes) do
 			genomeNum=genomeNum+1
+			genomeIndividualNum=genomeIndividualNum+1
 			for l,gene in pairs(genome.genes) do
 				if gene.enabled then
 					geneNum=geneNum+1
-					Key=speciesNum .. " " .. genomeNum .. " " .. geneNum
+					Key=speciesNum .. " " .. genomeIndividualNum .." " .. genomeNum  .. " " .. geneNum
 					GeneCollection[Key]=gene.into .. " " .. gene.out .. " " .. gene.innovation
 				end
 			end
