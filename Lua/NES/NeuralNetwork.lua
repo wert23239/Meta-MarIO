@@ -760,12 +760,10 @@ end
 nextGenome: Get next available genome if none start a new generation
 --]]
 function nextGenome(probalisticGenome,probalisticSpecies)
-	console.writeline("Genome " .. probalisticGenome)
-	console.writeline("Species " .. probalisticSpecies)
 	result=0
 	pool.currentGenome = probalisticGenome
 	pool.currentSpecies = probalisticSpecies
-	if GenomeAmount == 25 then
+	if GenomeAmount == 64 then
 
 		RoundAmount=RoundAmount+1
 		console.writeline("Round Number ".. RoundAmount .. " Finished")

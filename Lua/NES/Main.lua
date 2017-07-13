@@ -12,12 +12,12 @@ require "SQL"
 
 function GatherReward(probalisticGenome,probalisticSpecies)
 	isDone=nextGenome(probalisticGenome,probalisticSpecies)
-	console.writeline(GenomeAmount)
 	if isDone ==1 then 
 		mode=DEATH_ACTION
 		GenomeAmount=0
 	elseif isDone==2 then
 		console.writeline("Generation " .. pool.generation .. " Completed")
+		console.writeline("maxFitness " .. pool.maxFitness)
 		mode=GENERATION_OVER
 		GenomeAmount=0	
 	else
@@ -70,29 +70,29 @@ function GeneticAlgorithmLoop(probalisticGenome)
 
 			local fitness = 0
 			local fitnesscheck={}
-			for slot=0,2 do
+			for slot=1,3 do
 				fitnesscheck[slot]=0
 			end
 			genome.ran=true
 
 			if forms.ischecked(RightmostFitness) then
-				fitnesscheck[0] = tonumber(forms.gettext(RightmostAmount))*(rightmost - NetX)
-				genome.rightmostFitness=fitnesscheck[0]
+				fitnesscheck[1] = tonumber(forms.gettext(RightmostAmount))*(rightmost - NetX)
+				genome.rightmostFitness=fitnesscheck[1]
+				if marioX> pool.maxFitness then
+					pool.maxFitness=marioX
+				end
 			end
 			if forms.ischecked(ScoreFitness) then
-				fitnesscheck[1] = fitness+tonumber(forms.gettext(ScoreAmount))*(marioScore - NetScore)
+				fitnesscheck[2] = fitness+tonumber(forms.gettext(ScoreAmount))*(marioScore - NetScore)
 			end
 			if forms.ischecked(NoveltyFitness) then
-				fitnesscheck[2] = fitness +tonumber(forms.gettext(NoveltyAmount))*(CurrentNSFitness)
+				fitnesscheck[3] = fitness +tonumber(forms.gettext(NoveltyAmount))*(CurrentNSFitness)
 			end
 
 			table.sort(fitnesscheck)
 		
-			fitness=fitnesscheck[2]
+			fitness=fitnesscheck[3]
 
-			if gameinfo.getromname() == "Super Mario Bros." and rightmost > 3186 then
-				fitness = fitness + 1000
-			end
 
 			if fitness == 0 then
 				fitness = -1
@@ -147,11 +147,9 @@ while true do
 		mode=WAIT
 	end 
 	if mode==GENERATION_OVER then
-		console.writeline("GEN_OVER")
 		DummyRowEnd()
 		savestate.load(Filename)
 		mode=WAIT
-		console.writeline("GEN_OVER_2")
 	end 
 	if mode==DEATH_WAIT and emu.checktable()==false then
 		EraseLastAction()
@@ -165,7 +163,6 @@ while true do
  	if mode==ACTION then
  		local probalisticGenome=GatherGenomeNum() --Fix Functi
  		local probalisticSpecies=GatherSpeciesNum() --Fix Function
- 		console.writeline(probalisticSpecies)
  		GatherReward(probalisticGenome,probalisticSpecies)
  	end	
  	emu.frameadvance()
