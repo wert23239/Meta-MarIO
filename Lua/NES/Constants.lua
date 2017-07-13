@@ -56,7 +56,7 @@ Outputs = #ButtonNames
 Population: The Number of Genomes
 Deltas: TODO:
 --]]
-Population = 25
+Population = 64
 DeltaDisjoint = 2.0
 DeltaWeights = 0.4
 DeltaThreshold = 1.0
