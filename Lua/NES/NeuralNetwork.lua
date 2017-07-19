@@ -67,8 +67,8 @@ function newPool()
 	pool.generationAverageFitnessCollective={} --Vanillia Best Fitness of this Generation per Genome
 	pool.generationAverageRightmostCollective={} --Highest Rightmost Fitnes of this Generation per Genome
 	pool.generationAverageNoveltyCollective={} --Highest Novelty Fitness of this Generation per Genome
-	NetWorld=marioWorld
-	NetLevel=marioLevel
+	NetWorld=0
+	NetLevel=0
 	half=false
 	return pool
 end
@@ -763,7 +763,7 @@ function nextGenome(probalisticGenome,probalisticSpecies)
 	result=0
 	pool.currentGenome = probalisticGenome
 	pool.currentSpecies = probalisticSpecies
-	if GenomeAmount == 64 then
+	if GenomeAmount == Population then
 
 		RoundAmount=RoundAmount+1
 		console.writeline("Round Number ".. RoundAmount .. " Finished")

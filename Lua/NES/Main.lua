@@ -104,12 +104,21 @@ function GeneticAlgorithmLoop(probalisticGenome)
 				fitness= fitness-20
 				savestate.load(Filename)
 			end
-			--End here
+
+			LevelChange()
+
+
 			if fitness > genome.fitness then
 				genome.fitness = fitness
 			end
-
-			GlobalFitness=fitness
+			if fitness <= 0 then
+				GlobalFitness=-1
+			elseif fitness > 25 then
+				GlobalFitness=1
+			else
+				GlobalFitness=.5
+			end	
+			
 
 
 		end
