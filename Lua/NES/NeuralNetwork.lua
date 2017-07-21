@@ -461,7 +461,7 @@ function breedChild(species)
 end
 
 --[[
-removeStaleSpecies: Remove species that don't do anything+
+remove: Remove species that don't do anything+
 --]]
 function removeStaleSpecies()
 	local survived = {}

@@ -17,7 +17,7 @@ function GatherReward(probalisticGenome,probalisticSpecies)
 		GenomeAmount=0
 	elseif isDone==2 then
 		console.writeline("Generation " .. pool.generation .. " Completed")
-		console.writeline("maxFitness " .. pool.maxFitness)
+		console.writeline("For World ".. marioWorld+1 .. " Level ".. marioLevel+1 .. " maxFitness ".. pool.maxFitness)
 		mode=GENERATION_OVER
 		GenomeAmount=0	
 	else
@@ -61,8 +61,8 @@ function GeneticAlgorithmLoop(probalisticGenome)
 
 		--Each extra four frames give mario and extra bonus living amount
 		local timeoutBonus = pool.currentFrame / 4
-
-		if timeout + timeoutBonus <=0 or memory.readbyte(0x000E)==11 then
+		--Timeout or Killed by Monster or Kiled by Falling
+		if timeout + timeoutBonus <=0 or memory.readbyte(0x000E)==11 or memory.readbyte(0x00B5)>1 then
 			
 			Alive=false
 			--If Dead
@@ -100,12 +100,14 @@ function GeneticAlgorithmLoop(probalisticGenome)
 
 
 			--New Code for Super Meta
-			if memory.readbyte(0x000E)==11 then
+			if memory.readbyte(0x000E)==11 or memory.readbyte(0x00B5)>1 then
 				fitness= fitness-20
 				savestate.load(Filename)
 			end
 
 			LevelChange()
+			LevelChangeHalfway()
+
 
 
 			if fitness > genome.fitness then
