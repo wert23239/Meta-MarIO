@@ -53,6 +53,7 @@ function newPool()
     --end
 	pool.landscape = {}
 	pool.landscapeold= {}
+	pool.generationAverageFitness=0 --Average Fitness this generation
 	--hashtables of stats
 	--key is generation value is the value at the generation
 	pool.generationMaxFitnessGenome={} --Vanillia Best Fitness of this Generation per Genome
@@ -61,7 +62,6 @@ function newPool()
 	pool.generationMaxFitnessCollective={} --Vanillia Best Fitness of this Generation per Genome
 	pool.generationMaxRightmostCollective={} --Highest Rightmost Fitnes of this Generation per Genome
 	pool.generationMaxNoveltyCollective={} --Highest Novelty Fitness of this Generation per Genome
-	pool.generationAverageFitnessGenome={} --Vanillia Best Fitness of this Generation per Genome
 	pool.generationAverageRightmostGenome={} --Highest Rightmost Fitnes of this Generation per Genome
 	pool.generationAverageNoveltyGenome={} --Highest Novelty Fitness of this Generation per Genome
 	pool.generationAverageFitnessCollective={} --Vanillia Best Fitness of this Generation per Genome
@@ -598,6 +598,7 @@ function newGeneration()
         	pool.landscapeold[loc][sg]=true
 		end
 	end
+	calculateTrueAverage()
 	findMaxFitnessForGeneration()
 	pool.landscape={}
 	RoundAmount=0

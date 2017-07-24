@@ -10,12 +10,21 @@ require "SQL"
 
 
 
+function CollectStats()
+	local statsFile=io.open("Stats.csv","w+")
+	statsFile:write(pool.generation .. ","  .. pool.maxFitness .. "," .. pool.generationAverageFitness .. "," .. marioWorld .. "," .. marioLevel .. "\n")
+	statsFile:close()
+end	
+
+
+
 function GatherReward(probalisticGenome,probalisticSpecies)
 	isDone=nextGenome(probalisticGenome,probalisticSpecies)
 	if isDone ==1 then 
 		mode=DEATH_ACTION
 		GenomeAmount=0
 	elseif isDone==2 then
+		CollectStats()
 		console.writeline("Generation " .. pool.generation .. " Completed")
 		console.writeline("For World ".. marioWorld+1 .. " Level ".. marioLevel+1 .. " maxFitness ".. pool.maxFitness)
 		mode=GENERATION_OVER
@@ -145,8 +154,6 @@ GenomeAmount=0
 
 initializePool()
 UpdateGenes(CollectGenes())
-
-
 
 while true do
 	if (mode~=DEATH_ACTION) and memory.readbyte(0x000E)==11 then    

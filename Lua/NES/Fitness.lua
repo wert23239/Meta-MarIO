@@ -20,6 +20,24 @@ function rankGlobally()
 	end
 end
 
+
+--[[
+CalculateTrueAverage: get the true numerical average fitness
+--]]
+function calculateTrueAverage()
+	local average=0
+	for s = 1,#pool.species do
+		local species = pool.species[s]
+		for g = 1,#species.genomes do
+			average=average+tonumber(species.genomes[g].fitness)
+		end
+	end
+	pool.generationAverageFitness=average/Population
+end
+
+
+
+
 --[[
 calculateAverageFitness: This average is the global rank added up divided by the number of genomes
 (species): the current species being evaulated
