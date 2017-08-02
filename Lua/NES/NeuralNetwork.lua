@@ -92,7 +92,7 @@ newGenome Contructor: A species is the indivual organism that evolves
 function newGenome()
 	local genome = {}
 	genome.genes = {} --All gene which are input to output mappings
-	genome.fitness = 0 --How far right an orgranism gets
+	genome.fitness = -1 --How far right an orgranism gets
 	genome.rightmostFitness = 0 --Nothing
 	genome.network = {} --Truth Table of all input output values
 	genome.maxneuron = 0 --Number of inputs
@@ -631,7 +631,7 @@ function newGeneration()
 		local child = children[c]
 		addToSpecies(child)
 	end
-
+	resetFitness()
 	pool.generation = pool.generation + 1
 	UpdateGenes(CollectGenes())
 	writeFile("backup." .. pool.generation .. "." .. forms.gettext(saveLoadFile))
@@ -662,6 +662,7 @@ function clearJoypad()
 	end
 	joypad.set(controller)
 end
+
 
 
 --[[

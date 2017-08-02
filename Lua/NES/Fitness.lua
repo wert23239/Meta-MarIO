@@ -29,13 +29,24 @@ function calculateTrueAverage()
 	for s = 1,#pool.species do
 		local species = pool.species[s]
 		for g = 1,#species.genomes do
-			average=average+tonumber(species.genomes[g].fitness)
+			average=average+species.genomes[g].fitness
 		end
 	end
 	pool.generationAverageFitness=average/Population
 end
 
 
+--[[
+resetFitness: resets population fitness to -2
+--]]
+function resetFitness()
+	for s = 1,#pool.species do
+		local species = pool.species[s]
+		for g = 1,#species.genomes do
+			species.genomes[g].fitness=-2
+		end
+	end
+end
 
 
 --[[

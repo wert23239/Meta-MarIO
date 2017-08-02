@@ -8,14 +8,23 @@ require "Timeout"
 require "SQL"
 
 
+function InitializeStats()
+	local statsFile=io.open("Stats.csv","w+")
+	statsFile:write("Generation".. ","  .. "Max Fitness".. "," .. "Average Fitness" .. "," .. "World" .. "," .. "Level" .. "\n")
+	statsFile:close()
+end
 
 
 function CollectStats()
-	local statsFile=io.open("Stats.csv","w+")
+	local statsFile=io.open("Stats.csv","a")
 	statsFile:write(pool.generation .. ","  .. pool.maxFitness .. "," .. pool.generationAverageFitness .. "," .. marioWorld .. "," .. marioLevel .. "\n")
 	statsFile:close()
 end	
 
+function FileExists(name)
+   local f=io.open(name,"r")
+   if f~=nil then io.close(f) return true else return false end
+end
 
 
 function GatherReward(probalisticGenome,probalisticSpecies)
@@ -48,7 +57,9 @@ function GeneticAlgorithmLoop(probalisticGenome)
 
 		local species = pool.species[pool.currentSpecies]
 		local genome = species.genomes[pool.currentGenome]
-
+        if FileExists("display.txt") then
+			displayGenome(genome)
+		end
 		--Every 5 frames evaluate the current orgranism
 		if pool.currentFrame%5 == 0 then
 				evaluateCurrent()
@@ -65,6 +76,8 @@ function GeneticAlgorithmLoop(probalisticGenome)
 			CallTimeoutFunctions()
 		end
 
+
+
 		--Subtract one time unit each loop
 		timeout = timeout - 1
 
@@ -72,7 +85,6 @@ function GeneticAlgorithmLoop(probalisticGenome)
 		local timeoutBonus = pool.currentFrame / 4
 		--Timeout or Killed by Monster or Kiled by Falling
 		if timeout + timeoutBonus <=0 or memory.readbyte(0x000E)==11 or memory.readbyte(0x00B5)>1 then
-			
 			Alive=false
 			--If Dead
 			
@@ -113,9 +125,10 @@ function GeneticAlgorithmLoop(probalisticGenome)
 				fitness= fitness-20
 				savestate.load(Filename)
 			end
-
 			LevelChange()
 			LevelChangeHalfway()
+			
+			
 
 
 
@@ -149,9 +162,10 @@ mode=WAIT
 Open()
 savestate.load(Filename) --load Level 1
 FitnessBox(140,40,600,700) --Set Dimensions of GUI
+
 DummyRow()
 GenomeAmount=0
-
+InitializeStats()
 initializePool()
 UpdateGenes(CollectGenes())
 

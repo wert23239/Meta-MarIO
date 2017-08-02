@@ -1,0 +1,5 @@
+Domain RAM
+SystemID NES
+0040	b	u	0	RAM	
+0041	b	u	0	RAM	
+

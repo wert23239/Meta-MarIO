@@ -25,7 +25,7 @@ BoxRadius: is the eye that the Organism can see.
 It's where the inputs will be taken in at.
 (Left side of the visual)
 --]]
-BoxRadius = 6
+BoxRadius = 10
 FilenameTraining = FilenameFolder .."t1.state"
 FilenameTraining2 = FilenameFolder .. "t2.state"
 FilenameTraining3 = FilenameFolder .. "Level12.state"
@@ -56,7 +56,7 @@ Outputs = #ButtonNames
 Population: The Number of Genomes
 Deltas: TODO:
 --]]
-Population = 16
+Population = 256
 DeltaDisjoint = 2.0
 DeltaWeights = 0.4
 DeltaThreshold = 1.0
