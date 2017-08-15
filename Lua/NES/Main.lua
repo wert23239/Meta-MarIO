@@ -45,6 +45,7 @@ function GatherReward(probalisticGenome,probalisticSpecies)
 		UpdateReward(fitness)
 		mode=WAIT
 		DummyRow()
+		status=0
 	end
 end
 
@@ -123,6 +124,7 @@ function GeneticAlgorithmLoop(probalisticGenome)
 			--New Code for Super Meta
 			if memory.readbyte(0x000E)==11 or memory.readbyte(0x00B5)>1 then
 				fitness= fitness-20
+				status=1
 				savestate.load(Filename)
 			end
 			LevelChange()
@@ -137,11 +139,11 @@ function GeneticAlgorithmLoop(probalisticGenome)
 			end
 			if fitness <= 0 then
 				GlobalFitness=-1
-			elseif fitness > 25 then
+			elseif fitness>500 then 
 				GlobalFitness=1
-			else
-				GlobalFitness=.5
-			end	
+			else 
+				GlobalFitness=fitness/500
+			end
 			
 
 
@@ -165,6 +167,7 @@ FitnessBox(140,40,600,700) --Set Dimensions of GUI
 
 DummyRow()
 GenomeAmount=0
+status=0
 InitializeStats()
 initializePool()
 UpdateGenes(CollectGenes())

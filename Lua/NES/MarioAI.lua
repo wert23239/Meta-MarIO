@@ -136,12 +136,6 @@ while true do
 		
 			fitness=fitnesscheck[2]
 			--Extra bonus for compeletting the level
-			if gameinfo.getromname() == "Super Mario World (USA)" and rightmost > 4816 then
-				fitness = fitness + 1000
-			end
-			if gameinfo.getromname() == "Super Mario Bros." and rightmost > 3186 then
-				fitness = fitness + 1000
-			end
 
 			--Mark it is done
 			if fitness == 0 then

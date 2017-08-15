@@ -51,7 +51,7 @@ Inputs = InputSize+1
 Outputs = #ButtonNames
 
 
-
+client.speedmode(800)
 --[[
 Population: The Number of Genomes
 Deltas: TODO:

@@ -43,7 +43,7 @@ function UpdateReward(fitness_value)
 	emu.writecommand([[
 	PRAGMA read_uncommitted =1;
 	update rewards
-	set score=]] .. fitness_value .." WHERE score is NULL;")
+	set score=]] .. fitness_value .." ,status= " .. status .." WHERE score is NULL;")
 	
 end
 
