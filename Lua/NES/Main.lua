@@ -92,11 +92,10 @@ function GeneticAlgorithmLoop(probalisticGenome)
 
 			local fitness = 0
 			local fitnesscheck={}
-			for slot=1,3 do
+			for slot=1,5 do
 				fitnesscheck[slot]=0
 			end
 			genome.ran=true
-
 			if forms.ischecked(RightmostFitness) then
 				fitnesscheck[1] = tonumber(forms.gettext(RightmostAmount))*(rightmost - NetX)
 				genome.rightmostFitness=fitnesscheck[1]
@@ -110,10 +109,15 @@ function GeneticAlgorithmLoop(probalisticGenome)
 			if forms.ischecked(NoveltyFitness) then
 				fitnesscheck[3] = fitness +tonumber(forms.gettext(NoveltyAmount))*(CurrentNSFitness)
 			end
+			if (rightmost-NetX)>20 then
+				fitnesscheck[4] = (NetX-leftmost)*2+(rightmost-NetX)*.5
+			end
+			if (rightmost-NetX)>20 then
+				fitnesscheck[5] = (upmost - NetY)*1.75+(rightmost-NetX)*.5
+			end
 
 			table.sort(fitnesscheck)
-		
-			fitness=fitnesscheck[3]
+			fitness=fitnesscheck[#fitnesscheck]
 
 
 			if fitness == 0 then
@@ -123,7 +127,7 @@ function GeneticAlgorithmLoop(probalisticGenome)
 
 			--New Code for Super Meta
 			if memory.readbyte(0x000E)==11 or memory.readbyte(0x00B5)>1 then
-				fitness= fitness-20
+				fitness= fitness/4
 				status=1
 				savestate.load(Filename)
 			end
@@ -137,12 +141,14 @@ function GeneticAlgorithmLoop(probalisticGenome)
 			if fitness > genome.fitness then
 				genome.fitness = fitness
 			end
+
+
 			if fitness <= 0 then
 				GlobalFitness=-1
-			elseif fitness>500 then 
+			elseif fitness>2000 then 
 				GlobalFitness=1
 			else 
-				GlobalFitness=fitness/500
+				GlobalFitness=fitness/2000
 			end
 			
 
@@ -175,6 +181,7 @@ load=false
 if FileExists("current.pool") then
 	loadFile("current.pool")
 	load=true
+	console.writeline("Model Loaded")
 end
 UpdateGenes(CollectGenes())
 if load==false then

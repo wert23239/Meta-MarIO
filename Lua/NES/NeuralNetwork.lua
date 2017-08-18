@@ -681,10 +681,13 @@ function initializeRun()
 		savestate.load(Filename) --Load from a specfic savestates
 	end
 	rightmost = 0
+	leftmost = 50000 --most change for other games
+	upmost= 0
 	CurrentNSFitness = 0
 	pool.currentFrame = 0
 	timeout =TimeoutConstant
 	NetX = memory.readbyte(0x6D) * 0x100 + memory.readbyte(0x86)
+	NetY= memory.readbyte(0x03B8)+16
 	NetScore = memory.readbyte(0x07D8)*100000+memory.readbyte(0x07D9)*10000+memory.readbyte(0x07DA)*1000
 	NetScore = NetScore + memory.readbyte(0x07DB)*100 + memory.readbyte(0x07DC)*10 + memory.readbyte(0x07DC)*1
 	clearJoypad()

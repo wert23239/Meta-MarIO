@@ -54,6 +54,18 @@ function MarioTimeoutFunction()
 			timeout = tonumber(forms.gettext(TimeoutConstantText))
 		end
 	end
+	if marioX < leftmost then
+		leftmost=marioX
+		if forms.ischecked(RightmostTimeout) then
+			timeout = tonumber(forms.gettext(TimeoutConstantText))
+		end
+	end
+	if marioY > upmost then
+		upmost=marioY
+		if forms.ischecked(RightmostTimeout) then
+			timeout = tonumber(forms.gettext(TimeoutConstantText))
+		end
+	end
 end
 
 
