@@ -165,13 +165,23 @@ Open()
 savestate.load(Filename) --load Level 1
 FitnessBox(140,40,600,700) --Set Dimensions of GUI
 
-DummyRow()
+
+
 GenomeAmount=0
 status=0
 InitializeStats()
 initializePool()
+load=false
+if FileExists("current.pool") then
+	loadFile("current.pool")
+	load=true
+end
 UpdateGenes(CollectGenes())
-
+if load==false then
+	DummyRow()
+else
+	DummyRowLoad()
+end
 while true do
 	if (mode~=DEATH_ACTION) and memory.readbyte(0x000E)==11 then    
 	   --mode=DEATH_WAIT 

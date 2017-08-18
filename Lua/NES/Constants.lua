@@ -56,7 +56,7 @@ client.speedmode(800)
 Population: The Number of Genomes
 Deltas: TODO:
 --]]
-Population = 256
+Population = 32
 DeltaDisjoint = 2.0
 DeltaWeights = 0.4
 DeltaThreshold = 1.0

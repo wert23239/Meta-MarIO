@@ -8,6 +8,15 @@ function DummyRow()
  	insert into rewards (done) values (0);	
  	]])
 end
+
+function DummyRowLoad()
+	emu.writecommand([[
+ 	PRAGMA read_uncommitted =1;
+ 	insert into rewards (done) values (4);	
+ 	]])
+end
+
+
 function DummyRowDead()
 	emu.writecommand([[
  	PRAGMA read_uncommitted =1;
