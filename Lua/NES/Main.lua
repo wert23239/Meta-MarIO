@@ -113,7 +113,7 @@ function GeneticAlgorithmLoop(probalisticGenome)
 				fitnesscheck[4] = (NetX-leftmost)*2+(rightmost-NetX)*.5
 			end
 			if (rightmost-NetX)>20 then
-				fitnesscheck[5] = (upmost - NetY)*1.75+(rightmost-NetX)*.5
+				fitnesscheck[5] = (upmost - NetY)*4+(rightmost-NetX)*.25
 			end
 
 			table.sort(fitnesscheck)
@@ -145,10 +145,10 @@ function GeneticAlgorithmLoop(probalisticGenome)
 
 			if fitness <= 0 then
 				GlobalFitness=-1
-			elseif fitness>2000 then 
+			elseif fitness>500 then 
 				GlobalFitness=1
 			else 
-				GlobalFitness=fitness/2000
+				GlobalFitness=fitness/500
 			end
 			
 
