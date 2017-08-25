@@ -10,6 +10,9 @@
 
 
 
+# Release is Out
+If you go to the Releases you will be able to download the fully working code. Do this before cloning this repo and trying to get it to work. 
+
 
 ## Watch this video to get started with Virtual Evolution:
 https://www.youtube.com/watch?v=qv6UVOQ0F44
