@@ -11,7 +11,7 @@
 
 
 # Release is Out
-If you go to the Releases you will be able to download the fully working code. Do this before cloning this repo and trying to get it to work. 
+<b> If you go to the Releases you will be able to download the fully working code. Do this before cloning this repo and trying to get it to work. </b>
 
 
 ## Watch this video to get started with Virtual Evolution:
