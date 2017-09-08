@@ -88,9 +88,10 @@ function getInputs()
 
 
 			tile = getTile(dx, dy)
-			--If the current location is a block set input to 1
+			--If the current location is a block and above the screen set input to 1
 			if tile == 1 and marioY+dy < 0x1B0 then
 				inputs[#inputs] = 1
+
 			end
 			--If the current tile is then where a monster is set it to -1
 			for i = 1,#sprites do
@@ -103,8 +104,22 @@ function getInputs()
 		end
 	end
 
-	--mariovx = memory.read_s8(0x7B)
-	--mariovy = memory.read_s8(0x7D)
+	for dy=-BoxRadius*16,BoxRadius*16,16 do
+		--Do the same thing for y's
+		for dx=-BoxRadius*16,BoxRadius*16,16 do
+			--Initializes all inputs to 0
+			inputs[#inputs+1] = 0
+
+
+			tile = getTile(dx, dy)
+			--If the current location is a block and above the screen set input to 1
+			if tile == 0 and marioY+dy < 0x1B0 then
+				inputs[#inputs] = 1
+
+			end
+		end
+	end
+
 
 	return inputs
 end

@@ -175,13 +175,15 @@ FitnessBox(140,40,600,700) --Set Dimensions of GUI
 
 GenomeAmount=0
 status=0
-InitializeStats()
+
 initializePool()
 load=false
 if FileExists("current.pool") then
 	loadFile("current.pool")
 	load=true
 	console.writeline("Model Loaded")
+else
+	InitializeStats()
 end
 UpdateGenes(CollectGenes())
 if load==false then

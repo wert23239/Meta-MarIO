@@ -236,7 +236,6 @@ evaluateNetwork: Figuire out the output from a network and inputs
 --]]
 function evaluateNetwork(network, inputs)
 	table.insert(inputs, 1)
-
 	--Assert statemtent to see if correct amount of inputs
 	if #inputs ~= Inputs then
 		console.writeline("Incorrect number of neural network inputs.")
@@ -814,6 +813,17 @@ function displayGenome(genome)
 			i = i + 1
 		end
 	end
+	for dy=-BoxRadius,BoxRadius do
+		for dx=-BoxRadius,BoxRadius do
+			cell = {}
+			cell.x = 50+5*dx
+			cell.y = 70+5*dy
+			cell.value = network.neurons[i].value
+			cells[i] = cell
+			i = i + 1
+		end
+	end
+	--Last one is the bias cell
 	local biasCell = {}
 	biasCell.x = 80
 	biasCell.y = 110
@@ -883,11 +893,13 @@ function displayGenome(genome)
 	end
 
 	gui.drawBox(50-BoxRadius*5-3,70-BoxRadius*5-3,50+BoxRadius*5+2,70+BoxRadius*5+2,0xFF000000, 0x80808080)
+	local j=0
 	for n,cell in pairs(cells) do
 		if n > Inputs or cell.value ~= 0 then
 			local color = math.floor((cell.value+1)/2*256)
 			if color > 255 then color = 255 end
 			if color < 0 then color = 0 end
+			if j> (BoxRadius*2+1)*(BoxRadius*2+1) then color=128 end
 			local opacity = 0xFF000000
 			if cell.value == 0 then
 				opacity = 0x50000000
@@ -895,6 +907,7 @@ function displayGenome(genome)
 			color = opacity + color*0x10000 + color*0x100 + color
 			gui.drawBox(cell.x-2,cell.y-2,cell.x+2,cell.y+2,opacity,color)
 		end
+		j=j+1
 	end
 	for _,gene in pairs(genome.genes) do
 		if gene.enabled then

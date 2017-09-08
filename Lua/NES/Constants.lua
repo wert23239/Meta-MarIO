@@ -25,7 +25,7 @@ BoxRadius: is the eye that the Organism can see.
 It's where the inputs will be taken in at.
 (Left side of the visual)
 --]]
-BoxRadius = 10
+BoxRadius = 6
 FilenameTraining = FilenameFolder .."t1.state"
 FilenameTraining2 = FilenameFolder .. "t2.state"
 FilenameTraining3 = FilenameFolder .. "Level12.state"
@@ -39,7 +39,7 @@ There is two times the amount of the box because there is two inputs
 White inputs are blocks (static objects)
 Black inputs are enemies (dynamic objects)
 --]]
-InputSize = (BoxRadius*2+1)*(BoxRadius*2+1)
+InputSize = (BoxRadius*2+1)*(BoxRadius*2+1)+(BoxRadius*2+1)*(BoxRadius*2+1)
 
 
 --[[
