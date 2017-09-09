@@ -32,6 +32,7 @@ function newPool()
 	pool.currentGenome = 1 -- Genome Number
 	pool.currentFrame = 0 --What frame in the game currecntly at. Made-up
 	pool.maxFitness = 0 --The highest fitness ever achieved.
+	pool.maxGenerationFitness=0 --the highest fitness this generation
 	--List of Sets
 	--Key
 	--y*10,000

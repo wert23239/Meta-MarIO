@@ -35,7 +35,9 @@ function GatherReward(probalisticGenome,probalisticSpecies)
 	elseif isDone==2 then
 		CollectStats()
 		console.writeline("Generation " .. pool.generation .. " Completed")
-		console.writeline("For World ".. marioWorld+1 .. " Level ".. marioLevel+1 .. " maxFitness ".. pool.maxFitness)
+		console.writeline("For World ".. marioWorld+1 .. " Level ".. marioLevel+1)
+		console.writeline("Generation Best Fitness: ".. pool.maxGenerationFitness  .." Max Fitness: ".. pool.maxFitness)
+		pool.maxGenerationFitness=0
 		mode=GENERATION_OVER
 		GenomeAmount=0	
 	else
@@ -102,6 +104,8 @@ function GeneticAlgorithmLoop(probalisticGenome)
 				if marioX> pool.maxFitness then
 					pool.maxFitness=marioX
 				end
+				if marioX> pool.maxGenerationFitnessthen
+					pool.maxGenerationFitness=marioX
 			end
 			if forms.ischecked(ScoreFitness) then
 				fitnesscheck[2] = fitness+tonumber(forms.gettext(ScoreAmount))*(marioScore - NetScore)
