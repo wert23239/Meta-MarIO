@@ -104,8 +104,9 @@ function GeneticAlgorithmLoop(probalisticGenome)
 				if marioX> pool.maxFitness then
 					pool.maxFitness=marioX
 				end
-				if marioX> pool.maxGenerationFitnessthen
+				if marioX> pool.maxGenerationFitness then
 					pool.maxGenerationFitness=marioX
+				end
 			end
 			if forms.ischecked(ScoreFitness) then
 				fitnesscheck[2] = fitness+tonumber(forms.gettext(ScoreAmount))*(marioScore - NetScore)
