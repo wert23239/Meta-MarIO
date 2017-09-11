@@ -114,12 +114,12 @@ function GeneticAlgorithmLoop(probalisticGenome)
 			if forms.ischecked(NoveltyFitness) then
 				fitnesscheck[3] = fitness +tonumber(forms.gettext(NoveltyAmount))*(CurrentNSFitness)
 			end
-			if (rightmost-NetX)>20 then
-				fitnesscheck[4] = (NetX-leftmost)*2+(rightmost-NetX)*.5
-			end
-			if (rightmost-NetX)>20 then
-				fitnesscheck[5] = (upmost - NetY)*4+(rightmost-NetX)*.25
-			end
+			-- if (rightmost-NetX)>20 then
+			-- 	fitnesscheck[4] = (NetX-leftmost)*2+(rightmost-NetX)*.5
+			-- end
+			-- if (rightmost-NetX)>20 then
+			-- 	fitnesscheck[5] = (upmost - NetY)*3+(rightmost-NetX)*.25
+			-- end
 
 			table.sort(fitnesscheck)
 			fitness=fitnesscheck[#fitnesscheck]
@@ -132,7 +132,7 @@ function GeneticAlgorithmLoop(probalisticGenome)
 
 			--New Code for Super Meta
 			if memory.readbyte(0x000E)==11 or memory.readbyte(0x00B5)>1 then
-				fitness= fitness/4
+				fitness= fitness-20
 				status=1
 				savestate.load(Filename)
 			end

@@ -39,7 +39,7 @@ There is two times the amount of the box because there is two inputs
 White inputs are blocks (static objects)
 Black inputs are enemies (dynamic objects)
 --]]
-InputSize = (BoxRadius*2+1)*(BoxRadius*2+1)+(BoxRadius*2+1)*(BoxRadius*2+1)
+InputSize = (BoxRadius*2+1)*(BoxRadius*2+1)--+(BoxRadius*2+1)*(BoxRadius*2+1)
 
 
 --[[
@@ -56,7 +56,7 @@ client.speedmode(800)
 Population: The Number of Genomes
 Deltas: TODO:
 --]]
-Population = 16
+Population = 256
 DeltaDisjoint = 2.0
 DeltaWeights = 0.4
 DeltaThreshold = 1.0

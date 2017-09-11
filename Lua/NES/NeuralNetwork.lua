@@ -814,16 +814,16 @@ function displayGenome(genome)
 			i = i + 1
 		end
 	end
-	for dy=-BoxRadius,BoxRadius do
-		for dx=-BoxRadius,BoxRadius do
-			cell = {}
-			cell.x = 50+5*dx
-			cell.y = 70+5*dy
-			cell.value = network.neurons[i].value
-			cells[i] = cell
-			i = i + 1
-		end
-	end
+	-- for dy=-BoxRadius,BoxRadius do
+	-- 	for dx=-BoxRadius,BoxRadius do
+	-- 		cell = {}
+	-- 		cell.x = 50+5*dx
+	-- 		cell.y = 70+5*dy
+	-- 		cell.value = network.neurons[i].value
+	-- 		cells[i] = cell
+	-- 		i = i + 1
+	-- 	end
+	-- end
 	--Last one is the bias cell
 	local biasCell = {}
 	biasCell.x = 80

@@ -48,6 +48,7 @@ function LevelChange()
 		writeFile("Pools/Backups/".. "backup." ..NetWorld+1 .. NetLevel+1 .. pool.generation .. "." .. forms.gettext(saveLoadFile))
 		console.writeline("Next Level")
 		pool.maxFitness=0
+		pool.maxGenerationFitness=0
 		--training = true
 		NetGeneration = pool.generation
 		--resetStaleFitness
