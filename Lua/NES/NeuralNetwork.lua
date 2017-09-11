@@ -33,6 +33,8 @@ function newPool()
 	pool.currentFrame = 0 --What frame in the game currecntly at. Made-up
 	pool.maxFitness = 0 --The highest fitness ever achieved.
 	pool.maxGenerationFitness=0 --the highest fitness this generation
+	pool.marioWorld=0
+	pool.marioLevel=0
 	--List of Sets
 	--Key
 	--y*10,000
@@ -68,9 +70,9 @@ function newPool()
 	pool.generationAverageFitnessCollective={} --Vanillia Best Fitness of this Generation per Genome
 	pool.generationAverageRightmostCollective={} --Highest Rightmost Fitnes of this Generation per Genome
 	pool.generationAverageNoveltyCollective={} --Highest Novelty Fitness of this Generation per Genome
-	NetWorld=0
-	NetLevel=0
-	half=false
+	pool.netWorld=0
+	pool.netLevel=0
+	pool.half=false
 	return pool
 end
 

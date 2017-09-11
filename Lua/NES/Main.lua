@@ -17,7 +17,7 @@ end
 
 function CollectStats()
 	local statsFile=io.open("Stats.csv","a")
-	statsFile:write(pool.generation .. ","  .. pool.maxFitness .. "," .. pool.generationAverageFitness .. "," .. marioWorld .. "," .. marioLevel .. "\n")
+	statsFile:write(pool.generation .. ","  .. pool.maxFitness .. "," .. pool.generationAverageFitness .. "," .. pool.marioWorld .. "," .. pool.marioLevel .. "\n")
 	statsFile:close()
 end	
 
@@ -35,7 +35,7 @@ function GatherReward(probalisticGenome,probalisticSpecies)
 	elseif isDone==2 then
 		CollectStats()
 		console.writeline("Generation " .. pool.generation .. " Completed")
-		console.writeline("For World ".. marioWorld+1 .. " Level ".. marioLevel+1)
+		console.writeline("For World ".. pool.marioWorld+1 .. " Level ".. pool.marioLevel+1)
 		console.writeline("Generation Best Fitness: ".. pool.maxGenerationFitness  .." Max Fitness: ".. pool.maxFitness)
 		pool.maxGenerationFitness=0
 		mode=GENERATION_OVER
@@ -187,6 +187,7 @@ if FileExists("current.pool") then
 	loadFile("current.pool")
 	load=true
 	console.writeline("Model Loaded")
+	savestate.load(Filename)
 else
 	InitializeStats()
 end

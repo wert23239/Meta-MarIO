@@ -8,8 +8,8 @@ function getPositions()
 	marioY = memory.readbyte(0x03B8)+16
 	marioScore = memory.readbyte(0x7D8)*100000+memory.readbyte(0x07D9)*10000+memory.readbyte(0x07DA)*1000
 	marioScore = marioScore+memory.readbyte(0x07DB)*100 + memory.readbyte(0x07DC)*10 + memory.readbyte(0x07DC)*1
-	marioLevel = memory.readbyte(0x075C)
-	marioWorld = memory.readbyte(0x075F)
+	pool.marioLevel = memory.readbyte(0x075C)
+	pool.marioWorld = memory.readbyte(0x075F)
 	--marioScore= 19
 	screenX = memory.readbyte(0x03AD)
 	screenY = memory.readbyte(0x03B8)

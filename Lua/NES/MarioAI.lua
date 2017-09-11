@@ -167,8 +167,8 @@ while true do
 
 			--console.writeline("Gen " .. pool.generation .. " species " .. pool.currentSpecies .. " genome " .. pool.currentGenome .. " fitness: " .. fitness)
 
-			--console.writeline("World " .. marioWorld .. " Level " .. marioLevel .. " Half ")
-			--console.writeline(half)
+			--console.writeline("World " .. pool.marioWorld .. " Level " .. pool.marioLevel .. " pool.half ")
+			--console.writeline(pool.half)
 			pool.currentSpecies = 1
 			pool.currentGenome = 1
 
@@ -220,7 +220,7 @@ while true do
 		getPositions()
 		if not training then
 			LevelChange()
-			LevelChangeHalfway()
+			LevelChangehalfway()
 		end
 		if memory.readbyte(0x071E)==11 then
 		   TimeoutAuto=true

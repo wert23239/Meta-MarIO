@@ -3,6 +3,10 @@ writeFile: See loadFile for specifics
 --]]
 function writeFile(filename)
     local file = io.open(filename, "w")
+    file:write(Filename .. "\n")
+    file:write(pool.marioWorld .. "\n")
+    file:write(pool.marioLevel .. "\n")
+    file:write((pool.half and 1 or 0) .. "\n") --convert bool to number
 	file:write(pool.generation .. "\n")
 	file:write(pool.maxFitness .. "\n")
 	file:write(#pool.species .. "\n")
@@ -46,7 +50,15 @@ function loadFile(filename)
     local file = io.open(filename, "r")
     --Create a new gene pool
 	pool = newPool()
-
+	Filename=file:read("*line")
+	pool.netWorld=file:read("*number")
+    pool.netLevel=file:read("*number")
+    pool.halfvar=file:read("*number") --convert number to bool
+    if pool.halfvar==1 then
+    	pool.half=true
+    else
+    	pool.half=false
+    end
 	--Read the generation
 	pool.generation = file:read("*number")
 
