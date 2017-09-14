@@ -64,7 +64,7 @@ function GeneticAlgorithmLoop(probalisticGenome)
 			displayGenome(genome)
 		end
 		--Every 5 frames evaluate the current orgranism
-		if pool.currentFrame%5 == 0 then
+		if pool.currentFrame%6 == 0 then
 				evaluateCurrent()
 		end
 
@@ -135,6 +135,8 @@ function GeneticAlgorithmLoop(probalisticGenome)
 				fitness= fitness-20
 				status=1
 				savestate.load(Filename)
+				--NetPage=memory.readbyte(0x6D)
+
 			end
 			LevelChange()
 			LevelChangeHalfway()
@@ -197,34 +199,47 @@ if load==false then
 else
 	DummyRowLoad()
 end
+if tonumber(forms.getthreadNum())<0 then
+	x=0
+	client.speedmode(100)
+end
 while true do
-	if (mode~=DEATH_ACTION) and memory.readbyte(0x000E)==11 then    
-	   --mode=DEATH_WAIT 
-	end
-	if mode==DEATH_ACTION then
-		DummyRowDead()
-		savestate.load(Filename)
-		mode=WAIT
-	end 
-	if mode==GENERATION_OVER then
-		DummyRowEnd()
-		savestate.load(Filename)
-		mode=WAIT
-	end 
-	if mode==DEATH_WAIT and emu.checktable()==false then
-		EraseLastAction()
-		DummyRowDead()
-		savestate.load(Filename)
-		mode=WAIT
-	end 
-    if mode==WAIT and emu.checktable()==false then
- 		mode=ACTION
- 	end
- 	if mode==ACTION then
- 		local probalisticGenome=GatherGenomeNum() --Fix Functi
- 		local probalisticSpecies=GatherSpeciesNum() --Fix Function
- 		GatherReward(probalisticGenome,probalisticSpecies)
- 	end	
+	if tonumber(forms.getthreadNum())>=0 then
+		if (mode~=DEATH_ACTION) and memory.readbyte(0x000E)==11 then    
+		   --mode=DEATH_WAIT 
+		end
+		if mode==DEATH_ACTION then
+			DummyRowDead()
+			savestate.load(Filename)
+			mode=WAIT
+		end 
+		if mode==GENERATION_OVER then
+			DummyRowEnd()
+			savestate.load(Filename)
+			mode=WAIT
+		end 
+		if mode==DEATH_WAIT and emu.checktable()==false then
+			EraseLastAction()
+			DummyRowDead()
+			savestate.load(Filename)
+			mode=WAIT
+		end 
+	    if mode==WAIT and emu.checktable()==false then
+	 		mode=ACTION
+	 	end
+	 	if mode==ACTION then
+	 		local probalisticGenome=GatherGenomeNum() 
+	 		local probalisticSpecies=GatherSpeciesNum() 
+	 		GatherReward(probalisticGenome,probalisticSpecies)
+	 	end
+ 	else
+	 	local species = pool.species[pool.currentSpecies]
+		local genome = species.genomes[pool.currentGenome]
+	 	if x%6 == 0 then
+			evaluateCurrent()
+		end
+		displayGenome(genome)
+		x=x+1
+	end	
  	emu.frameadvance()
-
 end

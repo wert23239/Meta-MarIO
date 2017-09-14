@@ -688,6 +688,7 @@ function initializeRun()
 	CurrentNSFitness = 0
 	pool.currentFrame = 0
 	timeout =TimeoutConstant
+	NetPage= memory.readbyte(0x6D)
 	NetX = memory.readbyte(0x6D) * 0x100 + memory.readbyte(0x86)
 	NetY= memory.readbyte(0x03B8)+16
 	NetScore = memory.readbyte(0x07D8)*100000+memory.readbyte(0x07D9)*10000+memory.readbyte(0x07DA)*1000
