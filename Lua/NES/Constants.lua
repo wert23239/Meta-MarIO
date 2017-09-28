@@ -39,7 +39,7 @@ There is two times the amount of the box because there is two inputs
 White inputs are blocks (static objects)
 Black inputs are enemies (dynamic objects)
 --]]
-InputSize = (BoxRadius*2+1)*(BoxRadius*2+1)--+(BoxRadius*2+1)*(BoxRadius*2+1)
+InputSize = (BoxRadius*2+1)*(BoxRadius*2+1)+(BoxRadius*2+1)*(BoxRadius*2+1)
 
 
 --[[

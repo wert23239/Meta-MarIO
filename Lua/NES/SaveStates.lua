@@ -21,11 +21,25 @@ function LevelChangeHalfway()
 		isChange=true
 	elseif pool.marioWorld==2 and pool.marioLevel==2 and marioX>1054 then
 		isChange=true
+	elseif pool.marioWorld==3 and pool.marioLevel==0 and marioX>1566 then
+		isChange=true
+	elseif pool.marioWorld==3 and pool.marioLevel==1 and marioX>1566 then
+		isChange=true
+	elseif pool.marioWorld==3 and pool.marioLevel==2 and marioX>1054 then
+		isChange=true
+	elseif pool.marioWorld==4 and pool.marioLevel==0 and marioX>1566 then
+		isChange=true
+	elseif pool.marioWorld==4 and pool.marioLevel==1 and marioX>1566 then
+		isChange=true
+	elseif pool.marioWorld==4 and pool.marioLevel==2 and marioX>1054 then
+		isChange=true
+	elseif pool.marioWorld==5 and pool.marioLevel==0 and marioX>1566 then
+		isChange=true
 	end
 	if isChange and pool.half==false then
 		pool.half = true
 		Filename = "Level" .. pool.marioWorld+1 .. pool.marioLevel+1 .. 5 ..".state"
-		writeFile("Pools/Backups/".. "backup." .. pool.marioWorld+1 .. pool.marioLevel+1 .. 5 ..pool.generation .. "." .. forms.gettext(saveLoadFile))
+		writeFile("Pools/Backups/".. "backup." .. tostring(forms.getthreadNum()) .. "." .. pool.marioWorld+1 .. "." .. pool.marioLevel+1 .. 5 .. "." ..pool.generation .. "." .. forms.gettext(saveLoadFile))
 		Filename = "States/"..Filename
 		console.writeline("Next Level Half")
 		--resetStaleFitness
@@ -45,7 +59,7 @@ function LevelChange()
 		pool.half=false
 		Filename = "Level" .. pool.netWorld+1 .. pool.netLevel+1 .. ".state"
 		Filename = "States/"..Filename
-		writeFile("Pools/Backups/".. "backup." ..pool.netWorld+1 .. pool.netLevel+1 .. pool.generation .. "." .. forms.gettext(saveLoadFile))
+		writeFile("Pools/Backups/".. "backup." .. tostring(forms.getthreadNum()) .. "." .. pool.marioWorld+1 .. "." .. pool.marioLevel+1 .. "." ..pool.generation .. "." .. forms.gettext(saveLoadFile))
 		console.writeline("Next Level")
 		pool.maxFitness=0
 		pool.maxGenerationFitness=0

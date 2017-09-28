@@ -7,16 +7,41 @@ require "Forms"
 require "Timeout"
 require "SQL"
 
-
 function InitializeStats()
-	local statsFile=io.open("Stats.csv","w+")
+	local statsFile=io.open("Stats".. tostring(forms.getthreadNum()) .. ".csv" ,"w+")
 	statsFile:write("Generation".. ","  .. "Max Fitness".. "," .. "Average Fitness" .. "," .. "World" .. "," .. "Level" .. "\n")
 	statsFile:close()
 end
 
+function GetRandomGenome()
+	local tail=table.remove(RandomNumbers)
+	return tail
+end
+
+
+
+function GenerateRandomNumbers()
+	local RandomNums={}
+	for slot=1,Population do
+		table.insert(RandomNums,slot)
+	end
+	RandomNums=shuffle(RandomNums)
+	return RandomNums
+end
+
+--http://gamebuildingtools.com/using-lua/shuffle-table-lua
+function shuffle(t)
+  local n = #t -- gets the length of the table 
+  while n > 2 do -- only run if the table has more than 1 element
+    local k = math.random(n) -- get a random number
+    t[n], t[k] = t[k], t[n]
+    n = n - 1
+ end
+ return t
+end
 
 function CollectStats()
-	local statsFile=io.open("Stats.csv","a")
+	local statsFile=io.open("Stats".. tostring(forms.getthreadNum()) .. ".csv","a")
 	statsFile:write(pool.generation .. ","  .. pool.maxFitness .. "," .. pool.generationAverageFitness .. "," .. pool.marioWorld .. "," .. pool.marioLevel .. "\n")
 	statsFile:close()
 end	
@@ -32,6 +57,10 @@ function GatherReward(probalisticGenome,probalisticSpecies)
 	if isDone ==1 then 
 		mode=DEATH_ACTION
 		GenomeAmount=0
+		if tonumber(forms.getthreadNum())>0 then
+			RandomNumbers=GenerateRandomNumbers()
+			GenomeAmount=1
+		end
 	elseif isDone==2 then
 		CollectStats()
 		console.writeline("Generation " .. pool.generation .. " Completed")
@@ -39,7 +68,12 @@ function GatherReward(probalisticGenome,probalisticSpecies)
 		console.writeline("Generation Best Fitness: ".. pool.maxGenerationFitness  .." Max Fitness: ".. pool.maxFitness)
 		pool.maxGenerationFitness=0
 		mode=GENERATION_OVER
-		GenomeAmount=0	
+		GenomeAmount=0
+		if tonumber(forms.getthreadNum())>0 then
+			GenomeNumbers=NumberGenomes()
+			RandomNumbers=GenerateRandomNumbers()
+			GenomeAmount=1
+		end
 	else
 		GenomeAmount=GenomeAmount+1
 		initializeRun()
@@ -199,12 +233,20 @@ if load==false then
 else
 	DummyRowLoad()
 end
-if tonumber(forms.getthreadNum())<0 then
+if tonumber(forms.getthreadNum())==-1 then
 	x=0
 	client.speedmode(100)
 end
+if tonumber(forms.getthreadNum())>0 then
+	GenomeNumbers=NumberGenomes()
+	RandomNumbers=GenerateRandomNumbers()
+	GenomeAmount=1
+	local seed=os.time()
+	math.randomseed(seed)
+	for i=1,tonumber(forms.getthreadNum()) do math.random(5) end
+end 
 while true do
-	if tonumber(forms.getthreadNum())>=0 then
+	if tonumber(forms.getthreadNum())==0 then
 		if (mode~=DEATH_ACTION) and memory.readbyte(0x000E)==11 then    
 		   --mode=DEATH_WAIT 
 		end
@@ -232,6 +274,11 @@ while true do
 	 		local probalisticSpecies=GatherSpeciesNum() 
 	 		GatherReward(probalisticGenome,probalisticSpecies)
 	 	end
+	elseif tonumber(forms.getthreadNum())>0 then
+		GenomeNumber=GetRandomGenome()
+		local probalisticGenome=GenomeNumbers[GenomeNumber].genome
+	 	local probalisticSpecies=GenomeNumbers[GenomeNumber].species
+	 	GatherReward(probalisticGenome,probalisticSpecies)
  	else
 	 	local species = pool.species[pool.currentSpecies]
 		local genome = species.genomes[pool.currentGenome]

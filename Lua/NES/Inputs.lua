@@ -125,21 +125,21 @@ function getInputs()
 		end
 	end
 
-	-- for dy=-BoxRadius*16,BoxRadius*16,16 do
-	-- 	--Do the same thing for y's
-	-- 	for dx=-BoxRadius*16,BoxRadius*16,16 do
-	-- 		--Initializes all inputs to 0
-	-- 		inputs[#inputs+1] = 0
+	for dy=-BoxRadius*16,BoxRadius*16,16 do
+		--Do the same thing for y's
+		for dx=-BoxRadius*16,BoxRadius*16,16 do
+			--Initializes all inputs to 0
+			inputs[#inputs+1] = 0
 
 
-	-- 		tile = getTile(dx, dy)
-	-- 		--If the current location is a block and above the screen set input to 1
-	-- 		if tile == 0 and marioY+dy < 0x1B0 then
-	-- 			inputs[#inputs] = 1
+			tile = getTile(dx, dy)
+			--If the current location is a block and above the screen set input to 1
+			if tile == 0 and marioY+dy < 0x1B0 then
+				inputs[#inputs] = 1
 
-	-- 		end
-	-- 	end
-	-- end
+			end
+		end
+	end
 
 
 	return inputs

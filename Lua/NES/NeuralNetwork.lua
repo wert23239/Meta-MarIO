@@ -35,6 +35,7 @@ function newPool()
 	pool.maxGenerationFitness=0 --the highest fitness this generation
 	pool.marioWorld=0
 	pool.marioLevel=0
+
 	--List of Sets
 	--Key
 	--y*10,000
@@ -636,7 +637,7 @@ function newGeneration()
 	resetFitness()
 	pool.generation = pool.generation + 1
 	UpdateGenes(CollectGenes())
-	writeFile("backup." .. pool.generation .. "." .. forms.gettext(saveLoadFile))
+	writeFile("backup." .. pool.generation .. "." .. tostring(forms.getthreadNum()) .. "." ..forms.gettext(saveLoadFile))
 end
 
 function initializeFitnessFile()
@@ -817,16 +818,16 @@ function displayGenome(genome)
 			i = i + 1
 		end
 	end
-	-- for dy=-BoxRadius,BoxRadius do
-	-- 	for dx=-BoxRadius,BoxRadius do
-	-- 		cell = {}
-	-- 		cell.x = 50+5*dx
-	-- 		cell.y = 70+5*dy
-	-- 		cell.value = network.neurons[i].value
-	-- 		cells[i] = cell
-	-- 		i = i + 1
-	-- 	end
-	-- end
+	for dy=-BoxRadius,BoxRadius do
+		for dx=-BoxRadius,BoxRadius do
+			cell = {}
+			cell.x = 50+5*dx
+			cell.y = 70+5*dy
+			cell.value = network.neurons[i].value
+			cells[i] = cell
+			i = i + 1
+		end
+	end
 	--Last one is the bias cell
 	local biasCell = {}
 	biasCell.x = 80
@@ -974,4 +975,27 @@ function CollectGenes()
 		end
 	end
 	return GeneCollection
+end
+
+function NewGenomeNumber(speciesNum,genomeNum)
+	local genomeNumber={}
+	genomeNumber.species=speciesNum
+	genomeNumber.genome=genomeNum
+	return genomeNumber
+end
+function NumberGenomes()
+	local genomeNumber={}
+	local speciesNum=0
+	local genomeNum=0
+	local genomeIndividualNum=0
+	for n,species in pairs(pool.species) do
+		speciesNum=speciesNum+1
+		genomeNum=0
+		for m,genome in pairs(species.genomes) do
+			genomeNum=genomeNum+1
+			genomeIndividualNum=genomeIndividualNum+1
+			genomeNumber[genomeIndividualNum]=NewGenomeNumber(speciesNum,genomeNum)
+		end
+	end
+	return genomeNumber
 end
