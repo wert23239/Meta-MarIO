@@ -22,7 +22,7 @@ getTile: Return each of the tiles used for the input
 Return:  Whether the tile is
 --]]
 function getTile(dx, dy)
-	--Dx plus what page they are on
+	--Dx plus what page they are on`
 	local x = marioX + dx + 8
 	local y = marioY + dy - 16
 	local page = math.floor(x/256)%2
@@ -37,7 +37,7 @@ function getTile(dx, dy)
 		return 0
 	end
 
-	if memory.readbyte(addr) ~= 0 and memory.readbyte(addr) ~= 0xC2 then
+	if memory.readbyte(addr) ~= 0 and memory.readbyte(addr``````) ~= 0xC2 then
 		return 1
 	else
 		return 0
