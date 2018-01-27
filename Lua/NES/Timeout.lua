@@ -73,6 +73,10 @@ end
 CallTimeoutFunction: Function to call all timeouts in current use 
 --]]
 function CallTimeoutFunctions()
+
+	--if RightmostPage<marioPage then
+	--	RightmostPage=marioPage
+
 	--Novelty Timeout Function called when Novelty Fitness or Timeout is on
 	if forms.ischecked(NoveltyFitness) or forms.ischecked(NoveltyTimeout) then
 		NoveltyTimeoutFunction()

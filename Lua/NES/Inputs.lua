@@ -4,7 +4,7 @@ GetPostions: Return the postion of Mario Using in game Hex Bits
 function getPositions()
 	--In the classic game the X bit is done using a paging bit first
 	--This allows you to have bigger numbers than 256
-	--marioPage=memory.readbyte(0x6D)
+	marioPage=memory.readbyte(0x6D)
 	marioX = memory.readbyte(0x6D) * 0x100 + memory.readbyte(0x86)
 	marioY = memory.readbyte(0x03B8)+16
 	marioScore = memory.readbyte(0x7D8)*100000+memory.readbyte(0x07D9)*10000+memory.readbyte(0x07DA)*1000
@@ -22,7 +22,7 @@ getTile: Return each of the tiles used for the input
 Return:  Whether the tile is
 --]]
 function getTile(dx, dy)
-	--Dx plus what page they are on`
+	--Dx plus what page they are on
 	local x = marioX + dx + 8
 	local y = marioY + dy - 16
 	local page = math.floor(x/256)%2
@@ -37,7 +37,7 @@ function getTile(dx, dy)
 		return 0
 	end
 
-	if memory.readbyte(addr) ~= 0 and memory.readbyte(addr``````) ~= 0xC2 then
+	if memory.readbyte(addr) ~= 0 and memory.readbyte(addr) ~= 0xC2 then
 		return 1
 	else
 		return 0

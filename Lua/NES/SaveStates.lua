@@ -58,7 +58,9 @@ function LevelChange()
 		pool.netLevel=pool.marioLevel
 		pool.half=false
 		Filename = "Level" .. pool.netWorld+1 .. pool.netLevel+1 .. ".state"
+		--Filename = "Level" .. "1" .. "1" .. ".state"
 		Filename = "States/"..Filename
+		
 		writeFile("Pools/Backups/".. "backup." .. tostring(forms.getthreadNum()) .. "." .. pool.marioWorld+1 .. "." .. pool.marioLevel+1 .. "." ..pool.generation .. "." .. forms.gettext(saveLoadFile))
 		console.writeline("Next Level")
 		pool.maxFitness=0

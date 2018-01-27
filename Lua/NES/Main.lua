@@ -88,8 +88,9 @@ end
 function GeneticAlgorithmLoop(probalisticGenome)
 	local Alive=true
 	local GlobalFitness=0
-	
-
+	--getPositions()
+	--NetPage=marioPage
+	--RightmostPage=NetPage
 	while Alive do
 
 		local species = pool.species[pool.currentSpecies]
@@ -121,7 +122,8 @@ function GeneticAlgorithmLoop(probalisticGenome)
 		--Each extra four frames give mario and extra bonus living amount
 		local timeoutBonus = pool.currentFrame / 4
 		--Timeout or Killed by Monster or Kiled by Falling
-		if timeout + timeoutBonus <=0 or memory.readbyte(0x000E)==11 or memory.readbyte(0x00B5)>1 then
+		--or pool.currentFrame>250
+		if timeout + timeoutBonus <=0  or memory.readbyte(0x000E)==11 or memory.readbyte(0x00B5)>1  then
 			Alive=false
 			--If Dead
 			
@@ -163,10 +165,11 @@ function GeneticAlgorithmLoop(probalisticGenome)
 				fitness = -1
 			end
 
+			
 
 			--New Code for Super Meta
 			if memory.readbyte(0x000E)==11 or memory.readbyte(0x00B5)>1 then
-				fitness= fitness-20
+				--fitness= fitness-20
 				status=1
 				savestate.load(Filename)
 				--NetPage=memory.readbyte(0x6D)
@@ -186,10 +189,10 @@ function GeneticAlgorithmLoop(probalisticGenome)
 
 			if fitness <= 0 then
 				GlobalFitness=-1
-			elseif fitness>500 then 
-				GlobalFitness=1
+			elseif fitness>100 then 
+				GlobalFitness=100
 			else 
-				GlobalFitness=fitness/500
+				GlobalFitness=fitness
 			end
 			
 
@@ -205,7 +208,7 @@ end
 
 DEATH_WAIT,DEATH_ACTION,WAIT,ACTION,GENERATION_OVER = 0,1,2,3,4
 mode=WAIT
-
+NetPage=0
 
 
 Open()
