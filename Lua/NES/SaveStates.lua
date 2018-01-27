@@ -40,6 +40,7 @@ function LevelChangeHalfway()
 		pool.half = true
 		Filename = "Level" .. pool.marioWorld+1 .. pool.marioLevel+1 .. 5 ..".state"
 		writeFile("Pools/Backups/".. "backup." .. tostring(forms.getthreadNum()) .. "." .. pool.marioWorld+1 .. "." .. pool.marioLevel+1 .. 5 .. "." ..pool.generation .. "." .. forms.gettext(saveLoadFile))
+		writeLevelFinish("Pools/Backups/".. "backup." .."replay." .. tostring(forms.getthreadNum()) .. "." .. pool.marioWorld+1 .. "." .. pool.marioLevel+1 .. 5 .. "." ..pool.generation .. "." .. forms.gettext(saveLoadFile))
 		Filename = "States/"..Filename
 		console.writeline("Next Level Half")
 		--resetStaleFitness
@@ -62,6 +63,8 @@ function LevelChange()
 		Filename = "States/"..Filename
 		
 		writeFile("Pools/Backups/".. "backup." .. tostring(forms.getthreadNum()) .. "." .. pool.marioWorld+1 .. "." .. pool.marioLevel+1 .. "." ..pool.generation .. "." .. forms.gettext(saveLoadFile))
+		writeLevelFinish("Pools/Backups/".. "backup.".."replay."  .. tostring(forms.getthreadNum()) .. "." .. pool.marioWorld+1 .. "." .. pool.marioLevel+1 .. "." ..pool.generation .. "." .. forms.gettext(saveLoadFile))
+		Survivors={}
 		console.writeline("Next Level")
 		pool.maxFitness=0
 		pool.maxGenerationFitness=0

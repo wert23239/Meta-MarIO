@@ -272,3 +272,42 @@ function writeMultiIntial(filename)
         end
         file:close()
 end
+
+--[[
+writeLevelFinish: Saves when a player finished a level
+--]]
+function writeLevelFinish(filename)
+	local file = io.open(filename, "w")
+	file:write(pool.marioWorld .. "\n")
+	file:write(pool.marioLevel .. "\n")
+	file:write((pool.half and 1 or 0) .. "\n") --convert bool to number
+    file:write(#Survivors.. "\n")
+    for n,species in pairs(Survivors) do
+		file:write(species.."\n")
+    end
+    file:close()
+end
+
+
+--[[
+loadLevelFinish: Loads a guy when he is finished
+--]]
+function loadLevelFinish(filename)
+	local file = io.open(filename, "r")
+	pool.netWorld=file:read("*number")
+    pool.netLevel=file:read("*number")
+    pool.halfvar=file:read("*number") --convert number to bool
+    if pool.halfvar==1 then
+    	pool.half=true
+    else
+    	pool.half=false
+    end
+    local numGuys = file:read("*number")
+    for n=1,numGuys do
+    	local specgene = file:read("*line")
+    	spec, genom = specgene:match("([^,]+),([^,]+)")
+    	table.insert(LoadedSpecies, spec)
+    	table.insert(LoadedGenomes, genom)
+    end
+    file:close()
+end

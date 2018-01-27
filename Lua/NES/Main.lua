@@ -13,6 +13,11 @@ function InitializeStats()
 	statsFile:close()
 end
 
+function LoadFromFile()
+	LoadedIndex=LoadedIndex+1
+	return LoadedSpecies[LoadedIndex],LoadedGenomes[LoadedIndex]
+end
+
 function GetRandomGenome()
 	local tail=table.remove(RandomNumbers)
 	return tail
@@ -125,9 +130,9 @@ function GeneticAlgorithmLoop(probalisticGenome)
 		--or pool.currentFrame>250
 		if timeout + timeoutBonus <=0  or memory.readbyte(0x000E)==11 or memory.readbyte(0x00B5)>1  then
 			Alive=false
-			--If Dead
 			
-
+			
+			--If Dead
 			local fitness = 0
 			local fitnesscheck={}
 			for slot=1,5 do
@@ -166,17 +171,18 @@ function GeneticAlgorithmLoop(probalisticGenome)
 			end
 
 			
-
+			LevelChange()
+			LevelChangeHalfway()
 			--New Code for Super Meta
 			if memory.readbyte(0x000E)==11 or memory.readbyte(0x00B5)>1 then
 				--fitness= fitness-20
 				status=1
+				Survivors={}
 				savestate.load(Filename)
 				--NetPage=memory.readbyte(0x6D)
 
 			end
-			LevelChange()
-			LevelChangeHalfway()
+
 			
 			
 
@@ -219,7 +225,8 @@ FitnessBox(140,40,600,700) --Set Dimensions of GUI
 
 GenomeAmount=0
 status=0
-
+Survivors={}
+print("..Starting")
 initializePool()
 load=false
 if FileExists("current.pool") then
@@ -248,12 +255,23 @@ if tonumber(forms.getthreadNum())>0 then
 	math.randomseed(seed)
 	for i=1,tonumber(forms.getthreadNum()) do math.random(5) end
 end 
+LoadedSpecies={}
+LoadedGenomes={}
+LoadedIndex=0
+if tonumber(forms.getthreadNum())==-2 then
+	loadLevelFinish("currentreplay.txt")
+end
+print(LoadedSpecies)
+print(LoadedGenomes)
+print("here")
 while true do
 	if tonumber(forms.getthreadNum())==0 then
 		if (mode~=DEATH_ACTION) and memory.readbyte(0x000E)==11 then    
+		print("DEATH_ACTION")
 		   --mode=DEATH_WAIT 
 		end
 		if mode==DEATH_ACTION then
+			print("DEATH_ACTION")
 			DummyRowDead()
 			savestate.load(Filename)
 			mode=WAIT
@@ -264,24 +282,35 @@ while true do
 			mode=WAIT
 		end 
 		if mode==DEATH_WAIT and emu.checktable()==false then
+			print("DEATH_WAIT")
 			EraseLastAction()
 			DummyRowDead()
 			savestate.load(Filename)
 			mode=WAIT
 		end 
 	    if mode==WAIT and emu.checktable()==false then
+	    	print("WAIT")
 	 		mode=ACTION
 	 	end
 	 	if mode==ACTION then
 	 		local probalisticGenome=GatherGenomeNum() 
 	 		local probalisticSpecies=GatherSpeciesNum() 
+	 		table.insert(Survivors,probalisticSpecies..","..probalisticGenome)
 	 		GatherReward(probalisticGenome,probalisticSpecies)
 	 	end
 	elseif tonumber(forms.getthreadNum())>0 then
+		print("Random")
 		GenomeNumber=GetRandomGenome()
 		local probalisticGenome=GenomeNumbers[GenomeNumber].genome
 	 	local probalisticSpecies=GenomeNumbers[GenomeNumber].species
 	 	GatherReward(probalisticGenome,probalisticSpecies)
+	elseif tonumber(forms.getthreadNum())==-2 then
+		speciesNum,genomeNum=LoadFromFile()
+		pool.currentSpecies=tonumber(speciesNum)
+		pool.currentGenome=tonumber(genomeNum)
+		local species = pool.species[tonumber(speciesNum)]
+		local genome = species.genomes[tonumber(genomeNum)]
+		GatherReward(species,genome)
  	else
 	 	local species = pool.species[pool.currentSpecies]
 		local genome = species.genomes[pool.currentGenome]
