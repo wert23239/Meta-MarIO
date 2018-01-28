@@ -15,6 +15,10 @@ end
 
 function LoadFromFile()
 	LoadedIndex=LoadedIndex+1
+	if LoadedIndex>#LoadedSpecies then
+		LoadedIndex=1
+		savestate.load(Filename)
+	end
 	return LoadedSpecies[LoadedIndex],LoadedGenomes[LoadedIndex]
 end
 
@@ -81,6 +85,7 @@ function GatherReward(probalisticGenome,probalisticSpecies)
 		end
 	else
 		GenomeAmount=GenomeAmount+1
+		--print("initializeRun")
 		initializeRun()
 		fitness=GeneticAlgorithmLoop(probalisticGenome)
 		UpdateReward(fitness)
@@ -246,10 +251,18 @@ end
 if tonumber(forms.getthreadNum())==-1 then
 	x=0
 	client.speedmode(100)
+
+end
+if tonumber(forms.getthreadNum())==-2 then
+	x=0
+	client.speedmode(50)
+	
 end
 if tonumber(forms.getthreadNum())>0 then
 	GenomeNumbers=NumberGenomes()
+	print(GenomeNumbers)
 	RandomNumbers=GenerateRandomNumbers()
+	print(RandomNumbers)
 	GenomeAmount=1
 	local seed=os.time()
 	math.randomseed(seed)
@@ -305,12 +318,18 @@ while true do
 	 	local probalisticSpecies=GenomeNumbers[GenomeNumber].species
 	 	GatherReward(probalisticGenome,probalisticSpecies)
 	elseif tonumber(forms.getthreadNum())==-2 then
+		--print("hey")
 		speciesNum,genomeNum=LoadFromFile()
-		pool.currentSpecies=tonumber(speciesNum)
-		pool.currentGenome=tonumber(genomeNum)
-		local species = pool.species[tonumber(speciesNum)]
-		local genome = species.genomes[tonumber(genomeNum)]
-		GatherReward(species,genome)
+		-- pool.currentSpecies=tonumber(speciesNum)
+		-- pool.currentGenome=tonumber(genomeNum)
+
+		local probalisticSpecies = tonumber(speciesNum)
+		local probalisticGenome = tonumber(genomeNum)
+		print("Species: "..probalisticSpecies)
+		print("Genome: "..probalisticGenome)
+		--local probalisticGenome=GenomeNumbers[GenomeNumber].genome
+	 	--local probalisticSpecies=GenomeNumbers[GenomeNumber].species
+		GatherReward(probalisticGenome,probalisticSpecies)
  	else
 	 	local species = pool.species[pool.currentSpecies]
 		local genome = species.genomes[pool.currentGenome]
