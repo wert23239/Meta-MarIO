@@ -39,9 +39,9 @@ function LevelChangeHalfway()
 	if isChange and pool.half==false then
 		pool.half = true
 		Filename = "Level" .. pool.marioWorld+1 .. pool.marioLevel+1 .. 5 ..".state"
+		Filename = "States/"..Filename
 		writeFile("Pools/Backups/".. "backup." .. tostring(forms.getthreadNum()) .. "." .. pool.marioWorld+1 .. "." .. pool.marioLevel+1 .. 5 .. "." ..pool.generation .. "." .. forms.gettext(saveLoadFile))
 		writeLevelFinish("Pools/Backups/".. "backup." .."replay." .. tostring(forms.getthreadNum()) .. "." .. pool.marioWorld+1 .. "." .. pool.marioLevel+1 .. 5 .. "." ..pool.generation .. "." .. forms.gettext(saveLoadFile))
-		Filename = "States/"..Filename
 		console.writeline("Next Level Half")
 		--resetStaleFitness
 	end

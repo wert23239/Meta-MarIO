@@ -37,7 +37,7 @@ function NoveltyTimeoutFunction()
 		pool.landscape[tostring(cordLocation)][tostring(cordSpecies)]=true
 		if forms.ischecked(NoveltyTimeout) then
 			timeout = tonumber(forms.gettext(TimeoutConstantText))
-			GainNoveltyFitness(tostring(cordLocation))
+			--GainNoveltyFitness(tostring(cordLocation))
 		end
 	end
 end

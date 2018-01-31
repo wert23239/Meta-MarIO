@@ -7,6 +7,28 @@ require "Forms"
 require "Timeout"
 require "SQL"
 
+function GoBackOneHalfLevel()
+	if pool.half==true then
+		pool.half=false
+	elseif pool.netLevel>0 then
+		pool.netLevel=pool.netLevel-1
+		pool.half=true
+	elseif pool.netWorld>0 then
+		pool.netWorld=pool.netWorld-1
+		pool.half=true
+	else
+		print("Starting at Level 1")
+	end
+	if pool.half==true then
+		Filename = "Level" .. pool.netWorld+1 .. pool.netLevel+1 .. 5 ..".state"
+	else
+		Filename = "Level" .. pool.netWorld+1 .. pool.netLevel+1 ..".state"
+	end
+	Filename = "States/"..Filename
+	ConstantFilename=Filename
+	print(Filename)
+end
+
 function InitializeStats()
 	local statsFile=io.open("Stats".. tostring(forms.getthreadNum()) .. ".csv" ,"w+")
 	statsFile:write("Generation".. ","  .. "Max Fitness".. "," .. "Average Fitness" .. "," .. "World" .. "," .. "Level" .. "\n")
@@ -15,9 +37,13 @@ end
 
 function LoadFromFile()
 	LoadedIndex=LoadedIndex+1
+	print(LoadedIndex)
 	if LoadedIndex>#LoadedSpecies then
 		LoadedIndex=1
-		savestate.load(Filename)
+		savestate.load(ConstantFilename)
+		pool.landscape = {}
+		RoundAmount=0
+	print("Reload")
 	end
 	return LoadedSpecies[LoadedIndex],LoadedGenomes[LoadedIndex]
 end
@@ -85,7 +111,6 @@ function GatherReward(probalisticGenome,probalisticSpecies)
 		end
 	else
 		GenomeAmount=GenomeAmount+1
-		--print("initializeRun")
 		initializeRun()
 		fitness=GeneticAlgorithmLoop(probalisticGenome)
 		UpdateReward(fitness)
@@ -102,9 +127,12 @@ function GeneticAlgorithmLoop(probalisticGenome)
 	--NetPage=marioPage
 	--RightmostPage=NetPage
 	while Alive do
-
 		local species = pool.species[pool.currentSpecies]
 		local genome = species.genomes[pool.currentGenome]
+
+		--Get Postion of Mario reading the Hex Bits
+		getPositions()
+
         if FileExists("display.txt") then
 			displayGenome(genome)
 		end
@@ -113,12 +141,12 @@ function GeneticAlgorithmLoop(probalisticGenome)
 				evaluateCurrent()
 		end
 
-		--Sets the output to whatever the netowrk chooses
+		
+
+		--Sets the output to whatever the network chooses
 		joypad.set(controller)
 
-		--Get Postion of Mario reading the Hex Bits
-		getPositions()
-
+		
 		--Refeshes Timeout
 		if pool.currentFrame%4 == 0 then
 			CallTimeoutFunctions()
@@ -184,6 +212,7 @@ function GeneticAlgorithmLoop(probalisticGenome)
 				status=1
 				Survivors={}
 				savestate.load(Filename)
+				clearJoypad()
 				--NetPage=memory.readbyte(0x6D)
 
 			end
@@ -227,7 +256,6 @@ savestate.load(Filename) --load Level 1
 FitnessBox(140,40,600,700) --Set Dimensions of GUI
 
 
-
 GenomeAmount=0
 status=0
 Survivors={}
@@ -260,9 +288,7 @@ if tonumber(forms.getthreadNum())==-2 then
 end
 if tonumber(forms.getthreadNum())>0 then
 	GenomeNumbers=NumberGenomes()
-	print(GenomeNumbers)
 	RandomNumbers=GenerateRandomNumbers()
-	print(RandomNumbers)
 	GenomeAmount=1
 	local seed=os.time()
 	math.randomseed(seed)
@@ -273,18 +299,17 @@ LoadedGenomes={}
 LoadedIndex=0
 if tonumber(forms.getthreadNum())==-2 then
 	loadLevelFinish("currentreplay.txt")
+	GoBackOneHalfLevel()
+	print(Filename)
+	savestate.load(Filename)
+
 end
-print(LoadedSpecies)
-print(LoadedGenomes)
-print("here")
 while true do
 	if tonumber(forms.getthreadNum())==0 then
 		if (mode~=DEATH_ACTION) and memory.readbyte(0x000E)==11 then    
-		print("DEATH_ACTION")
 		   --mode=DEATH_WAIT 
 		end
 		if mode==DEATH_ACTION then
-			print("DEATH_ACTION")
 			DummyRowDead()
 			savestate.load(Filename)
 			mode=WAIT
@@ -295,40 +320,34 @@ while true do
 			mode=WAIT
 		end 
 		if mode==DEATH_WAIT and emu.checktable()==false then
-			print("DEATH_WAIT")
 			EraseLastAction()
 			DummyRowDead()
 			savestate.load(Filename)
 			mode=WAIT
 		end 
 	    if mode==WAIT and emu.checktable()==false then
-	    	print("WAIT")
 	 		mode=ACTION
 	 	end
 	 	if mode==ACTION then
 	 		local probalisticGenome=GatherGenomeNum() 
 	 		local probalisticSpecies=GatherSpeciesNum() 
+	 		-- print("Species: "..probalisticSpecies)
+		  --   print("Genome: "..probalisticGenome)
 	 		table.insert(Survivors,probalisticSpecies..","..probalisticGenome)
 	 		GatherReward(probalisticGenome,probalisticSpecies)
 	 	end
-	elseif tonumber(forms.getthreadNum())>0 then
-		print("Random")
+	elseif tonumber(forms.getthreadNum())>0 then --Random
 		GenomeNumber=GetRandomGenome()
 		local probalisticGenome=GenomeNumbers[GenomeNumber].genome
 	 	local probalisticSpecies=GenomeNumbers[GenomeNumber].species
+		table.insert(Survivors,probalisticSpecies..","..probalisticGenome)
 	 	GatherReward(probalisticGenome,probalisticSpecies)
 	elseif tonumber(forms.getthreadNum())==-2 then
-		--print("hey")
 		speciesNum,genomeNum=LoadFromFile()
-		-- pool.currentSpecies=tonumber(speciesNum)
-		-- pool.currentGenome=tonumber(genomeNum)
-
 		local probalisticSpecies = tonumber(speciesNum)
 		local probalisticGenome = tonumber(genomeNum)
 		print("Species: "..probalisticSpecies)
 		print("Genome: "..probalisticGenome)
-		--local probalisticGenome=GenomeNumbers[GenomeNumber].genome
-	 	--local probalisticSpecies=GenomeNumbers[GenomeNumber].species
 		GatherReward(probalisticGenome,probalisticSpecies)
  	else
 	 	local species = pool.species[pool.currentSpecies]

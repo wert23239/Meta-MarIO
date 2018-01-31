@@ -126,7 +126,6 @@ function loadFile(filename)
 		nextGenome()
 	end
 	initializeRun()
-	pool.currentFrame = pool.currentFrame + 1
 end
 
 
@@ -296,13 +295,14 @@ function loadLevelFinish(filename)
 	local file = io.open(filename, "r")
 	pool.netWorld=file:read("*number")
     pool.netLevel=file:read("*number")
+    print("Level:" .. pool.netLevel)
     pool.halfvar=file:read("*number") --convert number to bool
     if pool.halfvar==1 then
     	pool.half=true
     else
     	pool.half=false
     end
-    local numGuys = file:read("*number")
+    local numGuys = file:read("*number")+1
     for n=1,numGuys do
     	local specgene = file:read("*line")
     	spec, genom = specgene:match("([^,]+),([^,]+)")

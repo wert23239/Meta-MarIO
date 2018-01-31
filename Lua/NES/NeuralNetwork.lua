@@ -525,6 +525,8 @@ function SetNoveltyFitness()
 	file:close()
 end
 
+
+--function is curently commented out
 function GainNoveltyFitness(cordLocation)
 	if pool.generation > 0 then
 		local count = 0
@@ -594,13 +596,13 @@ function newGeneration()
 	if forms.ischecked(NoveltyFitness) then
 		SetNoveltyFitness()
 	end
-	for loc,set in pairs(pool.landscape) do
-		--file:write("Location ".. loc .. "\n")
-		pool.landscapeold[loc]={}
-		for sg,value in pairs(set) do
-        	pool.landscapeold[loc][sg]=true
-		end
-	end
+	-- for loc,set in pairs(pool.landscape) do
+	-- 	--file:write("Location ".. loc .. "\n")
+	-- 	pool.landscapeold[loc]={}
+	-- 	for sg,value in pairs(set) do
+ --        	pool.landscapeold[loc][sg]=true
+	-- 	end
+	-- end
 	calculateTrueAverage()
 	findMaxFitnessForGeneration()
 	pool.landscape={}
@@ -697,8 +699,9 @@ function initializeRun()
 	clearJoypad()
 	local species = pool.species[pool.currentSpecies]
 	local genome = species.genomes[pool.currentGenome]
+	getInputs()
 	generateNetwork(genome)
-	evaluateCurrent()
+	--evaluateCurrent()
 end
 
 
@@ -711,7 +714,6 @@ function evaluateCurrent()
 
 
 	inputs = getInputs()
-
 	controller = evaluateNetwork(genome.network, inputs)
 
 
@@ -776,6 +778,7 @@ function nextGenome(probalisticGenome,probalisticSpecies)
 
 		RoundAmount=RoundAmount+1
 		console.writeline("Round Number ".. RoundAmount .. " Finished")
+		pool.landscape={}
 		if RoundAmount >= tonumber(forms.gettext(RoundAmountValue)) or forms.ischecked(RoundAmountFitness) == false then
 				console.writeline(tonumber(RoundAmount) .. " Rounds Finished")
 				newGeneration()
@@ -815,6 +818,7 @@ function displayGenome(genome)
 			cell.y = 70+5*dy
 			cell.value = network.neurons[i].value
 			cells[i] = cell
+			--print(cell)
 			i = i + 1
 		end
 	end
@@ -848,6 +852,7 @@ function displayGenome(genome)
 			color = 0xFF000000
 		end
 		gui.drawText(223, 24+8*o, ButtonNames[o], color, 9)
+		gui.drawText(223, 24+8*o+70, ButtonNames[o], color, 9)
 	end
 
 	for n,neuron in pairs(network.neurons) do
@@ -898,41 +903,51 @@ function displayGenome(genome)
 	end
 
 	gui.drawBox(50-BoxRadius*5-3,70-BoxRadius*5-3,50+BoxRadius*5+2,70+BoxRadius*5+2,0xFF000000, 0x80808080)
+	gui.drawBox(50-BoxRadius*5-3,70-BoxRadius*5-3+70,50+BoxRadius*5+2,70+BoxRadius*5+2+70,0xFF000000, 0x80808080)
 	local j=0
 	for n,cell in pairs(cells) do
 		if n > Inputs or cell.value ~= 0 then
 			local color = math.floor((cell.value+1)/2*256)
 			if color > 255 then color = 255 end
 			if color < 0 then color = 0 end
-			if j> (BoxRadius*2+1)*(BoxRadius*2+1) then color=128 end
+			isInverseInput=0
+			if j> (BoxRadius*2+1)*(BoxRadius*2+1) then isInverseInput=1 end
+			if isInverseInput==1 then color=125 end
 			local opacity = 0xFF000000
 			if cell.value == 0 then
 				opacity = 0x50000000
 			end
 			color = opacity + color*0x10000 + color*0x100 + color
-			gui.drawBox(cell.x-2,cell.y-2,cell.x+2,cell.y+2,opacity,color)
+			gui.drawBox(cell.x-2,cell.y-2+70*isInverseInput,cell.x+2,cell.y+2+70*isInverseInput,opacity,color)
 		end
 		j=j+1
 	end
+	local k=0
 	for _,gene in pairs(genome.genes) do
+
 		if gene.enabled then
 			local c1 = cells[gene.into]
 			local c2 = cells[gene.out]
+			
 			local opacity = 0xA0000000
 			if c1.value == 0 then
 				opacity = 0x20000000
 			end
-
+			isInverseInput=0
+			if gene.into> (BoxRadius*2+1)*(BoxRadius*2+1) and gene.into<(BoxRadius*2+1)*(BoxRadius*2+1)*2  then isInverseInput=1 end
 			local color = 0x80-math.floor(math.abs(sigmoid(gene.weight))*0x80)
 			if gene.weight > 0 then
 				color = opacity + 0x8000 + 0x10000*color
 			else
 				color = opacity + 0x800000 + 0x100*color
 			end
-			gui.drawLine(c1.x+1, c1.y, c2.x-3, c2.y, color)
+			gui.drawLine(c1.x+1, c1.y+isInverseInput*70, c2.x-3, c2.y+isInverseInput*70, color)
+			gui.drawText(150,50+k*8,gene.into.." "..gene.out.." "..isInverseInput,null,10,8)
+			k=k+1
 		end
+		
 	end
-
+	
 	gui.drawBox(49,71,51,78,0x00000000,0x80FF0000)
 
 	if forms.ischecked(showMutationRates) then
