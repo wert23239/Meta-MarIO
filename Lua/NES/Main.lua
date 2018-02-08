@@ -38,11 +38,13 @@ end
 function LoadFromFile()
 	LoadedIndex=LoadedIndex+1
 	print(LoadedIndex)
-	if LoadedIndex>#LoadedSpecies then
+	if LoadedIndex>#LoadedSpecies or LoadedIndex==0 then
 		LoadedIndex=1
 		savestate.load(ConstantFilename)
 		pool.landscape = {}
 		RoundAmount=0
+		emu.frameadvance()
+		emu.frameadvance()
 	print("Reload")
 	end
 	return LoadedSpecies[LoadedIndex],LoadedGenomes[LoadedIndex]
@@ -127,6 +129,7 @@ function GeneticAlgorithmLoop(probalisticGenome)
 	--NetPage=marioPage
 	--RightmostPage=NetPage
 	while Alive do
+		--print(pool.currentFrame)
 		local species = pool.species[pool.currentSpecies]
 		local genome = species.genomes[pool.currentGenome]
 
@@ -203,16 +206,18 @@ function GeneticAlgorithmLoop(probalisticGenome)
 				fitness = -1
 			end
 
-			
-			LevelChange()
-			LevelChangeHalfway()
+			if tonumber(forms.getthreadNum())~=-2 then
+				LevelChange()
+				LevelChangeHalfway()
+			end
 			--New Code for Super Meta
-			if memory.readbyte(0x000E)==11 or memory.readbyte(0x00B5)>1 then
+			if memory.readbyte(0x000E)==11 or memory.readbyte(0x00B5)>1 or memory.readbyte(0x0770)==0 then
 				--fitness= fitness-20
 				status=1
 				Survivors={}
-				savestate.load(Filename)
 				clearJoypad()
+				savestate.load(Filename)
+				
 				--NetPage=memory.readbyte(0x6D)
 
 			end
@@ -234,7 +239,6 @@ function GeneticAlgorithmLoop(probalisticGenome)
 			else 
 				GlobalFitness=fitness
 			end
-			
 
 
 		end
@@ -258,6 +262,7 @@ FitnessBox(140,40,600,700) --Set Dimensions of GUI
 
 GenomeAmount=0
 status=0
+z=0
 Survivors={}
 print("..Starting")
 initializePool()
@@ -296,13 +301,12 @@ if tonumber(forms.getthreadNum())>0 then
 end 
 LoadedSpecies={}
 LoadedGenomes={}
-LoadedIndex=0
+LoadedIndex=-1
 if tonumber(forms.getthreadNum())==-2 then
-	loadLevelFinish("currentreplay.txt")
+	loadLevelFinish("replay.pool")
 	GoBackOneHalfLevel()
 	print(Filename)
-	savestate.load(Filename)
-
+	clearJoypad()
 end
 while true do
 	if tonumber(forms.getthreadNum())==0 then

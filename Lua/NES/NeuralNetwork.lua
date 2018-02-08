@@ -204,7 +204,7 @@ function generateNetwork(genome)
 
 	--Sort genes by there output
 	table.sort(genome.genes, function (a,b)
-		return (a.out < b.out)
+		return (a.out < b.out)  or (a.out == b.out and a.into > b.into)
 	end)
 
 	--Go through all the genes
@@ -246,22 +246,22 @@ function evaluateNetwork(network, inputs)
 		return {}
 	end
 
-
+	z=z+1
 	--Set each neuron to value of each input
 	for i=1,Inputs do
 		network.neurons[i].value = inputs[i]
 	end
-
 	--For each neuron check the
 	for _,neuron in pairs(network.neurons) do
 		local sum = 0 --Find the sum
 		for j = 1,#neuron.incoming do
 			--Go to to all genes that connect to an output
 			local incoming = neuron.incoming[j]
-
 			--Find which input this connects to
 			local other = network.neurons[incoming.into]
-
+			-- if incoming.into==1000001 then
+			--  	print(other.value)
+			-- end
 			--Calculate the total sum by dot producting the weights with the trinary value of the an input
 			sum = sum + incoming.weight * other.value
 		end
@@ -682,7 +682,7 @@ function initializeRun()
 		else 
 		savestate.load(FilenameTraining3);
 		end
-	elseif(memory.readbyte(0x0770)==0 or not forms.ischecked(showContinousPlay)) then
+	elseif(not forms.ischecked(showContinousPlay)) then
 		savestate.load(Filename) --Load from a specfic savestates
 	end
 	rightmost = 0
@@ -699,9 +699,8 @@ function initializeRun()
 	clearJoypad()
 	local species = pool.species[pool.currentSpecies]
 	local genome = species.genomes[pool.currentGenome]
-	getInputs()
 	generateNetwork(genome)
-	--evaluateCurrent()
+	evaluateCurrent()
 end
 
 
@@ -779,6 +778,10 @@ function nextGenome(probalisticGenome,probalisticSpecies)
 		RoundAmount=RoundAmount+1
 		console.writeline("Round Number ".. RoundAmount .. " Finished")
 		pool.landscape={}
+		Survivors={}
+		clearJoypad()
+		savestate.load(Filename)
+		emu.frameadvance()
 		if RoundAmount >= tonumber(forms.gettext(RoundAmountValue)) or forms.ischecked(RoundAmountFitness) == false then
 				console.writeline(tonumber(RoundAmount) .. " Rounds Finished")
 				newGeneration()
