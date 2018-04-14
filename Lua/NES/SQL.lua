@@ -70,6 +70,7 @@ function UpdateReward(fitness_value)
 end
 
 function UpdateGenes(GeneCollection)
+	print("Update")
 	if tonumber(forms.getthreadNum())==0 then
 		emu.updategenetable(GeneCollection)
 	end

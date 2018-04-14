@@ -1,3 +1,4 @@
+--TODO:Change if same action is greatest use it again
 require "Constants"
 require "Inputs"
 require "NeuralNetwork"
@@ -164,7 +165,7 @@ function GeneticAlgorithmLoop(probalisticGenome)
 		local timeoutBonus = pool.currentFrame / 4
 		--Timeout or Killed by Monster or Kiled by Falling
 		--or pool.currentFrame>250
-		if timeout + timeoutBonus <=0  or memory.readbyte(0x000E)==11 or memory.readbyte(0x00B5)>1  then
+		if timeout + timeoutBonus <=0  or memory.readbyte(0x000E)==11 or memory.readbyte(0x00B5)>1 or pool.currentFrame>100  then
 			Alive=false
 			
 			
@@ -191,9 +192,9 @@ function GeneticAlgorithmLoop(probalisticGenome)
 			if forms.ischecked(NoveltyFitness) then
 				fitnesscheck[3] = fitness +tonumber(forms.gettext(NoveltyAmount))*(CurrentNSFitness)
 			end
-			-- if (rightmost-NetX)>20 then
-			-- 	fitnesscheck[4] = (NetX-leftmost)*2+(rightmost-NetX)*.5
-			-- end
+			if (rightmost-NetX)>5 then
+				fitnesscheck[4] = (NetX-leftmost)*2+(rightmost-NetX)*.5
+			end
 			-- if (rightmost-NetX)>20 then
 			-- 	fitnesscheck[5] = (upmost - NetY)*3+(rightmost-NetX)*.25
 			-- end
@@ -224,21 +225,30 @@ function GeneticAlgorithmLoop(probalisticGenome)
 
 			
 			
+			--Incremental Mean
+			--print("NewMean")
+			--print(fitness,genome.fitness,RoundAmount)
+			genome.fitness=genome.fitness+(1/(RoundAmount+1))*(fitness-genome.fitness)
+			--print(genome.fitness)
+			-- if fitness > genome.fitness then
+			-- 	genome.fitness = fitness
+			-- end
 
-
-
-			if fitness > genome.fitness then
-				genome.fitness = fitness
-			end
-
-
-			if fitness <= 0 then
+			if status == 1 then
 				GlobalFitness=-1
-			elseif fitness>100 then 
-				GlobalFitness=100
 			else 
-				GlobalFitness=fitness
+				GlobalFitness=0
 			end
+
+
+
+			-- if fitness <= 0 then
+			-- 	GlobalFitness=-1
+			-- elseif fitness>10 then 
+			-- 	GlobalFitness=10
+			-- else 
+			-- 	GlobalFitness=fitness
+			-- end
 
 
 		end
@@ -253,7 +263,6 @@ end
 DEATH_WAIT,DEATH_ACTION,WAIT,ACTION,GENERATION_OVER = 0,1,2,3,4
 mode=WAIT
 NetPage=0
-
 
 Open()
 savestate.load(Filename) --load Level 1
@@ -308,6 +317,7 @@ if tonumber(forms.getthreadNum())==-2 then
 	print(Filename)
 	clearJoypad()
 end
+for i=0,10 do emu.frameadvance() end
 while true do
 	if tonumber(forms.getthreadNum())==0 then
 		if (mode~=DEATH_ACTION) and memory.readbyte(0x000E)==11 then    
@@ -315,7 +325,7 @@ while true do
 		end
 		if mode==DEATH_ACTION then
 			DummyRowDead()
-			savestate.load(Filename)
+			--savestate.load(Filename)
 			mode=WAIT
 		end 
 		if mode==GENERATION_OVER then
@@ -324,19 +334,26 @@ while true do
 			mode=WAIT
 		end 
 		if mode==DEATH_WAIT and emu.checktable()==false then
+			client.unpause()
 			EraseLastAction()
 			DummyRowDead()
 			savestate.load(Filename)
 			mode=WAIT
 		end 
 	    if mode==WAIT and emu.checktable()==false then
+	 		client.unpause()
 	 		mode=ACTION
+
 	 	end
+	 	if mode==WAIT then
+	 		client.pause()
+		end	 
 	 	if mode==ACTION then
 	 		local probalisticGenome=GatherGenomeNum() 
 	 		local probalisticSpecies=GatherSpeciesNum() 
 	 		-- print("Species: "..probalisticSpecies)
 		  --   print("Genome: "..probalisticGenome)
+		  	client.speedmode(400)
 	 		table.insert(Survivors,probalisticSpecies..","..probalisticGenome)
 	 		GatherReward(probalisticGenome,probalisticSpecies)
 	 	end
@@ -362,5 +379,7 @@ while true do
 		displayGenome(genome)
 		x=x+1
 	end	
- 	emu.frameadvance()
+	if client.ispaused()==false then
+ 		emu.frameadvance()
+ 	end	
 end

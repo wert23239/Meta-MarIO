@@ -138,8 +138,23 @@ function basicGenome()
 	local innovation = 1
 
 	genome.maxneuron = Inputs
-	mutate(genome)
+	geneIsEmpty=true
+	while geneIsEmpty==true do
+		mutate(genome)	
+		for i=1,#genome.genes do
 
+
+			local gene = genome.genes[i]
+
+			--For each gene check for enabled
+			if gene.enabled then
+
+				geneIsEmpty=false
+			end
+		end
+	end	
+	--print(gene.genes)
+	--print()
 	return genome
 end
 
@@ -774,13 +789,13 @@ function nextGenome(probalisticGenome,probalisticSpecies)
 	pool.currentGenome = probalisticGenome
 	pool.currentSpecies = probalisticSpecies
 	if GenomeAmount == Population then
-
+		client.speedmode(1)
 		RoundAmount=RoundAmount+1
 		console.writeline("Round Number ".. RoundAmount .. " Finished")
 		pool.landscape={}
 		Survivors={}
 		clearJoypad()
-		savestate.load(Filename)
+		--savestate.load(Filename)
 		emu.frameadvance()
 		if RoundAmount >= tonumber(forms.gettext(RoundAmountValue)) or forms.ischecked(RoundAmountFitness) == false then
 				console.writeline(tonumber(RoundAmount) .. " Rounds Finished")
@@ -987,7 +1002,8 @@ function CollectGenes()
 				if gene.enabled then
 					geneNum=geneNum+1
 					Key=speciesNum .. " " .. genomeIndividualNum .." " .. genomeNum  .. " " .. geneNum
-					GeneCollection[Key]=gene.into .. " " .. gene.out .. " " .. gene.innovation
+					GeneCollection[Key]=gene.into .. " " .. gene.out .. " " .. gene.weight
+
 				end
 			end
 		end

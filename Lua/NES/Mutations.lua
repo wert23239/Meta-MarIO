@@ -66,7 +66,11 @@ function linkMutate(genome, forceBias)
 		--Both input nodes
 		return
 	end
-	if neuron2 <= Inputs then --neuron 2 has to be output
+	if neuron1 > Inputs and neuron2 > Inputs then
+		--Both output nodes
+		return
+	end
+	if neuron2 <= Inputs then --neuron 2 has to be output or hidden
 		-- Swap output and input
 		local temp = neuron1
 		neuron1 = neuron2
@@ -183,13 +187,13 @@ function mutate(genome)
 	end
 
 	--Node muatation chance over and over
-	p = genome.mutationRates["node"]
-	while p > 0 do
-		if math.random() < p then
-			nodeMutate(genome)
-		end
-		p = p - 1
-	end
+	-- p = genome.mutationRates["node"]
+	-- while p > 0 do
+	-- 	if math.random() < p then
+	-- 		nodeMutate(genome)
+	-- 	end
+	-- 	p = p - 1
+	-- end
 
 	--Enable random genes
 	p = genome.mutationRates["enable"]
