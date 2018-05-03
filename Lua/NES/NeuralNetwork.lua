@@ -35,6 +35,8 @@ function newPool()
 	pool.maxGenerationFitness=0 --the highest fitness this generation
 	pool.marioWorld=0
 	pool.marioLevel=0
+	pool.roundAverageFitness=0
+	pool.roundDeaths=0
 
 	--List of Sets
 	--Key
@@ -618,7 +620,7 @@ function newGeneration()
  --        	pool.landscapeold[loc][sg]=true
 	-- 	end
 	-- end
-	calculateTrueAverage()
+	calculateTrueAverage(false)
 	findMaxFitnessForGeneration()
 	pool.landscape={}
 	RoundAmount=0
@@ -792,10 +794,14 @@ function nextGenome(probalisticGenome,probalisticSpecies)
 		client.speedmode(1)
 		RoundAmount=RoundAmount+1
 		console.writeline("Round Number ".. RoundAmount .. " Finished")
+		calculateTrueAverage(true)
 		pool.landscape={}
+		pool.roundDeaths=round_deaths
+		round_deaths=0
 		Survivors={}
 		clearJoypad()
-		--savestate.load(Filename)
+		CollectStats()
+		savestate.load(Filename)
 		emu.frameadvance()
 		if RoundAmount >= tonumber(forms.gettext(RoundAmountValue)) or forms.ischecked(RoundAmountFitness) == false then
 				console.writeline(tonumber(RoundAmount) .. " Rounds Finished")

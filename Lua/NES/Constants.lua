@@ -31,7 +31,7 @@ FilenameTraining2 = FilenameFolder .. "t2.state"
 FilenameTraining3 = FilenameFolder .. "Level12.state"
 NetGeneration = 0
 training = false
-RoundAmountConstant = 3
+RoundAmountConstant = 2
 RoundAmount = 0
 --[[
 InputSize: is the amount of inputs the Organism takes in.

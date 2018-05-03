@@ -24,7 +24,7 @@ end
 --[[
 CalculateTrueAverage: get the true numerical average fitness
 --]]
-function calculateTrueAverage()
+function calculateTrueAverage(isRound)
 	local average=0
 	for s = 1,#pool.species do
 		local species = pool.species[s]
@@ -32,7 +32,12 @@ function calculateTrueAverage()
 			average=average+species.genomes[g].fitness
 		end
 	end
-	pool.generationAverageFitness=average/Population
+	--keep in mind the fitness inbetween round keep only the max fitness for that generation
+	if isRound==true then 
+		pool.roundAverageFitness=average/Population
+	else
+		pool.generationAverageFitness=average/Population
+	end
 end
 
 

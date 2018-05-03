@@ -32,7 +32,7 @@ end
 
 function InitializeStats()
 	local statsFile=io.open("Stats".. tostring(forms.getthreadNum()) .. ".csv" ,"w+")
-	statsFile:write("Generation".. ","  .. "Max Fitness".. "," .. "Average Fitness" .. "," .. "World" .. "," .. "Level" .. "\n")
+	statsFile:write("Generation".. "," .. "Round Amount".. "," .. "Max Fitness".. "," .. "Average Fitness" .. "," .. "Deaths" .. "," .. "World" .. "," .. "Level" .. "\n")
 	statsFile:close()
 end
 
@@ -80,7 +80,7 @@ end
 
 function CollectStats()
 	local statsFile=io.open("Stats".. tostring(forms.getthreadNum()) .. ".csv","a")
-	statsFile:write(pool.generation .. ","  .. pool.maxFitness .. "," .. pool.generationAverageFitness .. "," .. pool.marioWorld .. "," .. pool.marioLevel .. "\n")
+	statsFile:write(pool.generation .. "," .. RoundAmount .. "," .. pool.maxFitness .. "," .. pool.generationAverageFitness .. "," .. pool.roundDeaths.. "," .. pool.marioWorld .. "," .. pool.marioLevel .. "\n")
 	statsFile:close()
 end	
 
@@ -100,7 +100,7 @@ function GatherReward(probalisticGenome,probalisticSpecies)
 			GenomeAmount=1
 		end
 	elseif isDone==2 then
-		CollectStats()
+		--CollectStats()
 		console.writeline("Generation " .. pool.generation .. " Completed")
 		console.writeline("For World ".. pool.marioWorld+1 .. " Level ".. pool.marioLevel+1)
 		console.writeline("Generation Best Fitness: ".. pool.maxGenerationFitness  .." Max Fitness: ".. pool.maxFitness)
@@ -216,6 +216,7 @@ function GeneticAlgorithmLoop(probalisticGenome)
 				--fitness= fitness-20
 				status=1
 				Survivors={}
+				round_deaths=round_deaths+1
 				clearJoypad()
 				savestate.load(Filename)
 				
@@ -225,23 +226,24 @@ function GeneticAlgorithmLoop(probalisticGenome)
 
 			
 			
-			--Incremental Mean
-			--print("NewMean")
-			--print(fitness,genome.fitness,RoundAmount)
+			--Incremental Mean Fitness
 			genome.fitness=genome.fitness+(1/(RoundAmount+1))*(fitness-genome.fitness)
-			--print(genome.fitness)
+			--Top Fitness chosen
 			-- if fitness > genome.fitness then
 			-- 	genome.fitness = fitness
 			-- end
 
+			--If Mario Dies or Not RL fitness
 			if status == 1 then
 				GlobalFitness=-1
 			else 
 				GlobalFitness=0
 			end
+			
+			--Regression Fitness for RL fitness
+			--GlobalFitness=fitness
 
-
-
+			--Normalized Classic Fitness for RL fitness
 			-- if fitness <= 0 then
 			-- 	GlobalFitness=-1
 			-- elseif fitness>10 then 
@@ -268,7 +270,7 @@ Open()
 savestate.load(Filename) --load Level 1
 FitnessBox(140,40,600,700) --Set Dimensions of GUI
 
-
+round_deaths=0
 GenomeAmount=0
 status=0
 z=0
