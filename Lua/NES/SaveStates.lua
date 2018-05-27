@@ -73,3 +73,26 @@ function LevelChange()
 		--resetStaleFitness
 	end
 end
+
+
+function GoBackOneHalfLevel()
+	if pool.half==true then
+		pool.half=false
+	elseif pool.netLevel>0 then
+		pool.netLevel=pool.netLevel-1
+		pool.half=true
+	elseif pool.netWorld>0 then
+		pool.netWorld=pool.netWorld-1
+		pool.netLevel=3
+		pool.half=true
+	else
+		print("Starting at Level 1")
+	end
+	if pool.half==true then
+		Filename = "Level" .. pool.netWorld+1 .. pool.netLevel+1 .. 5 ..".state"
+	else
+		Filename = "Level" .. pool.netWorld+1 .. pool.netLevel+1 ..".state"
+	end
+	Filename = "States/"..Filename
+	ConstantFilename=Filename
+end

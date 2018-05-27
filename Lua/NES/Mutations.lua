@@ -58,7 +58,7 @@ linkMutate: Link and Bias mutation use this
 Gather two genomes and set one as input on as ouptut in a new gene
 --]]
 function linkMutate(genome, forceBias)
-	local neuron1 = randomNeuron(genome.genes, false) --Gain one nueron that might be anything
+	local neuron1 = randomNeuron(genome.genes, false) --Gain one neuron that might be anything
 	local neuron2 = randomNeuron(genome.genes, true) --Gain one input that can be anything
 
 	local newLink = newGene()  --Create a new gene

@@ -7,28 +7,9 @@ require "SaveStates"
 require "Forms"
 require "Timeout"
 require "SQL"
+require "Test"
 
-function GoBackOneHalfLevel()
-	if pool.half==true then
-		pool.half=false
-	elseif pool.netLevel>0 then
-		pool.netLevel=pool.netLevel-1
-		pool.half=true
-	elseif pool.netWorld>0 then
-		pool.netWorld=pool.netWorld-1
-		pool.half=true
-	else
-		print("Starting at Level 1")
-	end
-	if pool.half==true then
-		Filename = "Level" .. pool.netWorld+1 .. pool.netLevel+1 .. 5 ..".state"
-	else
-		Filename = "Level" .. pool.netWorld+1 .. pool.netLevel+1 ..".state"
-	end
-	Filename = "States/"..Filename
-	ConstantFilename=Filename
-	print(Filename)
-end
+
 
 function InitializeStats()
 	local statsFile=io.open("Stats".. tostring(forms.getthreadNum()) .. ".csv" ,"w+")
@@ -269,7 +250,6 @@ NetPage=0
 Open()
 savestate.load(Filename) --load Level 1
 FitnessBox(140,40,600,700) --Set Dimensions of GUI
-
 round_deaths=0
 GenomeAmount=0
 status=0
@@ -365,13 +345,16 @@ while true do
 	 	local probalisticSpecies=GenomeNumbers[GenomeNumber].species
 		table.insert(Survivors,probalisticSpecies..","..probalisticGenome)
 	 	GatherReward(probalisticGenome,probalisticSpecies)
-	elseif tonumber(forms.getthreadNum())==-2 then
+	elseif tonumber(forms.getthreadNum())==-2 then --Replay
 		speciesNum,genomeNum=LoadFromFile()
 		local probalisticSpecies = tonumber(speciesNum)
 		local probalisticGenome = tonumber(genomeNum)
 		print("Species: "..probalisticSpecies)
 		print("Genome: "..probalisticGenome)
 		GatherReward(probalisticGenome,probalisticSpecies)
+	elseif tonumber(forms.getthreadNum())==-3 then --Tests
+		RunTests()
+		client.fail()
  	else
 	 	local species = pool.species[pool.currentSpecies]
 		local genome = species.genomes[pool.currentGenome]

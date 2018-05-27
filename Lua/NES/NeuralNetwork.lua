@@ -37,6 +37,7 @@ function newPool()
 	pool.marioLevel=0
 	pool.roundAverageFitness=0
 	pool.roundDeaths=0
+	pool.testMode=false
 
 	--List of Sets
 	--Key
@@ -283,7 +284,7 @@ function evaluateNetwork(network, inputs)
 			sum = sum + incoming.weight * other.value
 		end
 
-		--Change the value of a neruon by the Sum and Sigmoid
+		--Change the value of a neuron by the Sum and Sigmoid
 		if #neuron.incoming > 0 then
 			neuron.value = sigmoid(sum)
 		end

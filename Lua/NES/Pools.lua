@@ -2,6 +2,7 @@
 writeFile: See loadFile for specifics
 --]]
 function writeFile(filename)
+	if pool.testMode == true then return 0 end
     local file = io.open(filename, "w")
     file:write(Filename .. "\n")
     file:write(pool.marioWorld .. "\n")
@@ -276,6 +277,7 @@ end
 writeLevelFinish: Saves when a player finished a level
 --]]
 function writeLevelFinish(filename)
+	if pool.testMode == true then return 0 end
 	local file = io.open(filename, "w")
 	file:write(pool.marioWorld .. "\n")
 	file:write(pool.marioLevel .. "\n")

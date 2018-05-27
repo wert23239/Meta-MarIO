@@ -16,5 +16,7 @@ Lua\NES\Pools\*
 #SMB 3
 *Super Mario Bros. 3*
 #Game Folders
-NES/
+Lua/NES/Movies/
+Lua/NES/Stats*
+Lua/NES/desktop.ini
 SNES/
